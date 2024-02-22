@@ -23,8 +23,8 @@ const InfluencerList = () => {
   }
 
   return (
-    <div className="grid gap-2 grid-cols-[1fr,4fr]">
-      <div className="2fr">
+    <div className="flex flex-col xl:flex-row">
+      <div className="flex-1">
         <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight mb-10">
           Influencer Finder
         </h1>
@@ -154,7 +154,7 @@ const InfluencerList = () => {
         </div>
       </div>
       <div className="container mx-auto  py-2 px-4">
-        <div className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
           {filteredInfluencers.map((el, i) => {
             return <InfluencerCard key={i} influencer={el}></InfluencerCard>;
           })}

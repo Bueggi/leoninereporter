@@ -54,7 +54,7 @@ const InfluencerCard = ({ influencer }) => {
 
   return (
     <div className="">
-      <div className="shadow-xl w-80 h-80  bg-white border border-black rounded card-zoom">
+      <div className="shadow-xl w-80 h-80   bg-white border border-black rounded card-zoom">
         <div className="card-zoom-image bg-cover hover:scale-150 w-full h-full bg-[url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2576&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]"></div>
         <h1 className="card-zoom-text">{influencer["Channel Name"]}</h1>
         <div className="absolute bottom-0 w-full h-1/3 bg-slate-400 bg-opacity-50 py-4 px-8 flex">
