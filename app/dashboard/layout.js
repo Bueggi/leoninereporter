@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -8,7 +8,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { Passero_One } from "next/font/google";
+import { toast } from "react-toastify";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
@@ -31,35 +31,53 @@ function classNames(...classes) {
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [correctPassword, setCorrectPassword] = useState("");
+  const [isPasswordCorrect, setisPasswordCorrect] = useState(false);
+  const password = useRef();
 
-  const isPasswordCorrect =
-    correctPassword === process.env.NEXT_PUBLIC_PASSWORD;
-
+  const handleSendPassword = async () => {
+    try {
+      const res = await fetch("/api/password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password: password.current.value }),
+      });
+      const data = await res.json();
+      if (data.success) return setisPasswordCorrect(true);
+      else return toast.error(data.message)
+    } catch (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  };
 
   return (
     <>
-    {!isPasswordCorrect &&
-
-      <div className="font-black m-4 p-4 text-black relative">
-
-        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-          Passwort eingeben
-        </h2>
-        <div className="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 w-max">
-    
-          <input
-            type="text"
-            name="name"
-            id="name"
-            value={correctPassword}
-            onChange={(e) => setCorrectPassword(e.target.value)}
-            className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-transparent"
-            placeholder="Passwort"
+      {!isPasswordCorrect && (
+        <div className="font-black m-4 p-4 text-black relative">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+            Passwort eingeben
+          </h2>
+          <div className="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 w-max">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              ref={password}
+              className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-transparent"
+              placeholder="Passwort"
             />
+            <button
+              type="button"
+              className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => handleSendPassword()}
+            >
+              Passwort abschicken
+            </button>
+          </div>
         </div>
-      </div>
-          }
+      )}
       {isPasswordCorrect && (
         <div>
           <Transition.Root show={sidebarOpen} as={Fragment}>
