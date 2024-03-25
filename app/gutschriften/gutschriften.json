@@ -1,0 +1,110 @@
+[
+  {
+    "order": "BMI-23-005- 18757-PuR Flight2",
+    "lineitem": "PuR Flight 2 - Dezember",
+    "timeframe": "November 2023",
+    "rate": "€15,00",
+    "impressions": "2.447.444",
+    "booking": "36.711,67 €",
+    "dispo": 4778428
+  },
+  {
+    "order": "BMI-23-005- 18757-PuR Flight2",
+    "lineitem": "PuR Flight 2 - November",
+    "timeframe": "November 2023",
+    "rate": "€15,00",
+    "impressions": 553.25,
+    "booking": "8.298,75 €",
+    "dispo": 4778427
+  },
+  {
+    "order": "BNP-2023_15586_Awareness The Moment",
+    "lineitem": "BNP-2023_15586_Awareness The Moment - Oktober",
+    "timeframe": "Oktober 2023",
+    "rate": "€15,00",
+    "impressions": 469.286,
+    "booking": "7.039,29 €",
+    "dispo": 4356995
+  },
+  {
+    "order": "BNP-2023_15586_Awareness The Moment",
+    "lineitem": "BNP-2023_15586_Awareness The Moment - September",
+    "timeframe": "September 2023",
+    "rate": "€15,00",
+    "impressions": 990.708,
+    "booking": "14.860,71 €",
+    "dispo": 4356994
+  },
+  {
+    "order": "BWK-23-002 Energiewechsel (Phase 4 - Februar/März) [13530]",
+    "lineitem": "BWK - Rezo",
+    "timeframe": "Februar 2023",
+    "rate": "€13,50",
+    "impressions": "1.082.267",
+    "booking": "14.610,60 €",
+    "dispo": 3553268
+  },
+  {
+    "order": "BWK-23-002 Energiewechsel (Phase 4 - Februar/März) [13530]",
+    "lineitem": "BWK-23-002 Energiewechsel (Phase 4 - Februar/März) [13530] - März Schlumpf",
+    "timeframe": "März 2023",
+    "rate": "€13,50",
+    "impressions": "1.918.132",
+    "booking": "25.889,40 €",
+    "dispo": 3553269
+  },
+  {
+    "order": "BWK-23-004-16062- Energiewechsel (Phase 5 - Juli_September) [16062]",
+    "lineitem": "Energiewechsel Oktober",
+    "timeframe": "Oktober 2023",
+    "rate": "€15,00",
+    "impressions": "1.071.713",
+    "booking": "16.071,44 €",
+    "dispo": 4299353
+  },
+  {
+    "order": "BWK-23-004-16062- Energiewechsel (Phase 5 - Juli_September) [16062]",
+    "lineitem": "Energiewechsel September",
+    "timeframe": "September 2023",
+    "rate": "€15,00",
+    "impressions": 928.839,
+    "booking": "13.928,57 €",
+    "dispo": 4229918
+  },
+  {
+    "order": "LEN-2023-17838-Das fliegende Klassenzimmer [17838]",
+    "lineitem": "LEN-2023-17838-Das fliegende Klassenzimmer Oktober",
+    "timeframe": "Oktober 2023",
+    "rate": "€13,00",
+    "impressions": 274.938,
+    "booking": "3.571,46 €",
+    "dispo": 4522511
+  },
+  {
+    "order": "LEN-2023-17838-Das fliegende Klassenzimmer [17838]",
+    "lineitem": "LEN-2023-17838-Das fliegende Klassenzimmer September",
+    "timeframe": "September 2023",
+    "rate": "€13,00",
+    "impressions": 109.888,
+    "booking": "1.428,54 €",
+    "dispo": 4522510
+  },
+  {
+    "order": "LEN-2023-18439-Dumb Money",
+    "lineitem": "LEN-2023-18439-Dumb Money - Oktober",
+    "timeframe": "Oktober 2023",
+    "rate": "€15,00",
+    "impressions": 261.041,
+    "booking": "3.915,32 €",
+    "dispo": 4604925
+  },
+  {
+    "order": "LEN-2023-18439-Dumb Money",
+    "lineitem": "LEN-2023-18439-Dumb Money - Oktober",
+    "timeframe": "November 2023",
+    "rate": "€15,00",
+    "impressions": 72.312,
+    "booking": "1.084,68 €",
+    "dispo": 4604926
+  }
+]

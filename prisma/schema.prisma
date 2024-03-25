@@ -13,29 +13,100 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
-}
-
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  email     String     @unique
+  name      String
+  role      ROLE       @default(USER)
+  image     String
+  campaigns Campaign[]
+}
+
+enum ROLE {
+  USER
+  ADMIN
+}
+
+model Campaign {
+  id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  name         String     @unique @default("")
+  advertiser   Advertiser @relation(fields: [advertiserID], references: [id])
+  advertiserID String     @default("")
+  status       STATUS     @default(OFFER)
+  creatorId    String
+  offers       Offer[]
+  creator      User       @relation(fields: [creatorId], references: [id])
+}
+
+enum STATUS {
+  OFFER
+  SOLD
+  RUNNING
+  COMPLETED
+}
+
+model Offer {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  campaign   Campaign @relation(fields: [campaignID], references: [id])
+  campaignID String
+  creatorIds String[]
+}
+
+model Creator {
+  id           String    @id @default(uuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  channelID    String    @unique
+  channelName  String
+  share        Int
+  company      String
+  goal         Float
+  demographics Json
+  anbindung    Anbindung
+  image        String
+}
+
+enum Anbindung {
+  OWNED
+  TALENT
+}
+
+model Advertiser {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String     @unique
+  campaigns Campaign[]
+}
+
+model Report {
+  id        String        @id @default(uuid())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  entries   ReportEntry[]
+}
+
+model ReportEntry {
+  id                        String   @id @default(uuid())
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  report                    Report   @relation(fields: [reportID], references: [id])
+  reportID                  String
+  channelID                 String
+  date                      DateTime
+  revenueAdsense            Float
+  revenueSubscription       Float
+  revenueShortsSubscription Float
+  revenueShortsAds          Float
+  revenuePaidFeatures       Float
+  revenueAdManager          Float
+  revenueAusgleich          Float
+  delta                     Float
+  payout                    Float
 }

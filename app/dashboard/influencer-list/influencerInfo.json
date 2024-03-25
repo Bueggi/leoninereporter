@@ -1,1152 +1,1106 @@
 [
-    {
-     "Channel ID": "UC2cJbBzyHM48MVFB6eOW9og",
-     "Channel Name": "stern TV",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "i&u TV Produktion GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 67.2, 
-                "female": 32.6
-            },
-        "age":
-            {
-                "<18": 1.1,
-                "18-24": 20.7,
-                "25-34": 27.8,
-                "35-44": 20.3,
-                "45-54": 12.7,
-                "55-64": 10.6,
-                "65+": 6.8
-            }
-        }
+  {
+    "Channel ID": "UC2cJbBzyHM48MVFB6eOW9og",
+    "Channel Name": "stern TV",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "i&u TV Produktion GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 67.2,
+        "female": 32.6
+      },
+      "age": {
+        "<18": 1.1,
+        "18-24": 20.7,
+        "25-34": 27.8,
+        "35-44": 20.3,
+        "45-54": 12.7,
+        "55-64": 10.6,
+        "65+": 6.8
+      }
     },
-    {
-     "Channel ID": "UCE2hJ9CYR57BYhk3TjGVG6w",
-     "Channel Name": "Breaking Lab",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "i&u TV Produktion GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 94.7, 
-                "female": 5.2
-            },
-        "age":
-            {
-                "<18": 0.9,
-                "18-24": 18.6,
-                "25-34": 29,
-                "35-44": 21.5,
-                "45-54": 12.4,
-                "55-64": 10.5,
-                "65+": 7.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/4lpfkhjO2ZUvan0TzH5cK6uXwi-I2Cr3VdGgQu22N5QWWDatKo0L22vMt_CgC_GZD7tF4IIKEQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCE2hJ9CYR57BYhk3TjGVG6w",
+    "Channel Name": "Breaking Lab",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "i&u TV Produktion GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 94.7,
+        "female": 5.2
+      },
+      "age": {
+        "<18": 0.9,
+        "18-24": 18.6,
+        "25-34": 29,
+        "35-44": 21.5,
+        "45-54": 12.4,
+        "55-64": 10.5,
+        "65+": 7.1
+      }
     },
-    {
-     "Channel ID": "UCr2-U_dQAyi_zBrAbMS3Jog",
-     "Channel Name": "stern TV: Talks",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "i&u TV Produktion GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 68.1, 
-                "female": 31.8
-            },
-        "age":
-            {
-                "<18": 0.8,
-                "18-24": 15.5,
-                "25-34": 26.6,
-                "35-44": 21,
-                "45-54": 14.1,
-                "55-64": 13.1,
-                "65+": 0.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/HPxQd6ZHWmukx9gTR1lQ-wiIwLj9GlM-MlREzu0XimJdf_OmK6TAjaWVxxM85YpXZyUzrcC53Q=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCr2-U_dQAyi_zBrAbMS3Jog",
+    "Channel Name": "stern TV: Talks",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "i&u TV Produktion GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 68.1,
+        "female": 31.8
+      },
+      "age": {
+        "<18": 0.8,
+        "18-24": 15.5,
+        "25-34": 26.6,
+        "35-44": 21,
+        "45-54": 14.1,
+        "55-64": 13.1,
+        "65+": 0.9
+      }
     },
-    {
-     "Channel ID": "UCdoZxLWeGjEySL_LY0O_0EA",
-     "Channel Name": "HYPERBOLE",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "HYPERBOLE Medien GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 72.9, 
-                "female": 27
-            },
-        "age":
-            {
-                "<18": 0.7,
-                "18-24": 38.6,
-                "25-34": 36.4,
-                "35-44": 13.5,
-                "45-54": 6.2,
-                "55-64": 3.1,
-                "65+": 1.6
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/m16dzUlkuliNX-We0BalOHUG_7bQ8bRl28rby57utk5nfAzQoKitH1ZJlWQ6q19krsdTSeTu=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCdoZxLWeGjEySL_LY0O_0EA",
+    "Channel Name": "HYPERBOLE",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "HYPERBOLE Medien GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 72.9,
+        "female": 27
+      },
+      "age": {
+        "<18": 0.7,
+        "18-24": 38.6,
+        "25-34": 36.4,
+        "35-44": 13.5,
+        "45-54": 6.2,
+        "55-64": 3.1,
+        "65+": 1.6
+      }
     },
-    {
-     "Channel ID": "UC-GnjuT2JCEzJQcnDnbnhEg",
-     "Channel Name": "YouTopia",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "i&u TV Produktion GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 49.6, 
-                "female": 50.4
-            },
-        "age":
-            {
-                "<18": 8,
-                "18-24": 36.2,
-                "25-34": 19.1,
-                "35-44": 22.1,
-                "45-54": 11.6,
-                "55-64": 2,
-                "65+": 1.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/mUoYhHId9rNvUXXM__Sm7m04pX-tdc9Cm2xH-MZXvYBxWSRKPMV740x9OvMg9SXgvDuGKte-UA=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC-GnjuT2JCEzJQcnDnbnhEg",
+    "Channel Name": "YouTopia",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "i&u TV Produktion GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 49.6,
+        "female": 50.4
+      },
+      "age": {
+        "<18": 8,
+        "18-24": 36.2,
+        "25-34": 19.1,
+        "35-44": 22.1,
+        "45-54": 11.6,
+        "55-64": 2,
+        "65+": 1.1
+      }
     },
-    {
-     "Channel ID": "UChg79HwVIioFEHHIGBPrJxA",
-     "Channel Name": "Breaking Lab Shorts: Frag Jacob",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "i&u TV Produktion GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 95.9, 
-                "female": 4
-            },
-        "age":
-            {
-                "<18": 2.4,
-                "18-24": 25,
-                "25-34": 29.2,
-                "35-44": 19.5,
-                "45-54": 11.8,
-                "55-64":8.3,
-                "65+": 3.9
-            }
-        }
+    "image": "https://www.horizont.net/news/media/32/YouTopi-Erfinde-un-Scienc-YouTube-Jaco-Beautemp-317617-detailpp.jpeg"
+  },
+  {
+    "Channel ID": "UChg79HwVIioFEHHIGBPrJxA",
+    "Channel Name": "Breaking Lab Shorts: Frag Jacob",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "i&u TV Produktion GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 95.9,
+        "female": 4
+      },
+      "age": {
+        "<18": 2.4,
+        "18-24": 25,
+        "25-34": 29.2,
+        "35-44": 19.5,
+        "45-54": 11.8,
+        "55-64": 8.3,
+        "65+": 3.9
+      }
     },
-    {
-     "Channel ID": "UCBgGAiEQQjRNRaTNmHQ9SUw",
-     "Channel Name": "Daniel Abt",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Daniel Abt Lifestyle GmbH",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 96.6, 
-                "female": 3.4
-            },
-        "age":
-            {
-                "<18": 2,
-                "18-24": 32.7,
-                "25-34": 30.1,
-                "35-44": 18.1,
-                "45-54": 10.2,
-                "55-64": 5.2,
-                "65+": 1.9
-            }
-        }
+    "image": "https://www.horizont.net/news/media/32/YouTopi-Erfinde-un-Scienc-YouTube-Jaco-Beautemp-317617-detailpp.jpeg"
+  },
+  {
+    "Channel ID": "UCBgGAiEQQjRNRaTNmHQ9SUw",
+    "Channel Name": "Daniel Abt",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Daniel Abt Lifestyle GmbH",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 96.6,
+        "female": 3.4
+      },
+      "age": {
+        "<18": 2,
+        "18-24": 32.7,
+        "25-34": 30.1,
+        "35-44": 18.1,
+        "45-54": 10.2,
+        "55-64": 5.2,
+        "65+": 1.9
+      }
     },
-    {
-     "Channel ID": "UCdTt6nTzvK96D6TDCGEBkSg",
-     "Channel Name": "DAVE",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "David Henrichs",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 86.7, 
-                "female": 13
-            },
-        "age":
-            {
-                "<18": 2.9,
-                "18-24": 45.8,
-                "25-34": 30.8,
-                "35-44": 11.3,
-                "45-54": 6.3,
-                "55-64": 2.1,
-                "65+": 0.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_mqLDI0gxBHH8XhTrQytVpSB2iOwuyyB47QXLlqdQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCdTt6nTzvK96D6TDCGEBkSg",
+    "Channel Name": "DAVE",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "David Henrichs",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 86.7,
+        "female": 13
+      },
+      "age": {
+        "<18": 2.9,
+        "18-24": 45.8,
+        "25-34": 30.8,
+        "35-44": 11.3,
+        "45-54": 6.3,
+        "55-64": 2.1,
+        "65+": 0.9
+      }
     },
-    {
-     "Channel ID": "UC1GSWeLsWRIpr39_jCBteSA",
-     "Channel Name": "Kayla Shyx",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Kayla Loska",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 25.2, 
-                "female": 74.4
-            },
-        "age":
-            {
-                "<18": 5.1,
-                "18-24": 55.9,
-                "25-34": 20.2,
-                "35-44": 8.5,
-                "45-54": 7.3,
-                "55-64": 2.3,
-                "65+": 0.8
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_lwqaQGnye40_q0R1pzn6zm8k25D26zBpqObcCZKA=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC1GSWeLsWRIpr39_jCBteSA",
+    "Channel Name": "Kayla Shyx",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Kayla Loska",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 25.2,
+        "female": 74.4
+      },
+      "age": {
+        "<18": 5.1,
+        "18-24": 55.9,
+        "25-34": 20.2,
+        "35-44": 8.5,
+        "45-54": 7.3,
+        "55-64": 2.3,
+        "65+": 0.8
+      }
     },
-    {
-     "Channel ID": "UCvMvdG2hJ4xkf58g7YrMA1g",
-     "Channel Name": "Kisu",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Huyen Trang Tewe",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 12.4, 
-                "female": 87.5
-            },
-        "age":
-            {
-                "<18": 0.6,
-                "18-24": 33.6,
-                "25-34": 42,
-                "35-44": 13.7,
-                "45-54": 6.1,
-                "55-64": 3.2,
-                "65+": 0.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_khy1W91SU6g5L9AafYUJxkJ3ddX4uH79yxqVkIMw=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCvMvdG2hJ4xkf58g7YrMA1g",
+    "Channel Name": "Kisu",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Huyen Trang Tewe",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 12.4,
+        "female": 87.5
+      },
+      "age": {
+        "<18": 0.6,
+        "18-24": 33.6,
+        "25-34": 42,
+        "35-44": 13.7,
+        "45-54": 6.1,
+        "55-64": 3.2,
+        "65+": 0.9
+      }
     },
-    {
-     "Channel ID": "UC5LJVHQdB_WyTYMEbuFo-_w",
-     "Channel Name": "mehr dave",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "David Henrichs",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 87.9, 
-                "female": 11.9
-            },
-        "age":
-            {
-                "<18": 1.8,
-                "18-24": 51.3,
-                "25-34": 31.6,
-                "35-44": 8.6,
-                "45-54": 4.8,
-                "55-64": 1.5,
-                "65+": 0.6
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIf8zZQQZ3Ip3T0Wz-BUpKSU1WAeF7MduSFXZzLkKT_x2A=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC5LJVHQdB_WyTYMEbuFo-_w",
+    "Channel Name": "mehr dave",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "David Henrichs",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 87.9,
+        "female": 11.9
+      },
+      "age": {
+        "<18": 1.8,
+        "18-24": 51.3,
+        "25-34": 31.6,
+        "35-44": 8.6,
+        "45-54": 4.8,
+        "55-64": 1.5,
+        "65+": 0.6
+      }
     },
-    {
-     "Channel ID": "UC-5Ao5j48FBONkfprK1m5YA",
-     "Channel Name": "DISSLIKE",
-     "Anbindung": "Owned and Operated",
-     "Individueller Share": 0,
-     "Company": "HYPERBOLE Medien GmbH",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 50, 
-                "female": 50
-            },
-        "age":
-            {
-                "<18": 0.1,
-                "18-24": 39,
-                "25-34": 35.5,
-                "35-44": 16.8,
-                "45-54": 5.7,
-                "55-64": 1.9,
-                "65+": 1.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_lwqaQGnye40_q0R1pzn6zm8k25D26zBpqObcCZKA=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC-5Ao5j48FBONkfprK1m5YA",
+    "Channel Name": "DISSLIKE",
+    "Anbindung": "Owned and Operated",
+    "Individueller Share": 0,
+    "Company": "HYPERBOLE Medien GmbH",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 50,
+        "female": 50
+      },
+      "age": {
+        "<18": 0.1,
+        "18-24": 39,
+        "25-34": 35.5,
+        "35-44": 16.8,
+        "45-54": 5.7,
+        "55-64": 1.9,
+        "65+": 1.1
+      }
     },
-    {
-     "Channel ID": "UCnGzJIUgwZmvixL5WzxIwbg",
-     "Channel Name": "LUCREW",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Luca Scharpenberg",
-     "Goal": 1.15,
-     "demographics": {
-        "gender": 
-            {
-                "male": 42.5, 
-                "female": 50.7
-            },
-        "age":
-            {
-                "<18": 8.2,
-                "18-24": 38.9,
-                "25-34": 10.5,
-                "35-44": 22.3,
-                "45-54": 15.5,
-                "55-64": 2.9,
-                "65+": 1.7
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIf8zZTcnGFw8y1T2h9YQJrCcUnyydMsie5M9_TCNc6c=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCnGzJIUgwZmvixL5WzxIwbg",
+    "Channel Name": "LUCREW",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Luca Scharpenberg",
+    "Goal": 1.15,
+    "demographics": {
+      "gender": {
+        "male": 42.5,
+        "female": 50.7
+      },
+      "age": {
+        "<18": 8.2,
+        "18-24": 38.9,
+        "25-34": 10.5,
+        "35-44": 22.3,
+        "45-54": 15.5,
+        "55-64": 2.9,
+        "65+": 1.7
+      }
     },
-    {
-     "Channel ID": "UCmxc6kXbU1J-0pR2F3wIx9A",
-     "Channel Name": "laserluca",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Luca Scharpenberg",
-     "Goal": 1.15,
-     "demographics": {
-        "gender": 
-            {
-                "male": 46.9, 
-                "female": 52.7
-            },
-        "age":
-            {
-                "<18": 8.5,
-                "18-24": 37.6,
-                "25-34": 9.9,
-                "35-44": 22.5,
-                "45-54": 16.5,
-                "55-64": 3.1,
-                "65+": 1.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIf8zZTOEY0Xf8Z5qYgq89fDOrXUoixL55Kv1vUxooVhnQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCmxc6kXbU1J-0pR2F3wIx9A",
+    "Channel Name": "laserluca",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Luca Scharpenberg",
+    "Goal": 1.15,
+    "demographics": {
+      "gender": {
+        "male": 46.9,
+        "female": 52.7
+      },
+      "age": {
+        "<18": 8.5,
+        "18-24": 37.6,
+        "25-34": 9.9,
+        "35-44": 22.5,
+        "45-54": 16.5,
+        "55-64": 3.1,
+        "65+": 1.9
+      }
     },
-    {
-     "Channel ID": "UC1r80brC9Uya5IGR0dFru8Q",
-     "Channel Name": "BeautxVlogs",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Julia Willecke",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 23.6, 
-                "female": 76.3
-            },
-        "age":
-            {
-                "<18": 9,
-                "18-24": 42.2,
-                "25-34": 18.1,
-                "35-44": 16.3,
-                "45-54": 11.3,
-                "55-64": 2.2,
-                "65+": 1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIf8zZS2g4Nwdi8hYeSdlR34-EF8zevWYLhGJD9WP21vpw=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC1r80brC9Uya5IGR0dFru8Q",
+    "Channel Name": "BeautxVlogs",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Julia Willecke",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 23.6,
+        "female": 76.3
+      },
+      "age": {
+        "<18": 9,
+        "18-24": 42.2,
+        "25-34": 18.1,
+        "35-44": 16.3,
+        "45-54": 11.3,
+        "55-64": 2.2,
+        "65+": 1
+      }
     },
-    {
-     "Channel ID": "UCG0E3naN7D-bgldOJvGHbtg",
-     "Channel Name": "Julia Beautx",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Julia Willecke",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 31.9, 
-                "female": 67.8
-            },
-        "age":
-            {
-                "<18": 7.7,
-                "18-24": 44.7,
-                "25-34": 14.4,
-                "35-44": 17.4,
-                "45-54": 12.2,
-                "55-64": 2.4,
-                "65+": 1.2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_mMXJt6Fdg2zGZPPv9kr3QW2wu-MIiSOEkR5sZ7=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCG0E3naN7D-bgldOJvGHbtg",
+    "Channel Name": "Julia Beautx",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Julia Willecke",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 31.9,
+        "female": 67.8
+      },
+      "age": {
+        "<18": 7.7,
+        "18-24": 44.7,
+        "25-34": 14.4,
+        "35-44": 17.4,
+        "45-54": 12.2,
+        "55-64": 2.4,
+        "65+": 1.2
+      }
     },
-    {
-     "Channel ID": "UCiIDbdJuXfkhJlKM29ZtjaQ",
-     "Channel Name": "MAX",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Maximilian Kolb",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 80.5, 
-                "female": 19.2
-            },
-        "age":
-            {
-                "<18": 2.6,
-                "18-24": 46.6,
-                "25-34": 30,
-                "35-44": 10.4,
-                "45-54": 6.2,
-                "55-64": 2.9,
-                "65+": 1.3
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_kKNIwTiVTjookVk2fDtxqVUwz50joHvl-HQbMzJg=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCiIDbdJuXfkhJlKM29ZtjaQ",
+    "Channel Name": "MAX",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Maximilian Kolb",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 80.5,
+        "female": 19.2
+      },
+      "age": {
+        "<18": 2.6,
+        "18-24": 46.6,
+        "25-34": 30,
+        "35-44": 10.4,
+        "45-54": 6.2,
+        "55-64": 2.9,
+        "65+": 1.3
+      }
     },
-    {
-     "Channel ID": "UCBt8RY61tvanrhkzeZdNICw",
-     "Channel Name": "AnaJohnson",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "AATA Production GmbH",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 9.8, 
-                "female": 90.2
-            },
-        "age":
-            {
-                "<18": 3.6,
-                "18-24": 31.4,
-                "25-34": 40,
-                "35-44": 13.6,
-                "45-54": 6.7,
-                "55-64": 3.4,
-                "65+": 1.3
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_kbXEjZGnI6eupebQOsdqxodUwB9mz0hnCWgbOy9Q=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCBt8RY61tvanrhkzeZdNICw",
+    "Channel Name": "AnaJohnson",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "AATA Production GmbH",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 9.8,
+        "female": 90.2
+      },
+      "age": {
+        "<18": 3.6,
+        "18-24": 31.4,
+        "25-34": 40,
+        "35-44": 13.6,
+        "45-54": 6.7,
+        "55-64": 3.4,
+        "65+": 1.3
+      }
     },
-    {
-     "Channel ID": "UCoKCF-pUbhJtSsSGs6JCLfQ",
-     "Channel Name": "Schlumpf",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Rezo",
-     "Goal": 1.1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 42.4, 
-                "female": 56.6
-            },
-        "age":
-            {
-                "<18": 3.5,
-                "18-24": 48.1,
-                "25-34": 28.6,
-                "35-44": 11.5,
-                "45-54": 6,
-                "55-64": 1.7,
-                "65+": 0.7
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/CMGClXKJgkDr4FbY70wDvC6a1-GAzMovDxtMBitchLOM9iVqN_GEhEToGgHah5E2qRUpQzsM=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCoKCF-pUbhJtSsSGs6JCLfQ",
+    "Channel Name": "Schlumpf",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Rezo",
+    "Goal": 1.1,
+    "demographics": {
+      "gender": {
+        "male": 42.4,
+        "female": 56.6
+      },
+      "age": {
+        "<18": 3.5,
+        "18-24": 48.1,
+        "25-34": 28.6,
+        "35-44": 11.5,
+        "45-54": 6,
+        "55-64": 1.7,
+        "65+": 0.7
+      }
     },
-    {
-     "Channel ID": "UCPf0PECedlIt6fM87lxyn8Q",
-     "Channel Name": "Sonny Loops",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Sonja Dennig",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 13.5, 
-                "female": 86.4
-            },
-        "age":
-            {
-                "<18": 1.3,
-                "18-24": 55.8,
-                "25-34": 34.2,
-                "35-44": 4.5,
-                "45-54": 2.9,
-                "55-64": 1,
-                "65+": 0.3
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/JFgO3HcGI8N-fG_F7Xu7GEY060mMcZDp98HCkuvhxeCXn_SbQPsfc6ANxUzwhtOVTJMZhYuExQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCPf0PECedlIt6fM87lxyn8Q",
+    "Channel Name": "Sonny Loops",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Sonja Dennig",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 13.5,
+        "female": 86.4
+      },
+      "age": {
+        "<18": 1.3,
+        "18-24": 55.8,
+        "25-34": 34.2,
+        "35-44": 4.5,
+        "45-54": 2.9,
+        "55-64": 1,
+        "65+": 0.3
+      }
     },
-    {
-     "Channel ID": "UCb5TfGtSgvNPVPQawfCFuAw",
-     "Channel Name": "WBS Legal",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Christian Solmecke",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 82.9, 
-                "female": 16.8
-            },
-        "age":
-            {
-                "<18": 0.4,
-                "18-24": 17.6,
-                "25-34": 34.5,
-                "35-44": 22.3,
-                "45-54": 12.1,
-                "55-64": 7.9,
-                "65+": 4.2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ltjkNtln7s7j3lr5hM9Oz2lEqaQyJlc2IuB8r63IiEwnwt4rUFeC3igAyC2GUyR8p-6rnlR-Zw=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCb5TfGtSgvNPVPQawfCFuAw",
+    "Channel Name": "WBS Legal",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Christian Solmecke",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 82.9,
+        "female": 16.8
+      },
+      "age": {
+        "<18": 0.4,
+        "18-24": 17.6,
+        "25-34": 34.5,
+        "35-44": 22.3,
+        "45-54": 12.1,
+        "55-64": 7.9,
+        "65+": 4.2
+      }
     },
-    {
-     "Channel ID": "UC1N1k8WWepGxsnQCjBOO8XQ",
-     "Channel Name": "Hamid Tailormade Cars",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "BB Media UG & Co. KG",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 97, 
-                "female": 3
-            },
-        "age":
-            {
-                "<18": 1,
-                "18-24": 22.4,
-                "25-34": 26.7,
-                "35-44": 21.2,
-                "45-54": 14.8,
-                "55-64": 10.2,
-                "65+": 3.7
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/42B-G7bk9P54jgxLx0_7kBO9RWVzrwpyGQXMNE_mhu8F3b6bezppyFIuz_TT8KuW1Av8vnlGPQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC1N1k8WWepGxsnQCjBOO8XQ",
+    "Channel Name": "Hamid Tailormade Cars",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "BB Media UG & Co. KG",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 97,
+        "female": 3
+      },
+      "age": {
+        "<18": 1,
+        "18-24": 22.4,
+        "25-34": 26.7,
+        "35-44": 21.2,
+        "45-54": 14.8,
+        "55-64": 10.2,
+        "65+": 3.7
+      }
     },
-    {
-     "Channel ID": "UCvU1c8D5n1Rue3NFRu0pJSw",
-     "Channel Name": "Rezo ja lol ey",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Rezo",
-     "Goal": 1.1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 68.6, 
-                "female": 31
-            },
-        "age":
-            {
-                "<18": 7.9,
-                "18-24": 40.2,
-                "25-34": 23.2,
-                "35-44": 14.9,
-                "45-54": 9.7,
-                "55-64": 2.8,
-                "65+": 1.2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/uPtSHkb1Rt12Iq0bsa8YTPq4KpAzCAXKKydZ0iK5DDCuI3MLbq_Jy-74OQF2VjywIOP7FlJh=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCvU1c8D5n1Rue3NFRu0pJSw",
+    "Channel Name": "Rezo ja lol ey",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Rezo",
+    "Goal": 1.1,
+    "demographics": {
+      "gender": {
+        "male": 68.6,
+        "female": 31
+      },
+      "age": {
+        "<18": 7.9,
+        "18-24": 40.2,
+        "25-34": 23.2,
+        "35-44": 14.9,
+        "45-54": 9.7,
+        "55-64": 2.8,
+        "65+": 1.2
+      }
     },
-    {
-     "Channel ID": "UCXup1ITuwbY5r_Gn2K2_TXA",
-     "Channel Name": "renzo",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Rezo",
-     "Goal": 1.1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 53.2, 
-                "female": 45.9
-            },
-        "age":
-            {
-                "<18": 6.1,
-                "18-24": 48.1,
-                "25-34": 23.4,
-                "35-44": 11.7,
-                "45-54": 7.9,
-                "55-64": 2.1,
-                "65+": 0.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_m-RQpspjWdEsM7IYm5zTV-oFUdKCJyVZmgOa6W=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCXup1ITuwbY5r_Gn2K2_TXA",
+    "Channel Name": "renzo",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Rezo",
+    "Goal": 1.1,
+    "demographics": {
+      "gender": {
+        "male": 53.2,
+        "female": 45.9
+      },
+      "age": {
+        "<18": 6.1,
+        "18-24": 48.1,
+        "25-34": 23.4,
+        "35-44": 11.7,
+        "45-54": 7.9,
+        "55-64": 2.1,
+        "65+": 0.9
+      }
     },
-    {
-     "Channel ID": "UCLCb_YDL9XfSYsWpS5xrO5Q",
-     "Channel Name": "Rezo",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Rezo",
-     "Goal": 1.1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 55.9, 
-                "female": 43.9
-            },
-        "age":
-            {
-                "<18": 5.5,
-                "18-24": 50.9,
-                "25-34": 18.3,
-                "35-44": 14.3,
-                "45-54": 9.2,
-                "55-64": 1.6,
-                "65+": 0.3
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_mzx9TqVFR4BTWGxjOsWjqMdZ_SE0ddwOrlThdO=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCLCb_YDL9XfSYsWpS5xrO5Q",
+    "Channel Name": "Rezo",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Rezo",
+    "Goal": 1.1,
+    "demographics": {
+      "gender": {
+        "male": 55.9,
+        "female": 43.9
+      },
+      "age": {
+        "<18": 5.5,
+        "18-24": 50.9,
+        "25-34": 18.3,
+        "35-44": 14.3,
+        "45-54": 9.2,
+        "55-64": 1.6,
+        "65+": 0.3
+      }
     },
-    {
-     "Channel ID": "UCB9NZK-4ztqupa2dtw3SYTg",
-     "Channel Name": "laserluca clips",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Luca Scharpenberg",
-     "Goal": 1.15,
-     "demographics": {
-        "gender": 
-            {
-                "male": 53.9, 
-                "female": 45.9
-            },
-        "age":
-            {
-                "<18": 10.7,
-                "18-24": 39.1,
-                "25-34": 7.4,
-                "35-44": 20.1,
-                "45-54": 18.8,
-                "55-64": 2.8,
-                "65+": 1.2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_lQamn0DSvHQve9aMZY1cgM8APdggea-Vrc4lne=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCB9NZK-4ztqupa2dtw3SYTg",
+    "Channel Name": "laserluca clips",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Luca Scharpenberg",
+    "Goal": 1.15,
+    "demographics": {
+      "gender": {
+        "male": 53.9,
+        "female": 45.9
+      },
+      "age": {
+        "<18": 10.7,
+        "18-24": 39.1,
+        "25-34": 7.4,
+        "35-44": 20.1,
+        "45-54": 18.8,
+        "55-64": 2.8,
+        "65+": 1.2
+      }
     },
-    {
-     "Channel ID": "UCHxU4pou2e8d9tpmxtTRs4w",
-     "Channel Name": "ZCLINA",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Celina Weisner",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 28.2, 
-                "female": 71.8
-            },
-        "age":
-            {
-                "<18": 1.5,
-                "18-24": 60.3,
-                "25-34": 28.8,
-                "35-44": 5.1,
-                "45-54": 3.5,
-                "55-64": 0.7,
-                "65+": 0.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/uS0NSJGAGjipKO1lvJUPxxi-Q9CBOR40FrfHwO8SRCaqvTQXs5jT2uD-GYmndEtC7ZR1lci8lA=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCHxU4pou2e8d9tpmxtTRs4w",
+    "Channel Name": "ZCLINA",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Celina Weisner",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 28.2,
+        "female": 71.8
+      },
+      "age": {
+        "<18": 1.5,
+        "18-24": 60.3,
+        "25-34": 28.8,
+        "35-44": 5.1,
+        "45-54": 3.5,
+        "55-64": 0.7,
+        "65+": 0.1
+      }
     },
-    {
-     "Channel ID": "UC1-VOKyTJrgLiBeiJqzeIUQ",
-     "Channel Name": "JP Performance GmbH",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "JP Performance GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 97.3, 
-                "female": 2.5
-            },
-        "age":
-            {
-                "<18": 0.5,
-                "18-24": 25.1,
-                "25-34": 38.1,
-                "35-44": 23.1,
-                "45-54": 8.9,
-                "55-64": 3.3,
-                "65+": 1.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/mBPd8YO0x_LM9lmf1SmfVX-NHCvooYd6GHGMhLsVO9JdIQmSHrVd40Sp2p6q_MGfT2TXuNqXlQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC1-VOKyTJrgLiBeiJqzeIUQ",
+    "Channel Name": "JP Performance GmbH",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "JP Performance GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 97.3,
+        "female": 2.5
+      },
+      "age": {
+        "<18": 0.5,
+        "18-24": 25.1,
+        "25-34": 38.1,
+        "35-44": 23.1,
+        "45-54": 8.9,
+        "55-64": 3.3,
+        "65+": 1.1
+      }
     },
-    {
-     "Channel ID": "UCx9oScE38JHkz5QM3K07uTQ",
-     "Channel Name": "Kraemo Unchained",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "JP Performance GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 98.9, 
-                "female": 1.1
-            },
-        "age":
-            {
-                "<18": 0.3,
-                "18-24": 36.9,
-                "25-34": 36.9,
-                "35-44": 19.3,
-                "45-54": 5.8,
-                "55-64": 0.8,
-                "65+": 0.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/VD-_UIQmAWviblV4ju2op5ksCiI405YMkhEqU3GoTYa3GRnE8aYLCz_N73DXDO8f2ochm7oJ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCx9oScE38JHkz5QM3K07uTQ",
+    "Channel Name": "Kraemo Unchained",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "JP Performance GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 98.9,
+        "female": 1.1
+      },
+      "age": {
+        "<18": 0.3,
+        "18-24": 36.9,
+        "25-34": 36.9,
+        "35-44": 19.3,
+        "45-54": 5.8,
+        "55-64": 0.8,
+        "65+": 0.1
+      }
     },
-    {
-     "Channel ID": "UC3sYZgKsN9PXo7-vgJxD0Lg",
-     "Channel Name": "Kayla‘s Shyss",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Kayla Loska",
-     "Goal": 1.03,
-     "demographics": {
-        "gender": 
-            {
-                "male": 26.1, 
-                "female": 73.8
-            },
-        "age":
-            {
-                "<18": 3.5,
-                "18-24": 60.7,
-                "25-34": 22.4,
-                "35-44": 6.4,
-                "45-54": 5.2,
-                "55-64": 1.4,
-                "65+": 0.4
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/SucYAkQefsD6UwUM1klncuvuc6tqERmbExQPijHusEMo8WfCMjVevztcE20XpYEefFgQxOkRZgI=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC3sYZgKsN9PXo7-vgJxD0Lg",
+    "Channel Name": "Kayla‘s Shyss",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Kayla Loska",
+    "Goal": 1.03,
+    "demographics": {
+      "gender": {
+        "male": 26.1,
+        "female": 73.8
+      },
+      "age": {
+        "<18": 3.5,
+        "18-24": 60.7,
+        "25-34": 22.4,
+        "35-44": 6.4,
+        "45-54": 5.2,
+        "55-64": 1.4,
+        "65+": 0.4
+      }
     },
-    {
-     "Channel ID": "UCT3-jVASfcjZvzCbUglMObA",
-     "Channel Name": "7 vs. Wild",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "7 vs. Wild GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 80.2, 
-                "female": 19.5
-            },
-        "age":
-            {
-                "<18": 1.8,
-                "18-24": 36.1,
-                "25-34": 35.2,
-                "35-44": 16.1,
-                "45-54": 7.3,
-                "55-64": 2.6,
-                "65+": 1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIf8zZSMbm6Hz4JTi0aFVHqwdbE9lDQvXk5bjCSo3Ry5nA=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCT3-jVASfcjZvzCbUglMObA",
+    "Channel Name": "7 vs. Wild",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "7 vs. Wild GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 80.2,
+        "female": 19.5
+      },
+      "age": {
+        "<18": 1.8,
+        "18-24": 36.1,
+        "25-34": 35.2,
+        "35-44": 16.1,
+        "45-54": 7.3,
+        "55-64": 2.6,
+        "65+": 1
+      }
     },
-    {
-     "Channel ID": "UCPzVjl-zc4pQlkqoVKLa-Tw",
-     "Channel Name": "Robert Marc Lehmann - Mission Erde",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Johannes Hovekamp & Maximilian Kovacs GbR",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 69.7, 
-                "female": 30.1
-            },
-        "age":
-            {
-                "<18": 1,
-                "18-24": 30,
-                "25-34": 38.6,
-                "35-44": 17.8,
-                "45-54": 7.2,
-                "55-64": 3.9,
-                "65+": 1.5
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/vmHEXYxVOzoknaf8Yqi9f5Eu6qhZ8grbVEvJkgRaPLdDdB2Iy5_7942SNqkSRTgocuCCrp5Tew=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCPzVjl-zc4pQlkqoVKLa-Tw",
+    "Channel Name": "Robert Marc Lehmann - Mission Erde",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Johannes Hovekamp & Maximilian Kovacs GbR",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 69.7,
+        "female": 30.1
+      },
+      "age": {
+        "<18": 1,
+        "18-24": 30,
+        "25-34": 38.6,
+        "35-44": 17.8,
+        "45-54": 7.2,
+        "55-64": 3.9,
+        "65+": 1.5
+      }
     },
-    {
-     "Channel ID": "UCTF55qGYqXQqM5RnjyA59Tw",
-     "Channel Name": "Felix",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "TOMATOLIX GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 83.6, 
-                "female": 16.2
-            },
-        "age":
-            {
-                "<18": 0.8,
-                "18-24": 37.9,
-                "25-34": 32.6,
-                "35-44": 15.2,
-                "45-54": 7.3,
-                "55-64": 4,
-                "65+": 2.2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/Lk2huzinORRbh6xM4P22dFtlzGq9lgXn_o1LEXPz7qoOWnJ8zPJsm4podIwBJSoUkHvyoHA1=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCTF55qGYqXQqM5RnjyA59Tw",
+    "Channel Name": "Felix",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "TOMATOLIX GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 83.6,
+        "female": 16.2
+      },
+      "age": {
+        "<18": 0.8,
+        "18-24": 37.9,
+        "25-34": 32.6,
+        "35-44": 15.2,
+        "45-54": 7.3,
+        "55-64": 4,
+        "65+": 2.2
+      }
     },
-    {
-     "Channel ID": "UCNCktfoFAXtXnMlhjyc9SPA",
-     "Channel Name": "tomatolix",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "TOMATOLIX GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 81.6, 
-                "female": 18
-            },
-        "age":
-            {
-                "<18": 2.2,
-                "18-24": 39.9,
-                "25-34": 28.9,
-                "35-44": 14.1,
-                "45-54": 8,
-                "55-64": 4.3,
-                "65+": 2.6
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/anOUNtEWQbe4QImYFnzrTlFrIyV06AZ7UBnVap-w4Fl40rSdCOndoQXmlB06M2Vs0xtH-H84Gw=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCNCktfoFAXtXnMlhjyc9SPA",
+    "Channel Name": "tomatolix",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "TOMATOLIX GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 81.6,
+        "female": 18
+      },
+      "age": {
+        "<18": 2.2,
+        "18-24": 39.9,
+        "25-34": 28.9,
+        "35-44": 14.1,
+        "45-54": 8,
+        "55-64": 4.3,
+        "65+": 2.6
+      }
     },
-    {
-     "Channel ID": "UC15NTC3O1-vYUwrIiVlqR5w",
-     "Channel Name": "Joey Kelly",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Joseph Maria Kelly",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 83.4, 
-                "female": 16.5
-            },
-        "age":
-            {
-                "<18": 0.9,
-                "18-24": 25.6,
-                "25-34": 35.6,
-                "35-44": 20.1,
-                "45-54": 10,
-                "55-64": 5.6,
-                "65+": 2.3
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/anOUNtEWQbe4QImYFnzrTlFrIyV06AZ7UBnVap-w4Fl40rSdCOndoQXmlB06M2Vs0xtH-H84Gw=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC15NTC3O1-vYUwrIiVlqR5w",
+    "Channel Name": "Joey Kelly",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Joseph Maria Kelly",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 83.4,
+        "female": 16.5
+      },
+      "age": {
+        "<18": 0.9,
+        "18-24": 25.6,
+        "25-34": 35.6,
+        "35-44": 20.1,
+        "45-54": 10,
+        "55-64": 5.6,
+        "65+": 2.3
+      }
     },
-    {
-     "Channel ID": "UCGgJQ2RbUW99O_kVzlshvGg",
-     "Channel Name": "OttoBulletproof",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Bulletproof GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 87.3, 
-                "female": 12.5
-            },
-        "age":
-            {
-                "<18": 1.2,
-                "18-24": 31.7,
-                "25-34": 38.8,
-                "35-44": 17.5,
-                "45-54": 7.2,
-                "55-64": 2.7,
-                "65+": 1.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/IqwOdwoY5wTOlWsiqhr1aIyvXFpRMsCobAVVIgi18EVzhX3JK6E63gEBIEFzo5GjRcz-MkE62Q=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCGgJQ2RbUW99O_kVzlshvGg",
+    "Channel Name": "OttoBulletproof",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Bulletproof GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 87.3,
+        "female": 12.5
+      },
+      "age": {
+        "<18": 1.2,
+        "18-24": 31.7,
+        "25-34": 38.8,
+        "35-44": 17.5,
+        "45-54": 7.2,
+        "55-64": 2.7,
+        "65+": 1.1
+      }
     },
-    {
-     "Channel ID": "UCbnkWpQ2iyOkpbq3xt369Bg",
-     "Channel Name": "OttoBulletproof - Live",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Bulletproof GmbH",
-     "Goal": 1.05,
-     "demographics": {
-        "gender": 
-            {
-                "male": 87.8, 
-                "female": 12.1
-            },
-        "age":
-            {
-                "<18": 0.8,
-                "18-24": 24.3,
-                "25-34": 38.5,
-                "35-44": 22.2,
-                "45-54": 9.3,
-                "55-64": 3.8,
-                "65+": 1.2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/SeIShgdk5iAIeiwRMIVbRzxhylmONuSHOTc1eOJNfSPW0D2W_m8q1-ELFK6ulU2-JUu8OPph_Q=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCbnkWpQ2iyOkpbq3xt369Bg",
+    "Channel Name": "OttoBulletproof - Live",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Bulletproof GmbH",
+    "Goal": 1.05,
+    "demographics": {
+      "gender": {
+        "male": 87.8,
+        "female": 12.1
+      },
+      "age": {
+        "<18": 0.8,
+        "18-24": 24.3,
+        "25-34": 38.5,
+        "35-44": 22.2,
+        "45-54": 9.3,
+        "55-64": 3.8,
+        "65+": 1.2
+      }
     },
-    {
-     "Channel ID": "UCOzqhzAIw4JTJIMkDTfLnkg",
-     "Channel Name": "Paluten",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "2nd Wave GmbH",
-     "Goal": 1.1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 74, 
-                "female": 25.6
-            },
-        "age":
-            {
-                "<18": 6.9,
-                "18-24": 34,
-                "25-34": 13.3,
-                "35-44": 24.7,
-                "45-54": 15.1,
-                "55-64": 3.4,
-                "65+": 2.5
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/yZyuJ81SbQqAj1RX-_F8-OVsqqLldT_zXaV6cFpnRPLzcSb7VnCi7735c1uKrNLgU5076flrm9k=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCOzqhzAIw4JTJIMkDTfLnkg",
+    "Channel Name": "Paluten",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "2nd Wave GmbH",
+    "Goal": 1.1,
+    "demographics": {
+      "gender": {
+        "male": 74,
+        "female": 25.6
+      },
+      "age": {
+        "<18": 6.9,
+        "18-24": 34,
+        "25-34": 13.3,
+        "35-44": 24.7,
+        "45-54": 15.1,
+        "55-64": 3.4,
+        "65+": 2.5
+      }
     },
-    {
-     "Channel ID": "UCrgoxldvOW1Lj6MRvbktdig",
-     "Channel Name": "Team Paluten",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "2nd Wave GmbH",
-     "Goal": 1.1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 69.6, 
-                "female": 30.1
-            },
-        "age":
-            {
-                "<18": 10.3,
-                "18-24": 32.7,
-                "25-34": 13.3,
-                "35-44": 24.2,
-                "45-54": 14.7,
-                "55-64": 3,
-                "65+": 2
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_no10-99mVZ46X4ciLNS2KgLCtCkXKw0OQTwxls-A=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCrgoxldvOW1Lj6MRvbktdig",
+    "Channel Name": "Team Paluten",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "2nd Wave GmbH",
+    "Goal": 1.1,
+    "demographics": {
+      "gender": {
+        "male": 69.6,
+        "female": 30.1
+      },
+      "age": {
+        "<18": 10.3,
+        "18-24": 32.7,
+        "25-34": 13.3,
+        "35-44": 24.2,
+        "45-54": 14.7,
+        "55-64": 3,
+        "65+": 2
+      }
     },
-    {
-     "Channel ID": "UCGKNORPshcaHRzmNVxWKdQw",
-     "Channel Name": "Freshdachs Duo",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Fedor Janssen",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 83.0, 
-                "female": 16.8
-            },
-        "age":
-            {
-                "<18": 2.1,
-                "18-24": 28.2,
-                "25-34": 38.3,
-                "35-44": 21.5,
-                "45-54": 7.5,
-                "55-64": 1.9,
-                "65+": 0.6
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIdro_lBbZC-G3xS9IZNS2h_5duNulgNSEhwS6a7abcFDw=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCGKNORPshcaHRzmNVxWKdQw",
+    "Channel Name": "Freshdachs Duo",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Fedor Janssen",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 83.0,
+        "female": 16.8
+      },
+      "age": {
+        "<18": 2.1,
+        "18-24": 28.2,
+        "25-34": 38.3,
+        "35-44": 21.5,
+        "45-54": 7.5,
+        "55-64": 1.9,
+        "65+": 0.6
+      }
     },
-    {
-     "Channel ID": "UCK-k0qH5yqocIXUOHNXalFA",
-     "Channel Name": "Dachsbrüder",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "Fedor Janssen",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 86.2, 
-                "female": 13.8
-            },
-        "age":
-            {
-                "<18": 0,
-                "18-24": 19.8,
-                "25-34": 45.9,
-                "35-44": 28.7,
-                "45-54": 5.4,
-                "55-64":0.2,
-                "65+": 0
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/LvptFSvGYy9hVL2GIIM034dbToSa86sm0Esr7ISj9A6QwDoe9SFjPZv49bLtIcLKoi8uOCkh=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCK-k0qH5yqocIXUOHNXalFA",
+    "Channel Name": "Dachsbrüder",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "Fedor Janssen",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 86.2,
+        "female": 13.8
+      },
+      "age": {
+        "<18": 0,
+        "18-24": 19.8,
+        "25-34": 45.9,
+        "35-44": 28.7,
+        "45-54": 5.4,
+        "55-64": 0.2,
+        "65+": 0
+      }
     },
-    {
-     "Channel ID": "UC2EKkc5krBCtafHrRpQ4-xQ",
-     "Channel Name": "Reved",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "STBMedia Unipessoal",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 75.1, 
-                "female": 24.5
-            },
-        "age":
-            {
-                "<18": 6.9,
-                "18-24": 49.6,
-                "25-34": 21.2,
-                "35-44": 11.2,
-                "45-54": 8.2,
-                "55-64": 2.1,
-                "65+": 0.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/99hjTI-MRRlZl1wZxPfKLQqGgN-EiZpbjSyzVvZPZdWVidziBHQGyNq_2BX_JFF0cyXMyWOLYQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC2EKkc5krBCtafHrRpQ4-xQ",
+    "Channel Name": "Reved",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "STBMedia Unipessoal",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 75.1,
+        "female": 24.5
+      },
+      "age": {
+        "<18": 6.9,
+        "18-24": 49.6,
+        "25-34": 21.2,
+        "35-44": 11.2,
+        "45-54": 8.2,
+        "55-64": 2.1,
+        "65+": 0.9
+      }
     },
-    {
-     "Channel ID": "UCT1evYbhktSXfBjwDJ4NQaA",
-     "Channel Name": "Reved Clips",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "STBMedia Unipessoal",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 82.3, 
-                "female": 17.5
-            },
-        "age":
-            {
-                "<18": 2.3,
-                "18-24": 50.6,
-                "25-34": 30,
-                "35-44": 10.3,
-                "45-54": 6.4,
-                "55-64": 0.4,
-                "65+": 0.1
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/HTwDc4j72lF2TPfYVPVxphZI5WWd0wrSlUxDs3oFLMOZqZ7Q1EdOnopdLVsUfv-w6SvTEmVpBQ=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCT1evYbhktSXfBjwDJ4NQaA",
+    "Channel Name": "Reved Clips",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "STBMedia Unipessoal",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 82.3,
+        "female": 17.5
+      },
+      "age": {
+        "<18": 2.3,
+        "18-24": 50.6,
+        "25-34": 30,
+        "35-44": 10.3,
+        "45-54": 6.4,
+        "55-64": 0.4,
+        "65+": 0.1
+      }
     },
-    {
-     "Channel ID": "UC9mCuovWkYxOhQLESmb8YiA",
-     "Channel Name": "REVED Esports",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "STBMedia Unipessoal",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 68.6, 
-                "female": 31.3
-            },
-        "age":
-            {
-                "<18": 5,
-                "18-24": 64.4,
-                "25-34": 14.4,
-                "35-44": 8.2,
-                "45-54": 8,
-                "55-64": 0.1,
-                "65+": 0
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/-q9KBPvFVMEBrAH0TKQYL1gaULGcf7TpP-m4obCs92F0068Ur0TZDNBgnSyh05v_zXhZaK1A32c=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UC9mCuovWkYxOhQLESmb8YiA",
+    "Channel Name": "REVED Esports",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "STBMedia Unipessoal",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 68.6,
+        "female": 31.3
+      },
+      "age": {
+        "<18": 5,
+        "18-24": 64.4,
+        "25-34": 14.4,
+        "35-44": 8.2,
+        "45-54": 8,
+        "55-64": 0.1,
+        "65+": 0
+      }
     },
-    {
-     "Channel ID": "UCNm-BfRFWf_RXCHrW4l2obw",
-     "Channel Name": "Reved Shorts",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "STBMedia Unipessoal",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 78.9, 
-                "female": 20.8
-            },
-        "age":
-            {
-                "<18": 10.3,
-                "18-24": 42,
-                "25-34": 22.8,
-                "35-44": 13.5,
-                "45-54": 8.5,
-                "55-64": 2,
-                "65+": 0.9
-            }
-        }
+    "image": "https://yt3.googleusercontent.com/ytc/AIf8zZQc1w1A1sqgQemwZ8nEEMuBwKKO5tFBMINb7DdA=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCNm-BfRFWf_RXCHrW4l2obw",
+    "Channel Name": "Reved Shorts",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "STBMedia Unipessoal",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 78.9,
+        "female": 20.8
+      },
+      "age": {
+        "<18": 10.3,
+        "18-24": 42,
+        "25-34": 22.8,
+        "35-44": 13.5,
+        "45-54": 8.5,
+        "55-64": 2,
+        "65+": 0.9
+      }
     },
-    {
-     "Channel ID": "UCW2qFVAdjJDsBqyuF7BLpOA",
-     "Channel Name": "Reved Reactions",
-     "Anbindung": "Talent",
-     "Individueller Share": 0.1,
-     "Company": "STBMedia Unipessoal",
-     "Goal": 1,
-     "demographics": {
-        "gender": 
-            {
-                "male": 77, 
-                "female": 22.8
-            },
-        "age":
-            {
-                "<18": 6.4,
-                "18-24": 56.2,
-                "25-34": 16,
-                "35-44": 10.9,
-                "45-54": 9.1,
-                "55-64": 1.3,
-                "65+": 0.1
-            }
-        }
-    }
-   ]
+    "image": "https://yt3.googleusercontent.com/G9-s-s4lbtmsGZ-oSwGS0CzTtieyuKfOL8zsan0_Yi7oUFlG_vBtD0tPsm9I_EirOY7eDPUjjPE=s900-c-k-c0x00ffffff-no-rj"
+  },
+  {
+    "Channel ID": "UCW2qFVAdjJDsBqyuF7BLpOA",
+    "Channel Name": "Reved Reactions",
+    "Anbindung": "Talent",
+    "Individueller Share": 0.1,
+    "Company": "STBMedia Unipessoal",
+    "Goal": 1,
+    "demographics": {
+      "gender": {
+        "male": 77,
+        "female": 22.8
+      },
+      "age": {
+        "<18": 6.4,
+        "18-24": 56.2,
+        "25-34": 16,
+        "35-44": 10.9,
+        "45-54": 9.1,
+        "55-64": 1.3,
+        "65+": 0.1
+      }
+    },
+    "image": "https://yt3.googleusercontent.com/CBt77MrVraiWJJbLhMp2kgYP7s6sfRS1wr4_YtSJA6P8QR7wgmpFiEtEbNdEusdKmfzdZeeMuA=s900-c-k-c0x00ffffff-no-rj"
+  }
+]
