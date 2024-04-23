@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+
+const colors = require("tailwindcss/colors");
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,6 +9,21 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        transparent: "transparent",
+        current: "currentColor",
+        black: colors.black,
+        white: colors.white,
+        gray: colors.gray,
+        emerald: colors.emerald,
+        indigo: colors.indigo,
+        yellow: colors.yellow,
+        fuchsia: colors.fuchsia,
+        sky: colors.sky,
+        teal: colors.teal,
+        orange: colors.orange,
+        lime: colors.lime,
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -14,5 +31,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [require("@tailwindcss/forms")],
 };

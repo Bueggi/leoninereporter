@@ -4,17 +4,15 @@ import prisma from '@lib/prisma'
 const handler = async (req, { params }) => {
   try {
     const { id } = params;
-    const campaign = await prisma.campaign.findFirst({where: {id}})
-    if (!campaign) return NextResponse.json({message: 'Diese Kampagne existiert nicht', success: false}, {status: 500})
 
-    const deletedCampaign = await prisma.campaign.delete({
+    const deletedCreator = await prisma.creator.delete({
       where: {
         id,
       }
     });
 
     return NextResponse.json(
-      { success: true, data: deletedCampaign },
+      { success: true, data: deletedCreator },
       { status: 200 }
     );
   } catch (error) {

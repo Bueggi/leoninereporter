@@ -10,7 +10,7 @@ const handler = async (req, res) => {
     const count = await prisma.campaign.count()
 
     const data = await prisma.campaign.findMany({ skip: skipPage, take: takePages });
-    return NextResponse.json({ success: true, data:{data, count} }, { status: 200 });
+    return NextResponse.json({ success: true, data, count }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { success: false, message: error.message },

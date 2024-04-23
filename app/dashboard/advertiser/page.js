@@ -8,7 +8,7 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
 import Link from "next/link";
 import Pagination from "@components/pComponents/Pagination";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
 import Searchbar from "@components/pComponents/Search";
 
 const ListAdvertisers = () => {
@@ -17,26 +17,29 @@ const ListAdvertisers = () => {
   const [idToDelete, setIdToDelete] = useState();
   let [allAdvertisers, setAllAdvertisers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState()
+  const [count, setCount] = useState();
   // get active page from url query parameter
-  const searchParams = useSearchParams()
-  const [activePage,setActivePage] = useState(searchParams.get('page') || 1)
-
+  const searchParams = useSearchParams();
+  const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
 
   const getAllAdvertisers = async () => {
     setLoading(true);
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/list?page=${activePage}`
-      );
-      allAdvertisers = await res.json();
-      setAllAdvertisers(allAdvertisers.data);
-      setCount(allAdvertisers.count)
+    );
+    const { data, count, message } = await res.json();
+    if (data) {
+      setAllAdvertisers({ data, mode: "page" });
+      setCount(count);
       setLoading(false);
-    };
-    
-    useEffect(() => {
-      
-      getAllAdvertisers();
+      return;
+    } else {
+      toast.error(message);
+    }
+  };
+
+  useEffect(() => {
+    getAllAdvertisers();
   }, [activePage]);
 
   return (
@@ -90,12 +93,15 @@ const ListAdvertisers = () => {
             {!loading && (
               <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                 <div className="max-w-md mb-12">
-                <Searchbar />
-                  </div>
+                  <Searchbar
+                    model="advertiser"
+                    setAllResults={setAllAdvertisers}
+                    setLoading={setLoading}
+                  />
+                </div>
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-7 sm:rounded-lg">
                   <table className="min-w-full divide-y divide-gray-300 drop-shadow-2xl">
                     <thead className="bg-gray-50">
-                
                       <tr>
                         <th
                           scope="col"
@@ -118,7 +124,7 @@ const ListAdvertisers = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 ">
-                      {allAdvertisers.map((item, i) => (
+                      {allAdvertisers.data.map((item, i) => (
                         <tr key={i} className="even:bg-white odd:bg-slate-200">
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <Link
@@ -167,12 +173,17 @@ const ListAdvertisers = () => {
                     </tbody>
                   </table>
                 </div>
-      
-                <Pagination
-                  count={count}
-                  activePage={activePage}
-                  setActivePage={setActivePage}
-                />
+                {/* Zeige die Pagination
+                Aber zeige sie nur dann, wenn die Ergebnisse nicht durch die Suche zustandegekommen sind
+                Hintergrund: Ich vermute, dass die Anzahl der Suchergebnisse nicht häuäfig größer als 20 ist, daher akzeptiere ich ggf. den höheren ServerLoad durch die Suche
+                Mittelfristig kann man aber auch noch eine "SearchPagination" implementieren oder eine Pagination, die unabhängig von dem Modus funktioniert */}
+                {allAdvertisers.mode !== "search" && (
+                  <Pagination
+                    count={count}
+                    activePage={activePage}
+                    setActivePage={setActivePage}
+                  />
+                )}
               </div>
             )}
             {/* Table end */}

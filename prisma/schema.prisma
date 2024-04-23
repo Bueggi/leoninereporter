@@ -36,10 +36,34 @@ model Campaign {
   name         String     @unique @default("")
   advertiser   Advertiser @relation(fields: [advertiserID], references: [id])
   advertiserID String     @default("")
+  audience     String
+  start        DateTime
+  end          DateTime
+  ordernumber String?
+  frequencycap String?
   status       STATUS     @default(OFFER)
   creatorId    String
   offers       Offer[]
+  bookings Booking[]
   creator      User       @relation(fields: [creatorId], references: [id])
+}
+
+model Booking {
+  id           String     @id @default(uuid())
+  dispo String?
+  reach Int?
+  start DateTime?
+  end DateTime?
+  product PRODUCT?
+  tkp Float?
+  campaign   Campaign @relation(fields: [campaignID], references: [id])
+  campaignID String
+}
+
+enum PRODUCT {
+  NONSKIPPABLE
+  SKIPPABLE
+  BUMPTER
 }
 
 enum STATUS {
@@ -67,8 +91,8 @@ model Creator {
   share        Int
   company      String
   goal         Float
-  demographics Json
-  anbindung    Anbindung
+  demographics Json?
+  anbindung    Anbindung @default(OWNED)
   image        String
 }
 

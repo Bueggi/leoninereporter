@@ -2,23 +2,31 @@ import { NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
+import moment from "moment";
 
 const handler = async (req, res) => {
   try {
     const session = await getServerSession(authOptions);
-    const { user: email } = session;
-    const issuer = prisma.user.findUnique({
+    const { user } = session;
+    console.log(user)
+    
+    const issuer = await prisma.user.findUnique({
       where: {
-        email,
+        email: user.email,
       },
     });
-    const { name, status, advertiserID } = await req.json();
+    const { name, status, advertiserID, start, end,  audience} = await req.json();
+    console.log('came here')
+
     const newCampaign = await prisma.campaign.create({
       data: {
         name,
         status,
         advertiserID,
         creatorId: issuer.id,
+        start: moment(start).format(),
+        end: moment(end).format(),
+        audience
       },
     });
 
@@ -34,4 +42,4 @@ const handler = async (req, res) => {
   }
 };
 
-export { handler as GET };
+export { handler as POST };
