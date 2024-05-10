@@ -20,4 +20,4 @@ export default withAuth(
     }
 )
 
-export const config = {matcher: ['/api/protected/:path', '/loginTest']}
+export const config = {matcher: ['/api/protected/:path', '/loginTest', '/dashboard/:path']}
