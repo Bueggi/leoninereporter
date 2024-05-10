@@ -24,6 +24,12 @@ import AddOffer from "@components/dashboard/campaign/offer/AddOffer";
 import EditOffer from "@components/dashboard/campaign/offer/EditOffer";
 import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
+import saveAsPDF from "./exportPDF";
+
+// Hilfsfunktion von Tailwind, um Klassennamen zu mergen
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export default function Campaigns({ params: { id } }) {
   // State für dieses Component:
@@ -41,36 +47,10 @@ export default function Campaigns({ params: { id } }) {
     getcampaign(id, setcampaign, setLoading);
   }, []);
 
-  // 1. Greife auf die Datenbank zu - Frage den campaign aus der URL ab
-  // 2. Wenn der campaign existiert, wird er in den State des Components geladen
-  // 3. Wenn der campaign nicht existiert, wird ein Fehlerstatus ausgegeben
-
-  // handle creating new offergroups
-  // const handleCreateOfferGroupClick = async () => {
-  //   try {
-  //     const offerGroup = await fetch(
-  //       `${process.env.NEXT_PUBLIC_HOSTURL}/api/offergroup/add`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ campaignID: campaign.id }),
-  //       }
-  //     );
-
-  //     const res = await offerGroup.json();
-  //     console.log(res);
-  //   } catch (error) {
-  //     toast.error(error);
-  //   }
-  // };
-
+  // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
 
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-  }
+ // finde die richtige Farbe fuer den Badge
   const color = publishingOptions.find((el) => el.title === campaign.status);
 
   return (
@@ -164,7 +144,10 @@ export default function Campaigns({ params: { id } }) {
           {campaign.offers.length ? (
             campaign.offers.map((el, i) => {
               return (
-                <div className="relative border border-slate-400 px-4 py-2 rounded-md bg-slate-100" key={i}>
+                <div
+                  className="relative border border-slate-400 px-4 py-2 rounded-md bg-slate-100"
+                  key={i}
+                >
                   <div className=" absolute inset-x-0 top-0 h-12 bg-slate-400 mb-12">
                     <div className="flex flex-row justify-around mt-2">
                       <button
@@ -188,6 +171,7 @@ export default function Campaigns({ params: { id } }) {
                       </button>
                       <button
                         type="button"
+                        onClick={()=>saveAsPDF('Hallo','Test')}
                         className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         PDF erstellen

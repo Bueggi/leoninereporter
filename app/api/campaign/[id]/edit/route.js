@@ -5,7 +5,7 @@ import prisma from "../../../../../lib/prisma";
 const handler = async (req, { params }) => {
   try {
     const { id } = params;
-    console.log("came here");
+   
     const { name } = await req.json();
 
     if (!name)

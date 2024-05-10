@@ -13,7 +13,6 @@ import Searchbar from "@components/pComponents/Search";
 import { toast } from "react-toastify";
 import calculateDate from "../../../lib/calculateDate";
 import { getColor } from "@lib/dashboard/publishingOptions";
-
 const ListAdvertisers = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
