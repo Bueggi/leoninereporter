@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     // …
     serverComponentsExternalPackages: ["@react-pdf/renderer"],
+    missingSuspenseWithCSRBailout: false,
     
   },
   typescript: {
