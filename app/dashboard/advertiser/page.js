@@ -1,7 +1,7 @@
 "use client";
 import AddAdvertiser from "@components/dashboard/advertiser/AddAdvertiser";
 import DeleteAdvertiser from "@components/dashboard/advertiser/DeleteAdvertiser";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
 import Modal from "@components/pComponents/Modal";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -178,11 +178,13 @@ const ListAdvertisers = () => {
                 Hintergrund: Ich vermute, dass die Anzahl der Suchergebnisse nicht häuäfig größer als 20 ist, daher akzeptiere ich ggf. den höheren ServerLoad durch die Suche
                 Mittelfristig kann man aber auch noch eine "SearchPagination" implementieren oder eine Pagination, die unabhängig von dem Modus funktioniert */}
                 {allAdvertisers.mode !== "search" && (
-                  <Pagination
-                    count={count}
-                    activePage={activePage}
-                    setActivePage={setActivePage}
-                  />
+                  <Suspense>
+                    <Pagination
+                      count={count}
+                      activePage={activePage}
+                      setActivePage={setActivePage}
+                    />
+                  </Suspense>
                 )}
               </div>
             )}
