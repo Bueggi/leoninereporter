@@ -9,9 +9,6 @@ const allowedMembers = [
 
 export default withAuth(
   function middleware(req) {
-    const isAdmin = adminRoutes.some((e) => e.startsWith(req.nextUrl.pathname));
-    
-
     if (!allowedMembers.includes(req.nextauth.token.email)) {
       return NextResponse.rewrite(new URL("/accessDenied", req.url));
     }
@@ -24,5 +21,10 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/api/protected/:path", "/loginTest", "/dashboard/:path", '/api/:path'],
+  matcher: [
+    "/api/protected/:path",
+    "/loginTest",
+    "/dashboard/:path",
+    "/api/:path",
+  ],
 };
