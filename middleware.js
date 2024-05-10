@@ -1,23 +1,28 @@
-import {withAuth} from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
-const adminRoutes = ['/dashboard']
+const allowedMembers = [
+  "christopher.buecklein@leoninestudios.com",
+  "edwin.tetteh@leoninestudios.com",
+  "johannes.schmidbauer@leoninestudios.com",
+];
 
 export default withAuth(
-    function middleware(req) {
+  function middleware(req) {
+    const isAdmin = adminRoutes.some((e) => e.startsWith(req.nextUrl.pathname));
+    
 
-        const isAdmin = adminRoutes.some(e => e.startsWith(req.nextUrl.pathname))
-       
- 
-        if (isAdmin && req.nextauth.token.role !== 'ADMIN' ) {
-            return NextResponse.rewrite(new URL('/accessDenied', req.url))
-        }
-    },
-    {
-        callbacks: {
-            authorized: ({token}) => !!token
-        }
+    if (!allowedMembers.includes(req.nextauth.token.role)) {
+      return NextResponse.rewrite(new URL("/accessDenied", req.url));
     }
-)
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+  }
+);
 
-export const config = {matcher: ['/api/protected/:path', '/loginTest', '/dashboard/:path']}
+export const config = {
+  matcher: ["/api/protected/:path", "/loginTest", "/dashboard/:path", '/api/:path'],
+};
