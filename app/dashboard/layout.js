@@ -24,16 +24,22 @@ const navigation = [
 const campaigns = [
   {
     id: 1,
-    name: "Neue Kampagne",
-    href: "/dashboard/campaigns/add",
-    initial: "H",
+    name: "Kampagnen",
+    href: "/dashboard/campaigns/",
+    initial: "K",
     current: false,
   },
   {
     id: 2,
-    name: "Alle Kampagnen",
-    href: "/dashboard/campaigns",
-    initial: "T",
+    name: "Creator",
+    href: "/dashboard/creator",
+    initial: "C",
+    current: false,
+  },{
+    id: 3,
+    name: "Advertiser",
+    href: "/dashboard/advertiser",
+    initial: "A",
     current: false,
   },
 ];
@@ -227,7 +233,7 @@ export default function DashboardLayout({ children }) {
                 </li>
                 <li>
                   <div className="text-xs font-semibold leading-6 text-gray-400">
-                    Kampagnen
+                    Kampagnenmanagement
                   </div>
                   <ul role="list" className="-mx-2 mt-2 space-y-1">
                     {campaigns.map((team) => (
