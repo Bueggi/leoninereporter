@@ -9,7 +9,8 @@ const allowedMembers = [
 
 export default withAuth(
   function middleware(req) {
-    if (!allowedMembers.includes(req.nextauth.token.email)) {
+
+    if (!allowedMembers.some(el=> el === req.nextauth.token.email)) {
       return NextResponse.rewrite(new URL("/accessDenied", req.url));
     }
   },
@@ -22,9 +23,7 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/api/protected/:path",
-    "/loginTest",
-    "/dashboard/:path",
-    "/api/:path",
+    "/dashboard/:path*",
+    "/api/:path*",
   ],
 };
