@@ -1,7 +1,7 @@
 import {withAuth} from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
 
-const adminRoutes = []
+const adminRoutes = ['/dashboard']
 
 export default withAuth(
     function middleware(req) {
