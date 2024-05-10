@@ -12,7 +12,7 @@ export default withAuth(
     const isAdmin = adminRoutes.some((e) => e.startsWith(req.nextUrl.pathname));
     
 
-    if (!allowedMembers.includes(req.nextauth.token.role)) {
+    if (!allowedMembers.includes(req.nextauth.token.email)) {
       return NextResponse.rewrite(new URL("/accessDenied", req.url));
     }
   },
