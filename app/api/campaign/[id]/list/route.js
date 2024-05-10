@@ -5,16 +5,21 @@ import prisma from "@lib/prisma";
 const handler = async (req, { params }) => {
   try {
     const { id } = params;
-    console.log(id)
 
-    const singleAdvertiser = await prisma.advertiser.findUnique({
+    const singlecampaign = await prisma.campaign.findFirst({
       where: {
         id,
-      }
+      },
+      include: {
+        offers: {
+          include: { offers: true },
+        },
+        bookings: true
+      },
     });
 
     return NextResponse.json(
-      { success: true, data: singleAdvertiser },
+      { success: true, data: singlecampaign },
       { status: 200 }
     );
   } catch (error) {

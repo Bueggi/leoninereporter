@@ -1,22 +1,22 @@
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 
 const DeleteAdvertiser = ({ id, setOpen, allCampaigns, setAllCampaigns }) => {
   const handleClick = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/${id}/delete`, {
-            method: 'DELETE'
+        `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/${id}/delete`,
+        {
+          method: "DELETE",
         }
       );
       const { data, message } = await res.json();
 
       if (!res.ok) return toast.error(message);
       else toast.success("Der Eintrag wurde erfolgreich gelöscht");
-      
-      console.log('came here', allCampaigns)
-      const filteredCampaigns = allCampaigns.data.filter(el => el.id !== id)
-      console.log(filteredCampaigns, 'gefilterte Kampagnen')
-      setAllCampaigns({mode: allCampaigns.mode, data: filteredCampaigns})
+
+      const filteredCampaigns = allCampaigns.data.filter((el) => el.id !== id);
+
+      setAllCampaigns({ mode: allCampaigns.mode, data: filteredCampaigns });
       return setOpen(false);
     } catch (error) {
       return toast.error(error);

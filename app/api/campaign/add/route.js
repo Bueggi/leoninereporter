@@ -8,15 +8,14 @@ const handler = async (req, res) => {
   try {
     const session = await getServerSession(authOptions);
     const { user } = session;
-    console.log(user)
-    
+
     const issuer = await prisma.user.findUnique({
       where: {
         email: user.email,
       },
     });
-    const { name, status, advertiserID, start, end,  audience} = await req.json();
-    console.log('came here')
+    const { name, status, advertiserID, start, end, audience } =
+      await req.json();
 
     const newCampaign = await prisma.campaign.create({
       data: {
@@ -26,7 +25,7 @@ const handler = async (req, res) => {
         creatorId: issuer.id,
         start: moment(start).format(),
         end: moment(end).format(),
-        audience
+        audience,
       },
     });
 

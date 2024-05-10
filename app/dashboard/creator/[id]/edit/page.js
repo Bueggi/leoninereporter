@@ -25,7 +25,7 @@ export default function Modal({ params: { id } }) {
       `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${id}/list`
     );
     const { data, message } = await chosenCreator.json();
-    console.log(data, message);
+
     if (!chosenCreator.ok) return toast.error(message);
     setCreator(data);
     setLoading(false);

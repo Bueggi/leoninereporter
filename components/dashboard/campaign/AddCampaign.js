@@ -46,7 +46,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
   };
 
   const handleClick = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const advertiserID = advertiserList.filter(
       (el, i) => el.name === chosenAdvertiserRef.current.value
     );
@@ -55,7 +55,6 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
     }
 
     try {
-
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/add`,
         {
@@ -78,14 +77,13 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
 
       if (!res.ok) toast.error(message);
       else toast.success(`Die Kampagne ${data.name} wurde angelegt`);
-      
+
       setAllCampaigns({
         mode: allCampaigns.mode,
         data: [...allCampaigns.data, data],
       });
       setOpen(false);
     } catch (error) {
-      console.log('es gab einen fehler')
       toast.error(error.message);
     }
   };

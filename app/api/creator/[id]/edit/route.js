@@ -17,24 +17,18 @@ const handler = async (req, { params }) => {
       image,
     } = await req.json();
 
-    const checkArray = [ channelName,
+    const checkArray = [
+      channelName,
       channelID,
       share,
       company,
       goal,
       demographics,
       anbindung,
-      image,]
+      image,
+    ];
 
-      console.log( channelName,
-        channelID,
-        share,
-        company,
-        goal,
-        anbindung,
-        image,)
-
-    if (checkArray.some(el => el === undefined))
+    if (checkArray.some((el) => el === undefined))
       return NextResponse.json(
         { success: false, message: "Es wurden nicht alle Daten angegeben" },
         { status: 400 }

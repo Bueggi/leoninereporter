@@ -47,7 +47,6 @@ const ListAdvertisers = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect wird gecalled");
     getInitialData();
   }, [activePage]);
 
@@ -165,7 +164,7 @@ const ListAdvertisers = () => {
                         <tr key={i} className="even:bg-white odd:bg-slate-200">
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <Link
-                              href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/campaign/${item.id}`}
+                              href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/campaigns/${item.id}`}
                             >
                               {item.name}
                             </Link>
@@ -175,7 +174,13 @@ const ListAdvertisers = () => {
                           </td>
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <div className="flex flex-row align-middle items-center">
-                              <span class={`flex w-3 h-3 me-3 ${getColor('bg', item.status, 700)} rounded-full`}></span>
+                              <span
+                                class={`flex w-3 h-3 me-3 ${getColor(
+                                  "bg",
+                                  item.status,
+                                  700
+                                )} rounded-full`}
+                              ></span>
                               {item.status}
                             </div>
                           </td>

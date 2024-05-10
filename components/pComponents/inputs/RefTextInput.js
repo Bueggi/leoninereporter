@@ -27,5 +27,5 @@ const RefTextInput = forwardRef((props, ref) => {
     </>
   );
 });
-
+RefTextInput.displayName = "RefTextInput";
 export default RefTextInput;

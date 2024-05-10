@@ -32,7 +32,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
             company: companyRef.current.value,
             goal: goalRef.current.value,
             image: imageRef.current.value,
-            anbindung: anbindungRef.current.value || 'OWNED',
+            anbindung: anbindungRef.current.value || "OWNED",
           }),
         }
       );
@@ -96,7 +96,6 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           Abschicken
         </button>
       </form>
-      <button onClick={()=>console.log('hallo', anbindungRef.current.value)}>Log</button>
     </>
   );
 }

@@ -33,4 +33,6 @@ const RefNumberInput = forwardRef((props, ref) => {
   );
 })
 
+RefNumberInput.displayName = "RefNumberInput";
+
 export default RefNumberInput;

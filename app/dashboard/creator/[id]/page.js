@@ -9,8 +9,8 @@ import {
   EnvelopeOpenIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import InformationBullet from '@components/pComponents/InformationBullet'
-import CreatorDescription from '@components/pComponents/dashboard/creator/CreatorDescription'
+import InformationBullet from "@components/pComponents/InformationBullet";
+import CreatorDescription from "@components/pComponents/dashboard/creator/CreatorDescription";
 
 export default function Modal({ params: { id } }) {
   // State für dieses Component:
@@ -37,14 +37,12 @@ export default function Modal({ params: { id } }) {
       setCreator(data);
       setLoading(false);
     } catch (error) {
-      setLoading(false)
-      toast.error('Etwas ist schief gelaufen')
+      setLoading(false);
+      toast.error("Etwas ist schief gelaufen");
     }
-   
   };
 
   if (loading) return <LoadingSpinner />;
-
 
   const stats = [
     {
@@ -80,10 +78,9 @@ export default function Modal({ params: { id } }) {
     <div>
       <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
         Informationen über {creator.channelName}
-        {console.log(creator)}
       </h2>
       {/* <InformationBullet /> */}
-      <CreatorDescription creator={creator}/>
+      <CreatorDescription creator={creator} />
       <h3 className="text-base font-semibold leading-6 text-gray-900">
         Diese Statistiken sind noch nicht programmiert, sondern nur Dummies
       </h3>

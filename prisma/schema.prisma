@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -39,24 +40,27 @@ model Campaign {
   audience     String
   start        DateTime
   end          DateTime
-  ordernumber String?
+  ordernumber  String?
   frequencycap String?
   status       STATUS     @default(OFFER)
   creatorId    String
-  offers       Offer[]
-  bookings Booking[]
+  offers       OfferGroup[]
+  bookings     Booking[]
   creator      User       @relation(fields: [creatorId], references: [id])
 }
 
 model Booking {
-  id           String     @id @default(uuid())
-  dispo String?
-  reach Int?
-  start DateTime?
-  end DateTime?
-  product PRODUCT?
-  tkp Float?
-  campaign   Campaign @relation(fields: [campaignID], references: [id])
+  id         String    @id @default(uuid())
+  dispo      String?
+  reach      Int?
+  start      DateTime?
+  end        DateTime?
+  product    PRODUCT?
+  rotation   String
+  tkp        Float?
+  targeting String
+  output String?
+  campaign   Campaign  @relation(fields: [campaignID], references: [id])
   campaignID String
 }
 
@@ -74,12 +78,25 @@ enum STATUS {
 }
 
 model Offer {
-  id         String   @id @default(uuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  campaign   Campaign @relation(fields: [campaignID], references: [id])
-  campaignID String
-  creatorIds String[]
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  reach      Int?
+  start      DateTime?
+  end        DateTime?
+  product    PRODUCT?
+  rotation   String
+  tkp        Float?
+  output String?
+  offergroup   OfferGroup? @relation(fields: [offerGroupID], references: [id])
+  offerGroupID String?
+}
+
+model OfferGroup {
+  id         String    @id @default(uuid())
+  campaign   Campaign? @relation(fields: [campaignID], references: [id])
+  campaignID String?
+  offers Offer[]
 }
 
 model Creator {

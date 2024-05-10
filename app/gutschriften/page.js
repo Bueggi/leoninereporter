@@ -6,10 +6,8 @@ import jsPDF from "jspdf";
 import ReportTemplate from "./InvoiceTemplate";
 
 function Gutschrften() {
-  const [timeframe, setTimeframe] = useState('Juni 2023')
-  const [order, setOrder] = useState(
-    "Beispielbrand"
-  );
+  const [timeframe, setTimeframe] = useState("Juni 2023");
+  const [order, setOrder] = useState("Beispielbrand");
   const [info, setInfo] = useState([
     {
       dispo: 4123134,
@@ -19,8 +17,6 @@ function Gutschrften() {
     },
   ]);
 
-
-
   const reducedGutschriften = gutschriften.reduce((acc, el) => {
     const { timeframe, impressions, rate, booking, dispo, order } = el;
     if (!acc[order]) {
@@ -28,21 +24,18 @@ function Gutschrften() {
       acc[order][timeframe] = [];
       acc[order][timeframe].push({ dispo, booking, rate, impressions });
       return acc;
-    }
-    else {
+    } else {
       if (!acc[order][timeframe]) {
-        acc[order][timeframe] = []
-        acc[order][timeframe].push({ dispo, booking, rate, impressions })
-        return acc
-      }
-      else {
-        acc[order][timeframe].push({ dispo, booking, rate, impressions })
-        return acc
+        acc[order][timeframe] = [];
+        acc[order][timeframe].push({ dispo, booking, rate, impressions });
+        return acc;
+      } else {
+        acc[order][timeframe].push({ dispo, booking, rate, impressions });
+        return acc;
       }
     }
   }, {});
 
-  
   const reportTemplateRef = useRef(null);
 
   const handleGeneratePdf = (order, timeframe) => {
@@ -52,44 +45,38 @@ function Gutschrften() {
 
     doc.html(reportTemplateRef.current, {
       async callback(doc) {
-        await doc.save('./Gutschriften/' + order + "_" + timeframe);
+        await doc.save("./Gutschriften/" + order + "_" + timeframe);
       },
     });
   };
 
   function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
+    return new Promise((resolve) => setTimeout(resolve, time));
   }
 
   const handleGenerateReports = async () => {
-    const gutschriftKeys = Object.keys(reducedGutschriften)
+    const gutschriftKeys = Object.keys(reducedGutschriften);
     for (let i = 0; i < gutschriftKeys.length; i++) {
-      const order = gutschriftKeys[i]
+      const order = gutschriftKeys[i];
 
-      const months = Object.keys(reducedGutschriften[order])
+      const months = Object.keys(reducedGutschriften[order]);
       for (let j = 0; j < months.length; j++) {
-        const monat = months[j]
-        const info = reducedGutschriften[order][monat]
-        console.log({order, info, monat})
+        const monat = months[j];
+        const info = reducedGutschriften[order][monat];
 
-        setOrder(order)
-        setInfo(info)
-        setTimeframe(monat)      
+        setOrder(order);
+        setInfo(info);
+        setTimeframe(monat);
 
-        await delay(1000)
-        handleGeneratePdf(order, monat)
-        await delay(5000)
+        await delay(1000);
+        handleGeneratePdf(order, monat);
+        await delay(5000);
       }
     }
-
-
-  }
+  };
   return (
     <div>
-      <button
-        className="button"
-        onClick={() => handleGenerateReports()}
-      >
+      <button className="button" onClick={() => handleGenerateReports()}>
         tadaaa
       </button>
       <div

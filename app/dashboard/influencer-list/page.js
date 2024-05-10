@@ -1,6 +1,5 @@
 "use client";
-import { toast } from "react-toastify";
-import InfluencerCard from "../../lib/dashboard/InfluencefrCard";
+import InfluencerCard from "../../../lib/dashboard/InfluencefrCard";
 import { useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 let influencers = require("./influencerInfo.json");

@@ -7,7 +7,7 @@ function classNames(...classes) {
 }
 
 const Toggle = forwardRef((props, ref) => {
-  const {label} = props
+  const { label } = props;
   const [enabled, setEnabled] = useState(false);
   return (
     <Switch.Group>
@@ -80,4 +80,5 @@ const Toggle = forwardRef((props, ref) => {
   );
 });
 
+Toggle.displayName = "Toggle";
 export default Toggle;

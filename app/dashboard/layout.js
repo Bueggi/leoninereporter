@@ -8,7 +8,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { toast } from "react-toastify";
+import moment from "moment";
+import 'moment/locale/de'
+moment.locale('de')
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },

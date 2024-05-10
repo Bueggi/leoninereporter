@@ -1,21 +1,21 @@
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 
 const DeleteCreator = ({ id, setOpen, allEntries, setAllEntries }) => {
   const handleClick = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${id}/delete`, {
-            method: 'DELETE'
+        `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${id}/delete`,
+        {
+          method: "DELETE",
         }
       );
       const { data, message } = await res.json();
 
       if (!res.ok) return toast.error(message);
       else toast.success("Der Eintrag wurde erfolgreich gelöscht");
-      
-      console.log('came here', allEntries)
-      const filteredCampaigns = allEntries.data.filter(el => el.id !== id)
-      setAllEntries({mode: allEntries.mode, data: filteredCampaigns})
+
+      const filteredCampaigns = allEntries.data.filter((el) => el.id !== id);
+      setAllEntries({ mode: allEntries.mode, data: filteredCampaigns });
       return setOpen(false);
     } catch (error) {
       return toast.error(error);

@@ -23,7 +23,7 @@ export default function Modal({ params: { id } }) {
       `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/${id}/list`
     );
     const { data, message } = await chosenAdvertiserRes.json();
-    console.log(data, message);
+
     if (!chosenAdvertiserRes.ok) return toast.error(message);
     setAdvertiser(data);
     setLoading(false);
