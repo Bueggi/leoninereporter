@@ -23,7 +23,10 @@ export default function Modal({ setOpen, allAdvertisers, setAllAdvertisers }) {
 
       if (!res.ok) toast.error(message);
       else toast.success(`Der Advertiser ${data.name} wurde angelegt`);
-      setAllAdvertisers([...allAdvertisers, data])
+      setAllAdvertisers({
+        data: [{ ...data, _count: { campaigns: 0 } }, ...allAdvertisers.data],
+        mode: "page",
+      });
       setOpen(false);
     } catch (error) {
       toast.error(error.message);

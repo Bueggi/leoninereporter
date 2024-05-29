@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import html2PDF from 'jspdf-html2canvas';
 
 // deleteOfferGroup
 // Mit dieser Funktion wird die Offergroup geloescht
@@ -99,7 +100,6 @@ const deleteOffer = async (id, state, setState) => {
 
     const { data, message } = await offerToDelete.json();
 
-  
     const newState = {
       ...state,
       offers: state.offers.map((offerGroup) => {
@@ -117,4 +117,39 @@ const deleteOffer = async (id, state, setState) => {
   }
 };
 
-export { deleteOfferGroup, getcampaign, addOfferGroup, deleteOffer };
+export const Document = ({ props }) => {
+  return (
+    <div>
+      <PageTop>
+        <span>Hello #1</span>
+      </PageTop>
+      <div>Hello #2</div>
+      <PageBottom>
+        <div className="text-gray-400 text-sm">Hello #3</div>
+      </PageBottom>
+      <PageBreak />
+      <span>Hello #4, but on a new page ! </span>
+    </div>
+  );
+};
+
+const exportAsPODF = async (offer) => {
+  console.log(offer)
+  // let page = document.getElementById('testID');
+  // html2PDF(page, {
+  //   jsPDF: {
+  //     format: 'a5',
+  //     orientation: 'landscape'
+  //   },
+  //   imageType: 'image/png',
+  //   output: './pdf/generate.pdf'
+  // });
+};
+
+export {
+  deleteOfferGroup,
+  getcampaign,
+  addOfferGroup,
+  deleteOffer,
+  exportAsPODF,
+};

@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
@@ -31,22 +31,18 @@ enum ROLE {
 }
 
 model Campaign {
-  id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  name         String     @unique @default("")
-  advertiser   Advertiser @relation(fields: [advertiserID], references: [id])
-  advertiserID String     @default("")
-  audience     String
-  start        DateTime
-  end          DateTime
+  id           String       @id @default(uuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  name         String       @unique @default("")
+  advertiser   Advertiser?  @relation(fields: [advertiserID], references: [id], onDelete: SetNull)
+  advertiserID String?      @default("")
   ordernumber  String?
-  frequencycap String?
-  status       STATUS     @default(OFFER)
-  creatorId    String
+  status       STATUS       @default(OFFER)
+  creatorId    String?
   offers       OfferGroup[]
   bookings     Booking[]
-  creator      User       @relation(fields: [creatorId], references: [id])
+  creator      User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
 }
 
 model Booking {
@@ -58,9 +54,9 @@ model Booking {
   product    PRODUCT?
   rotation   String
   tkp        Float?
-  targeting String
-  output String?
-  campaign   Campaign  @relation(fields: [campaignID], references: [id])
+  targeting  String
+  output     String?
+  campaign   Campaign  @relation(fields: [campaignID], references: [id], onDelete: Cascade)
   campaignID String
 }
 
@@ -78,25 +74,26 @@ enum STATUS {
 }
 
 model Offer {
-  id         String    @id @default(uuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  reach      Int?
-  start      DateTime?
-  end        DateTime?
-  product    PRODUCT?
-  rotation   String
-  tkp        Float?
-  output String?
-  offergroup   OfferGroup? @relation(fields: [offerGroupID], references: [id])
+  id           String      @id @default(uuid())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  reach        Int?
+  start        DateTime?
+  end          DateTime?
+  product      PRODUCT?
+  rotation     String
+  tkp          Float?
+  output       String?
+  offergroup   OfferGroup? @relation(fields: [offerGroupID], references: [id], onDelete: Cascade)
   offerGroupID String?
 }
 
 model OfferGroup {
   id         String    @id @default(uuid())
-  campaign   Campaign? @relation(fields: [campaignID], references: [id])
+  offernumber Int @default(autoincrement())
+  campaign   Campaign? @relation(fields: [campaignID], references: [id], onDelete: Cascade)
   campaignID String?
-  offers Offer[]
+  offers     Offer[]
 }
 
 model Creator {

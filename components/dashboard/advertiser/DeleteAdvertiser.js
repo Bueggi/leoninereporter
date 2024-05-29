@@ -1,19 +1,29 @@
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 
-const DeleteAdvertiser = ({ id, setOpen, allAdvertisers, setAllAdvertisers }) => {
+const DeleteAdvertiser = ({
+  id,
+  setOpen,
+  allAdvertisers,
+  setAllAdvertisers,
+}) => {
   const handleClick = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/${id}/delete`, {
-            method: 'DELETE'
+        `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/${id}/delete`,
+        {
+          method: "DELETE",
         }
       );
       const { data, message } = await res.json();
 
-      if (!res.ok) toast.error(message);
-      else toast.success("Der Eintrag wurde erfolgreich gelöscht");
-      const filteredAdvertisers = allAdvertisers.filter(el => el.id !== id)
-      setAllAdvertisers(filteredAdvertisers)
+      if (!res.ok) return toast.error(message);
+      const filteredAdvertisers = allAdvertisers.data.filter(
+        (el) => el.id !== id
+      );
+
+      console.log(filteredAdvertisers)
+      setAllAdvertisers({ data: filteredAdvertisers , mode: "page" });
+      toast.success("Der Eintrag wurde erfolgreich gelöscht");
       return setOpen(false);
     } catch (error) {
       toast.error(error);

@@ -1,4 +1,5 @@
 "use client";
+import { notFound } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
 import {
@@ -18,13 +19,14 @@ import {
   getcampaign,
   addOfferGroup,
   deleteOffer,
+  exportAsPODF,
 } from "./lib";
 import Modal from "@components/pComponents/Modal";
 import AddOffer from "@components/dashboard/campaign/offer/AddOffer";
 import EditOffer from "@components/dashboard/campaign/offer/EditOffer";
 import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
-import saveAsPDF from "./exportPDF";
+import OfferTemplate from "./OfferTemplate";
 
 // Hilfsfunktion von Tailwind, um Klassennamen zu mergen
 function classNames(...classes) {
@@ -41,6 +43,7 @@ export default function Campaigns({ params: { id } }) {
   const [chosenOfferGroupID, setChosenOfferGroupID] = useState();
   const [offerToEdit, setOfferToEdit] = useState();
   const [addBookingModal, setAddBookingModal] = useState(false);
+  const currentRef = useRef();
 
   // Beim Mount des Components wird der campaign aus der Datenbank geladen
   useEffect(() => {
@@ -49,8 +52,9 @@ export default function Campaigns({ params: { id } }) {
 
   // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
+  if (!campaign) return notFound();
 
- // finde die richtige Farbe fuer den Badge
+  // finde die richtige Farbe fuer den Badge
   const color = publishingOptions.find((el) => el.title === campaign.status);
 
   return (
@@ -148,6 +152,7 @@ export default function Campaigns({ params: { id } }) {
                   className="relative border border-slate-400 px-4 py-2 rounded-md bg-slate-100"
                   key={i}
                 >
+                  <OfferTemplate offer={el} />
                   <div className=" absolute inset-x-0 top-0 h-12 bg-slate-400 mb-12">
                     <div className="flex flex-row justify-around mt-2">
                       <button
@@ -171,7 +176,7 @@ export default function Campaigns({ params: { id } }) {
                       </button>
                       <button
                         type="button"
-                        onClick={()=>saveAsPDF('Hallo','Test')}
+                        onClick={() => exportAsPODF(el)}
                         className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         PDF erstellen
@@ -297,6 +302,7 @@ export default function Campaigns({ params: { id } }) {
           />
         )}
       </div>
+      <div ref={currentRef}>Halloooo</div>
     </div>
   );
 }
