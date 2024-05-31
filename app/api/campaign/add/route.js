@@ -14,7 +14,7 @@ const handler = async (req, res) => {
         email: user.email,
       },
     });
-    const { name, status, advertiserID, start, end, audience } =
+    const { name, status, advertiserID } =
       await req.json();
 
     const newCampaign = await prisma.campaign.create({
@@ -23,9 +23,6 @@ const handler = async (req, res) => {
         status,
         advertiserID,
         creatorId: issuer.id,
-        start: moment(start).format(),
-        end: moment(end).format(),
-        audience,
       },
     });
 

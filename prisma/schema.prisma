@@ -36,7 +36,7 @@ model Campaign {
   updatedAt    DateTime     @updatedAt
   name         String       @unique @default("")
   advertiser   Advertiser?  @relation(fields: [advertiserID], references: [id], onDelete: SetNull)
-  advertiserID String?      @default("")
+  advertiserID String?     
   ordernumber  String?
   status       STATUS       @default(OFFER)
   creatorId    String?
