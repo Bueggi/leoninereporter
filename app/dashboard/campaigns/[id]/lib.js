@@ -131,7 +131,7 @@ const exportAsPODF = async (offer, setOfferArray, name) => {
       imageType: "image/png",
       output: `./${name}.pdf`,
     });
-  //   sleep(500).then(() => setOfferArray([]));
+    sleep(500).then(() => setOfferArray([]));
   });
 
   return;

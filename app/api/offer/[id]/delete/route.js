@@ -4,7 +4,6 @@ import prisma from '@lib/prisma'
 const handler = async (req, { params }) => {
   try {
     const { id } = params;
-    console.log('ouch, i got hit', id)
     const offer = await prisma.offer.findFirst({where: {id}})
     if (!offer) return NextResponse.json({message: 'Diese Buchung existiert nicht', success: false}, {status: 500})
 
