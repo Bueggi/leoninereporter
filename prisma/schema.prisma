@@ -84,16 +84,17 @@ model Offer {
   rotation     String
   tkp          Float?
   output       String?
+  targeting    String?
   offergroup   OfferGroup? @relation(fields: [offerGroupID], references: [id], onDelete: Cascade)
   offerGroupID String?
 }
 
 model OfferGroup {
-  id         String    @id @default(uuid())
-  offernumber Int @default(autoincrement())
-  campaign   Campaign? @relation(fields: [campaignID], references: [id], onDelete: Cascade)
-  campaignID String?
-  offers     Offer[]
+  id          String    @id @default(uuid())
+  offernumber Int       @default(autoincrement())
+  campaign    Campaign? @relation(fields: [campaignID], references: [id], onDelete: Cascade)
+  campaignID  String?
+  offers      Offer[]
 }
 
 model Creator {

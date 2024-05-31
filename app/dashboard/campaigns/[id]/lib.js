@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
-import html2PDF from 'jspdf-html2canvas';
+import html2PDF from "jspdf-html2canvas";
+import OfferTemplate from "./OfferTemplate";
 
 // deleteOfferGroup
 // Mit dieser Funktion wird die Offergroup geloescht
@@ -117,34 +118,31 @@ const deleteOffer = async (id, state, setState) => {
   }
 };
 
-export const Document = ({ props }) => {
-  return (
-    <div>
-      <PageTop>
-        <span>Hello #1</span>
-      </PageTop>
-      <div>Hello #2</div>
-      <PageBottom>
-        <div className="text-gray-400 text-sm">Hello #3</div>
-      </PageBottom>
-      <PageBreak />
-      <span>Hello #4, but on a new page ! </span>
-    </div>
-  );
+const exportAsPODF = async (offer, setOfferArray, name) => {
+  let page = document.getElementById("pdFID");
+  const finalOffer = <OfferTemplate offer={offer} />;
+  setOfferArray([finalOffer]);
+  sleep(500).then(() => {
+    html2PDF(page, {
+      jsPDF: {
+        format: "a5",
+        orientation: "landscape",
+      },
+      imageType: "image/png",
+      output: `./${name}.pdf`,
+    });
+  //   sleep(500).then(() => setOfferArray([]));
+  });
+
+  return;
+
+  // setOfferArray([]);
 };
 
-const exportAsPODF = async (offer) => {
-  console.log(offer)
-  // let page = document.getElementById('testID');
-  // html2PDF(page, {
-  //   jsPDF: {
-  //     format: 'a5',
-  //     orientation: 'landscape'
-  //   },
-  //   imageType: 'image/png',
-  //   output: './pdf/generate.pdf'
-  // });
-};
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 
 export {
   deleteOfferGroup,

@@ -9,7 +9,7 @@ import {
   EnvelopeOpenIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import InformationBullet from '@components/pComponents/InformationBullet'
+import InformationBullet from "@components/pComponents/InformationBullet";
 
 export default function Modal({ params: { id } }) {
   // State für dieses Component:
@@ -39,12 +39,35 @@ export default function Modal({ params: { id } }) {
   if (loading) return <LoadingSpinner />;
 
   const projects = [
-    { name: 'Graph API', initials: 'GA', href: '#', members: 16, bgColor: 'bg-pink-600' },
-    { name: 'Component Design', initials: 'CD', href: '#', members: 12, bgColor: 'bg-purple-600' },
-    { name: 'Templates', initials: 'T', href: '#', members: 16, bgColor: 'bg-yellow-500' },
-    { name: 'React Components', initials: 'RC', href: '#', members: 8, bgColor: 'bg-green-500' },
-  ]
-  
+    {
+      name: "Graph API",
+      initials: "GA",
+      href: "#",
+      members: 16,
+      bgColor: "bg-pink-600",
+    },
+    {
+      name: "Component Design",
+      initials: "CD",
+      href: "#",
+      members: 12,
+      bgColor: "bg-purple-600",
+    },
+    {
+      name: "Templates",
+      initials: "T",
+      href: "#",
+      members: 16,
+      bgColor: "bg-yellow-500",
+    },
+    {
+      name: "React Components",
+      initials: "RC",
+      href: "#",
+      members: 8,
+      bgColor: "bg-green-500",
+    },
+  ];
 
   const stats = [
     {
@@ -76,6 +99,8 @@ export default function Modal({ params: { id } }) {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
+
+  if (!campaign) return notFound();
   return (
     <div>
       <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">

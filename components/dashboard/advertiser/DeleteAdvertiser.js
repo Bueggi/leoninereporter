@@ -21,7 +21,7 @@ const DeleteAdvertiser = ({
         (el) => el.id !== id
       );
 
-      console.log(filteredAdvertisers)
+
       setAllAdvertisers({ data: filteredAdvertisers , mode: "page" });
       toast.success("Der Eintrag wurde erfolgreich gelöscht");
       return setOpen(false);

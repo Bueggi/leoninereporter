@@ -43,7 +43,7 @@ export default function Campaigns({ params: { id } }) {
   const [chosenOfferGroupID, setChosenOfferGroupID] = useState();
   const [offerToEdit, setOfferToEdit] = useState();
   const [addBookingModal, setAddBookingModal] = useState(false);
-  const currentRef = useRef();
+  const [offerArray, setOfferArray] = useState(["hallo"]);
 
   // Beim Mount des Components wird der campaign aus der Datenbank geladen
   useEffect(() => {
@@ -97,34 +97,6 @@ export default function Campaigns({ params: { id } }) {
         {campaign.name} <Badge label={campaign.status} color={color} />
       </h2>
 
-      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <InformationField
-          name="Audience"
-          information={campaign.audience}
-          item={{ icon: UsersIcon }}
-        />
-        <InformationField
-          name="Start"
-          information={moment(campaign.start).format("LL")}
-          item={{ icon: UsersIcon }}
-        />
-        <InformationField
-          name="Ende"
-          information={moment(campaign.end).format("LL")}
-          item={{ icon: UsersIcon }}
-        />
-        <InformationField
-          name="FQ"
-          information={campaign.frequencycap}
-          item={{ icon: UsersIcon }}
-        />
-        <InformationField
-          name="Ende"
-          information={moment(campaign.end).format("LL")}
-          item={{ icon: UsersIcon }}
-        />
-      </dl>
-
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
         <div className="flex flex-row gap-4">
           Angebotsgruppen
@@ -152,7 +124,6 @@ export default function Campaigns({ params: { id } }) {
                   className="relative border border-slate-400 px-4 py-2 rounded-md bg-slate-100"
                   key={i}
                 >
-                  <OfferTemplate offer={el} />
                   <div className=" absolute inset-x-0 top-0 h-12 bg-slate-400 mb-12">
                     <div className="flex flex-row justify-around mt-2">
                       <button
@@ -176,7 +147,9 @@ export default function Campaigns({ params: { id } }) {
                       </button>
                       <button
                         type="button"
-                        onClick={() => exportAsPODF(el)}
+                        onClick={() =>
+                          exportAsPODF(el, setOfferArray, campaign.name)
+                        }
                         className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         PDF erstellen
@@ -302,7 +275,11 @@ export default function Campaigns({ params: { id } }) {
           />
         )}
       </div>
-      <div ref={currentRef}>Halloooo</div>
+      <div id="pdFID">
+        {offerArray.map((el) => {
+          return el;
+        })}
+      </div>
     </div>
   );
 }

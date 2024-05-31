@@ -1,18 +1,14 @@
 import Image from "next/image";
-import {
-  BriefcaseIcon,
-  CalendarIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  CurrencyDollarIcon,
-  LinkIcon,
-  MapPinIcon,
-  PencilIcon,
-} from "@heroicons/react/20/solid";
 import moment from "moment";
 
 const OfferTemplate = ({ offer }) => {
-  console.log(offer)
+  console.log(
+    "AUAIAIAIAIAIAIAIA",
+    offer.offers.reduce((accumulator, currentValue) => {
+      if (accumulator === 0) return currentValue.start;
+      return accumulator > currentValue.start ? accumulator : currentValue.start;
+    }, 0)
+  );
   return (
     <div id="testID" className="w-full text-xl">
       <div className="mx-auto p-8 px-16 items-center align-middle justify-center w-[2208px] h-[1556px]">
@@ -40,32 +36,38 @@ const OfferTemplate = ({ offer }) => {
               </div>
               <div className="mt-2 flex align-middle text-large text-gray-500 basis-1/4">
                 Budget:{" "}
-                {offer.offers.reduce(
-                  (accumulator, currentValue) =>
-                    accumulator +
-                    (currentValue.reach * currentValue.tkp) / 1000,
-                  0
+                {new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                }).format(
+                  offer.offers.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator +
+                      (currentValue.reach * currentValue.tkp) / 1000,
+                    0
+                  )
                 )}
               </div>
 
-               <div className="mt-2 flex align-middle text-large text-gray-500 basis-1/4">
+              <div className="mt-2 flex align-middle text-large text-gray-500 basis-1/4">
                 Zeitraum:{" "}
                 {moment(
                   offer.offers.reduce((accumulator, currentValue) => {
                     if (accumulator === 0) return currentValue.start;
-                    return accumulator > currentValue.start;
+                    return accumulator < currentValue.start ? accumulator : currentValue.start;
                   }, 0)
                 ).format("L")}{" "}
                 -{" "}
                 {moment(
                   offer.offers.reduce((accumulator, currentValue) => {
                     if (accumulator === 0) return currentValue.end;
-                    return accumulator < currentValue.end;
+                    return accumulator > currentValue.end ? accumulator : currentValue.end;
                   }, 0)
                 ).format("L")}
               </div>
               <div className="mt-2 flex align-middle text-large text-gray-500 basis-1/4">
-                Rotation: {offer.offers.reduce((acc, el) => {
+                Rotation:{" "}
+                {offer.offers.reduce((acc, el) => {
                   if (acc.indexOf(el) !== -1) return acc;
                   return [...acc, el.rotation];
                 }, [])}
@@ -76,7 +78,7 @@ const OfferTemplate = ({ offer }) => {
                   if (acc.indexOf(el) !== -1) return acc;
                   return [...acc, el.output];
                 }, [])}
-              </div> 
+              </div>
             </div>
           </div>
         </div>
@@ -121,12 +123,17 @@ const OfferTemplate = ({ offer }) => {
                           Non Skip Short Ad
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            if (currentValue.product !== "NONSKIPPABLE")
-                              return accumulator;
-                            if (accumulator === 0) return currentValue.tkp;
-                            return (accumulator + currentValue.tkp) / 2;
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              if (currentValue.product !== "NONSKIPPABLE")
+                                return accumulator;
+                              if (accumulator === 0) return currentValue.tkp;
+                              return (accumulator + currentValue.tkp) / 2;
+                            }, 0)
+                          )}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
                           {offer.offers.reduce((accumulator, currentValue) => {
@@ -137,14 +144,19 @@ const OfferTemplate = ({ offer }) => {
                           }, 0)}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            if (currentValue.product !== "NONSKIPPABLE")
-                              return accumulator;
-                            return (
-                              accumulator +
-                              currentValue.reach * (currentValue.tkp / 1000)
-                            );
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              if (currentValue.product !== "NONSKIPPABLE")
+                                return accumulator;
+                              return (
+                                accumulator +
+                                currentValue.reach * (currentValue.tkp / 1000)
+                              );
+                            }, 0)
+                          )}
                         </td>
                       </tr>
                       <tr>
@@ -152,12 +164,17 @@ const OfferTemplate = ({ offer }) => {
                           Skippable Ad
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            if (currentValue.product !== "SKIPPABLE")
-                              return accumulator;
-                            if (accumulator === 0) return currentValue.tkp;
-                            return (accumulator + currentValue.tkp) / 2;
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              if (currentValue.product !== "SKIPPABLE")
+                                return accumulator;
+                              if (accumulator === 0) return currentValue.tkp;
+                              return (accumulator + currentValue.tkp) / 2;
+                            }, 0)
+                          )}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
                           {offer.offers.reduce((accumulator, currentValue) => {
@@ -168,14 +185,19 @@ const OfferTemplate = ({ offer }) => {
                           }, 0)}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            if (currentValue.product !== "SKIPPABLE")
-                              return accumulator;
-                            return (
-                              accumulator +
-                              currentValue.reach * (currentValue.tkp / 1000)
-                            );
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              if (currentValue.product !== "SKIPPABLE")
+                                return accumulator;
+                              return (
+                                accumulator +
+                                currentValue.reach * (currentValue.tkp / 1000)
+                              );
+                            }, 0)
+                          )}
                         </td>
                       </tr>
                       <tr>
@@ -183,12 +205,17 @@ const OfferTemplate = ({ offer }) => {
                           Bumper
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            if (currentValue.product !== "BUMPER")
-                              return accumulator;
-                            if (accumulator === 0) return currentValue.tkp;
-                            return (accumulator + currentValue.tkp) / 2;
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              if (currentValue.product !== "BUMPER")
+                                return accumulator;
+                              if (accumulator === 0) return currentValue.tkp;
+                              return (accumulator + currentValue.tkp) / 2;
+                            }, 0)
+                          )}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
                           {offer.offers.reduce((accumulator, currentValue) => {
@@ -199,14 +226,19 @@ const OfferTemplate = ({ offer }) => {
                           }, 0)}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  text-gray-500">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            if (currentValue.product !== "BUMPER")
-                              return accumulator;
-                            return (
-                              accumulator +
-                              currentValue.reach * (currentValue.tkp / 1000)
-                            );
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              if (currentValue.product !== "BUMPER")
+                                return accumulator;
+                              return (
+                                accumulator +
+                                currentValue.reach * (currentValue.tkp / 1000)
+                              );
+                            }, 0)
+                          )}
                         </td>
                       </tr>
                       <tr className="bg-slate-600 text-white font-bold">
@@ -220,12 +252,17 @@ const OfferTemplate = ({ offer }) => {
                           }, 0)}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4  ">
-                          {offer.offers.reduce((accumulator, currentValue) => {
-                            return (
-                              accumulator +
-                              currentValue.reach * (currentValue.tkp / 1000)
-                            );
-                          }, 0)}
+                          {new Intl.NumberFormat("de-DE", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(
+                            offer.offers.reduce((accumulator, currentValue) => {
+                              return (
+                                accumulator +
+                                currentValue.reach * (currentValue.tkp / 1000)
+                              );
+                            }, 0)
+                          )}
                         </td>
                       </tr>
                     </tbody>

@@ -74,6 +74,9 @@ export default function Modal({ params: { id } }) {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
+
+  if (!creator) return notFound();
+
   return (
     <div>
       <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">

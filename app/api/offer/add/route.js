@@ -6,7 +6,7 @@ import moment from "moment";
 
 const handler = async (req, res) => {
   try {
-    const { reach, start, end, product, rotation, tkp, offerGroupID } =
+    const { reach, start, end, product, rotation, tkp, output, targeting, offerGroupID } =
       await req.json();
 
     // find offerGroup and return error if offerGroup does not exist
@@ -29,6 +29,8 @@ const handler = async (req, res) => {
         product,
         rotation,
         tkp: +tkp,
+        output,
+        targeting,
         offerGroupID,
       },
     });
