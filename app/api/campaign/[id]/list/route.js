@@ -11,10 +11,15 @@ const handler = async (req, { params }) => {
         id,
       },
       include: {
+        advertiser: {
+          select: {
+            name: true,
+          },
+        },
         offers: {
           include: { offers: true },
         },
-        bookings: true
+        bookings: true,
       },
     });
 

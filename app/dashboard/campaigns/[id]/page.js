@@ -26,7 +26,7 @@ import AddOffer from "@components/dashboard/campaign/offer/AddOffer";
 import EditOffer from "@components/dashboard/campaign/offer/EditOffer";
 import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
-import OfferTemplate from "./OfferTemplate";
+import DescriptionList from '@components/dashboard/campaign/DescriptionList'
 
 // Hilfsfunktion von Tailwind, um Klassennamen zu mergen
 function classNames(...classes) {
@@ -45,14 +45,17 @@ export default function Campaigns({ params: { id } }) {
   const [addBookingModal, setAddBookingModal] = useState(false);
   const [offerArray, setOfferArray] = useState(["hallo"]);
 
+
   // Beim Mount des Components wird der campaign aus der Datenbank geladen
   useEffect(() => {
     getcampaign(id, setcampaign, setLoading);
   }, []);
 
+
   // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
   if (!campaign) return notFound();
+  console.log(campaign)
 
   // finde die richtige Farbe fuer den Badge
   const color = publishingOptions.find((el) => el.title === campaign.status);
@@ -97,6 +100,8 @@ export default function Campaigns({ params: { id } }) {
         {campaign.name} <Badge label={campaign.status} color={color} />
       </h2>
 
+
+      <DescriptionList campaign={campaign} />
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
         <div className="flex flex-row gap-4">
           Angebotsgruppen

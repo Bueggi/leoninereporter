@@ -10,9 +10,10 @@ import Link from "next/link";
 import Pagination from "@components/pComponents/Pagination";
 import { useSearchParams } from "next/navigation";
 import Searchbar from "@components/pComponents/Search";
-import { toast } from "react-toastify";
 import calculateDate from "../../../lib/calculateDate";
 import { getColor } from "@lib/dashboard/publishingOptions";
+import { getInitialData, returnEndDate, returnStartDate } from "./lib";
+
 const ListAdvertisers = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -24,31 +25,11 @@ const ListAdvertisers = () => {
   const searchParams = useSearchParams();
   const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
 
-  const getInitialData = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/list` +
-          (activePage ? `?page=${activePage}` : "")
-      );
-      const { data, count, message } = await res.json();
-      if (data) {
-        setAllCampaigns({ data, mode: "page" });
-        setCount(count);
-        setLoading(false);
-        return;
-      } else {
-        toast.error(message);
-      }
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
   useEffect(() => {
-    getInitialData();
+    console.log(getInitialData);
+    getInitialData(setLoading, activePage, setAllCampaigns, setCount);
   }, [activePage]);
-console.log(allCampaigns)
+
   return (
     <>
       {/* Das Modal, um Inhalte hinzuzufügen */}
@@ -160,7 +141,6 @@ console.log(allCampaigns)
                     </thead>
                     <tbody className="divide-y divide-gray-200 ">
                       {allCampaigns.data.map((item, i) => (
-                        
                         <tr key={i} className="even:bg-white odd:bg-slate-200">
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <Link
@@ -189,17 +169,18 @@ console.log(allCampaigns)
                           </td>
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <div className="flex flex-col">
-                              {moment(item.end).format("LL")}{" "}
+                              {returnStartDate(item)}
+                              
                               <span className="font-light text-xs">
-                                {calculateDate(item.start)}
+                                {returnStartDate(item) ? calculateDate(returnStartDate(item)) : "-"}
                               </span>
                             </div>
                           </td>
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <div className="flex flex-col">
-                              {moment(item.end).format("LL")}{" "}
+                              {returnEndDate(item)}
                               <span className="font-light text-xs">
-                                {calculateDate(item.end)}
+                                {returnEndDate(item) ? calculateDate(returnEndDate(item)): '-'}
                               </span>
                             </div>
                           </td>

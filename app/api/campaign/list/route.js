@@ -7,9 +7,22 @@ const handler = async (req, res) => {
     const skipPage = (page - 1) * process.env.NEXT_PUBLIC_MAX_RESULTS;
     const takePages = +process.env.NEXT_PUBLIC_MAX_RESULTS;
 
-    const count = await prisma.campaign.count()
+    const count = await prisma.campaign.count();
 
-    const data = await prisma.campaign.findMany({ skip: skipPage, take: takePages });
+    const data = await prisma.campaign.findMany({
+      skip: skipPage,
+      take: takePages,
+      include: {
+        bookings: {
+          select: {
+            start: true,
+            end: true, 
+            reach: true, 
+            tkp: true
+          }
+        },
+      },
+    });
     return NextResponse.json({ success: true, data, count }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
