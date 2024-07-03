@@ -31,18 +31,24 @@ enum ROLE {
 }
 
 model Campaign {
-  id           String       @id @default(uuid())
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  name         String       @unique @default("")
-  advertiser   Advertiser?  @relation(fields: [advertiserID], references: [id], onDelete: SetNull)
-  advertiserID String?     
-  ordernumber  String?
-  status       STATUS       @default(OFFER)
-  creatorId    String?
-  offers       OfferGroup[]
-  bookings     Booking[]
-  creator      User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  id             String       @id @default(uuid())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  name           String       @unique @default("")
+  advertiser     Advertiser?  @relation(fields: [advertiserID], references: [id], onDelete: SetNull)
+  advertiserID   String?
+  isServiceplan  Boolean      @default(true)
+  ordernumber    String?
+  product        String?
+  onlineCampaign String?
+  productfamily  String?
+  customergroup  String?
+  customer       String?
+  status         STATUS       @default(OFFER)
+  creatorId      String?
+  offers         OfferGroup[]
+  bookings       Booking[]
+  creator        User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
 }
 
 model Booking {

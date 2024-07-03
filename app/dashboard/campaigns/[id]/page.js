@@ -26,7 +26,9 @@ import AddOffer from "@components/dashboard/campaign/offer/AddOffer";
 import EditOffer from "@components/dashboard/campaign/offer/EditOffer";
 import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
-import DescriptionList from '@components/dashboard/campaign/DescriptionList'
+import DescriptionList from "@components/dashboard/campaign/DescriptionList";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import EditCampaign from '@components/dashboard/campaign/EditCampaign'
 
 // Hilfsfunktion von Tailwind, um Klassennamen zu mergen
 function classNames(...classes) {
@@ -36,26 +38,25 @@ function classNames(...classes) {
 export default function Campaigns({ params: { id } }) {
   // State für dieses Component:
   // 1. Der campaign, den wir bearbeiten wollen / dessen Informationen wir einsehen wollen
+
   const [campaign, setcampaign] = useState({});
   const [loading, setLoading] = useState(true);
   const [addOfferModalOpen, setAddOfferModalOpen] = useState(false);
+  const [editCampaignModalOpen, setEditCampaignModalOpen] = useState(true);
   const [editOfferModal, setEditOfferModal] = useState(false);
   const [chosenOfferGroupID, setChosenOfferGroupID] = useState();
   const [offerToEdit, setOfferToEdit] = useState();
   const [addBookingModal, setAddBookingModal] = useState(false);
-  const [offerArray, setOfferArray] = useState(["hallo"]);
-
+  const [offerArray, setOfferArray] = useState([]);
 
   // Beim Mount des Components wird der campaign aus der Datenbank geladen
   useEffect(() => {
     getcampaign(id, setcampaign, setLoading);
   }, []);
 
-
   // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
   if (!campaign) return notFound();
-  console.log(campaign)
 
   // finde die richtige Farbe fuer den Badge
   const color = publishingOptions.find((el) => el.title === campaign.status);
@@ -71,6 +72,11 @@ export default function Campaigns({ params: { id } }) {
             state={campaign}
             setState={setcampaign}
           />
+        </Modal>
+      )}
+      {editCampaignModalOpen && (
+        <Modal open={editCampaignModalOpen} setOpen={setEditCampaignModalOpen}>
+          <EditCampaign campaign={campaign} setCampaign={setcampaign}/>
         </Modal>
       )}
       {/* Das Modal, das die Offers bearbeitet */}
@@ -96,10 +102,19 @@ export default function Campaigns({ params: { id } }) {
         </Modal>
       )}
 
-      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-        {campaign.name} <Badge label={campaign.status} color={color} />
+      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex justify-between mb-12">
+        <div>
+          {campaign.name}
+        </div>
+        <button
+          type="button"
+          onClick={()=>setEditCampaignModalOpen(true)}
+          className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          <CheckCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+          Kampagne bearbeiten
+        </button>
       </h2>
-
 
       <DescriptionList campaign={campaign} />
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
