@@ -4,33 +4,48 @@ import prisma from "../../../../../lib/prisma";
 
 const handler = async (req, { params }) => {
   try {
+    const {
+      name,
+      advertiserID,
+      isServiceplan,
+      ordernumber,
+      product,
+      onlineCampaign,
+      productfamily,
+      customergroup,
+      customer,
+      status,
+    } = await req.json();
+
     const { id } = params;
-   
-    const { name } = await req.json();
 
-    if (!name)
-      return NextResponse.json(
-        { success: false, message: "Es wurde kein Name angegeben" },
-        { status: 400 }
-      );
-
-    const updatedAdvertiser = await prisma.advertiser.update({
+    const updateCampaign = await prisma.campaign.update({
       where: {
         id,
       },
 
       data: {
         name,
+        advertiserID,
+        isServiceplan,
+        ordernumber,
+        product,
+        onlineCampaign,
+        productfamily,
+        customergroup,
+        customer,
+        status,
       },
     });
 
     return NextResponse.json(
-      { success: true, data: updatedAdvertiser },
+      { success: true, data: updateCampaign },
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
-      { success: false, message: "Etwas ist schief gelaufen"},
+      { success: false, message: "Etwas ist schief gelaufen" },
       { status: 500 }
     );
   }

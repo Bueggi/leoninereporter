@@ -3,9 +3,8 @@ import { NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma";
 import moment from "moment";
 
-const handler = async (req, { params }) => {
+const handler = async (req) => {
   try {
-    const { id } = params;
     const { booking } = await req.json();
     const {
       dispo,

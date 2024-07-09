@@ -6,18 +6,7 @@ import SelectField from "@components/pComponents/SelectField";
 import { publishingOptions } from "@lib/dashboard/publishingOptions";
 
 export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
-  // model Campaign {
-  //   id           String     @id @default(uuid())
-  //   createdAt    DateTime   @default(now())
-  //   updatedAt    DateTime   @updatedAt
-  //   name         String     @unique @default("")
-  //   advertiser   Advertiser @relation(fields: [advertiserID], references: [id])
-  //   advertiserID String     @default("")
-  //   status       STATUS     @default(OFFER)
-  //   creatorId    String
-  //   offers       Offer[]
-  //   creator      User       @relation(fields: [creatorId], references: [id])
-  // }
+
   const nameRef = useRef();
   const chosenAdvertiserRef = useRef();
   const [status, setStatus] = useState(publishingOptions[0]);

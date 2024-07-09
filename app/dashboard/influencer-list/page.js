@@ -2,7 +2,7 @@
 import InfluencerCard from "../../../lib/dashboard/InfluencefrCard";
 import { useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
-let influencers = require("./influencerInfo.json");
+let influencers = require("../../../lib/influencerInfo.json");
 
 const InfluencerList = () => {
   // initial states

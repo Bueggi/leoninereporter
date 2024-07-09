@@ -9,7 +9,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const EditCampaign = ({campaign, setCampaign}) => {
+const EditCampaign = ({ campaign, setCampaign }) => {
   const [state, setState] = useState(campaign);
   const [advertisers, setAdvertisers] = useState();
   const [isServiceplan, setIsServiceplan] = useState(true);
@@ -34,6 +34,45 @@ const EditCampaign = ({campaign, setCampaign}) => {
   }, []);
 
   const advertiserLabels = advertisers && advertisers.map((el) => el.name);
+
+  // handle the submit of the form
+  const handleClick = async () => {
+    try {
+      const advertiserID = advertisers.filter(
+        (el) => el.name === state.advertiser.name
+      );
+
+      const updatedCampaign = {
+        name: state.name,
+        advertiserID: advertiserID[0].id,
+        ordernumber: state.ordernumber,
+        isServiceplan: state.isServiceplan,
+        product: isServiceplan ? state.product : null,
+        onlineCampaign: isServiceplan ? state.onlineCampaign : null,
+        productfamily: isServiceplan ? state.productfamily : null,
+        customergroup: isServiceplan ? state.customergroup : null,
+        customer: isServiceplan ? state.customer : null,
+        status: state.status,
+      };
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/${campaign.id}/edit`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedCampaign),
+        }
+      );
+      const { data, message } = await res.json();
+      if (message) return toast.error(message);
+      setState(data);
+    } catch (error) {
+      toast(error);
+    }
+  };
+
   return (
     <div className="grid grid-cols-3 gap-4">
       <Ueberschrift label="Kampagneninformationen" />
@@ -44,9 +83,17 @@ const EditCampaign = ({campaign, setCampaign}) => {
         type="text"
         keyName="name"
       />
-     
-      <Dropdown label="Advertiser" options={advertiserLabels} value={state && state.advertiser.name} />
-      <Dropdown label="Status" options={publishingLabels} value ={state && state.status}/>
+
+      <Dropdown
+        label="Advertiser"
+        options={advertiserLabels}
+        value={state && state.advertiser.name}
+      />
+      <Dropdown
+        label="Status"
+        options={publishingLabels}
+        value={state && state.status}
+      />
       <Ueberschrift label="Abrechnungsinformationen" />
       <div className="col-span-3 flex justify-between">
         <p className="block text-sm font-medium leading-6 text-gray-900">
@@ -93,6 +140,13 @@ const EditCampaign = ({campaign, setCampaign}) => {
           />
         </div>
       )}
+      <button
+        type="button"
+        onClick={handleClick}
+        className="rounded-md bg-indigo-600 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >
+        Abschicken
+      </button>
     </div>
   );
 };
@@ -110,7 +164,7 @@ export const Input = ({ label, type, value, setValue, keyName }) => {
         <input
           type={type}
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-          value={value[keyName] ? value[keyName] : ''}
+          value={value[keyName] ? value[keyName] : ""}
           onChange={(e) => {
             setValue({ ...value, [`${keyName}`]: e.target.value });
           }}
