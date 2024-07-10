@@ -5,9 +5,9 @@ const allowedMembers = [
   "christopher.buecklein@leoninestudios.com",
   "edwin.tetteh@leoninestudios.com",
   "johannes.schmidbauer@leoninestudios.com",
-  "christopher.buecklein@homeoftalents.com",
-  "edwin.tetteh@homeoftalents.com",
-  "johannes.schmidbauer@homeoftalents.com",
+  "christopher.buecklein@homeoftalents.de",
+  "edwin.tetteh@homeoftalents.de",
+  "johannes.schmidbauer@homeoftalents.de",
 ];
 
 export default withAuth(
