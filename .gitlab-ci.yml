@@ -6,6 +6,8 @@ stages:
 
 test project:
   stage: test
+  tags:
+    - runner-01
   script:
     - echo "noch keine tests angelegt, diese Stage fixed automatisch"
 
@@ -13,6 +15,8 @@ deploy project:
   stage: deploy
   only:
     - main
+  tags:
+    - runner-01
   script:
     - npm install --global vercel
     - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
