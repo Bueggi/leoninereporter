@@ -17,7 +17,7 @@ const handler = async (req, { params }) => {
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { success: false, message: error.message },
+      { success: false, message: error },
       { status: 500 }
     );
   }
