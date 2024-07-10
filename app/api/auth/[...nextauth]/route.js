@@ -47,16 +47,16 @@ export const authOptions = {
         return null;
       }
     },
-    async jwt({ token, account, profile }) {
-      const userInDatabase = await prisma.user.findUnique({where: {email: token.email}})
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      token.id = userInDatabase.id
-      token.role = userInDatabase.role
-      return token
-    },
-    async session(session, token, user) {
-      return session
-    }
+    // async jwt({ token, account, profile }) {
+    //   const userInDatabase = await prisma.user.findUnique({where: {email: token.email}})
+    //   // Persist the OAuth access_token and or the user id to the token right after signin
+    //   token.id = userInDatabase.id
+    //   token.role = userInDatabase.role
+    //   return token
+    // },
+    // async session(session, token, user) {
+    //   return session
+    // }
   },
 };
 
