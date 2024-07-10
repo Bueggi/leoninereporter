@@ -13,26 +13,38 @@ export const authOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    async signIn({user, account}) {
-      const validEmails = ['johannes.schmidbauer@leoninestudios.com', "edwin.tetteh@leoninestudios.com", 'christopher.buecklein@leoninestudios.com', 'business.chris.buck@gmail.com']
+    async signIn({ user, account }) {
+      const validEmails = [
+        "johannes.schmidbauer@homeoftalents.de",
+        "edwin.tetteh@homeoftalents.de",
+        "christopher.buecklein@homeoftalents.de",
+        "johannes.schmidbauer@leoninestudios.com",
+        "edwin.tetteh@leoninestudios.com",
+        "christopher.buecklein@leoninestudios.com",
+        "business.chris.buck@gmail.com",
+      ];
       // ist die Email valide?
-      if(validEmails.some(e => e === user.email)) {
+      if (validEmails.some((e) => e === user.email)) {
         // gibt es den User schon?
-        const existingUser = await prisma.user.findFirst({where: {email: user.email}})
+        const existingUser = await prisma.user.findFirst({
+          where: { email: user.email },
+        });
         // wenn nein, dann lege den User in der Datenbank an
         if (!existingUser) {
-          const newUser = await prisma.user.create({data: {
-            email: user.email,
-            name: user.name,
-            image: user.image
-          }})
-          return newUser
+          const newUser = await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              image: user.image,
+            },
+          });
+          return newUser;
         }
         // wenn ja, gib mir den User aus der Datenbank zurück
-        return existingUser
+        return existingUser;
       } else {
         // wenn die Emailadresse nicht valide ist, dann ist der Loginversuch gescheitert
-        return null
+        return null;
       }
     },
     // async jwt({ token, account, profile }) {
@@ -45,7 +57,7 @@ export const authOptions = {
     // async session(session, token, user) {
     //   return session
     // }
-  }
+  },
 };
 
 const handler = NextAuth(authOptions);
