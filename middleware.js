@@ -14,6 +14,7 @@ export default withAuth(
   function middleware(req) {
 
     console.log(req.nextauth.token.email)
+    console.log(req.nextauth.token)
     if (!allowedMembers.some(el=> el.toLowerCase() === req.nextauth.token.email.toLowerCase())) {
       return NextResponse.rewrite(new URL("/accessDenied", req.url));
     }
