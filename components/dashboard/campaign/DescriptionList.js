@@ -18,7 +18,7 @@ export default function DescriptionList({ campaign }) {
       show: true,
     },
     { title: "Status", value: status, show: true },
-    { title: "Advertiser", value: advertiser.name, show: true },
+    { title: "Advertiser", value: advertiser && advertiser.name ? advertiser.name : null, show: true },
     { title: "Start", value: start, show: start ? true : false },
     { title: "Ende", value: end, show: end ? true : false },
   ];

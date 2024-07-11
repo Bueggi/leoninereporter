@@ -17,6 +17,18 @@ const handler = async (req, { params }) => {
       status,
     } = await req.json();
 
+    console.log(
+      name,
+      advertiserID,
+      isServiceplan,
+      ordernumber,
+      product,
+      onlineCampaign,
+      productfamily,
+      customergroup,
+      customer,
+      status
+    );
     const { id } = params;
 
     const updateCampaign = await prisma.campaign.update({
@@ -36,6 +48,13 @@ const handler = async (req, { params }) => {
         customer,
         status,
       },
+      include: {
+        advertiser: {
+          select: {
+            name: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(

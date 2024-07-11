@@ -134,7 +134,7 @@ const ListAdvertisers = () => {
                           </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <a
-                              href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/advertiser/${item.id}/edit`}
+                              href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/advertiser/${item.id}`}
                               className="text-indigo-600 hover:text-indigo-900 mr-4"
                             >
                               <button

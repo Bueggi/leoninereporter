@@ -78,7 +78,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
         <RefNumberInput
           title="Share"
           sign="%"
-          placeholder="0.1"
+          placeholder="10"
           ref={shareRef}
           required={"required"}
         />

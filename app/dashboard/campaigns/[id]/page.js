@@ -1,18 +1,11 @@
 "use client";
 import { notFound } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
-import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  UsersIcon,
-} from "@heroicons/react/24/outline";
+import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import EmptyState from "@components/pComponents/EmptyState";
-import InformationField from "@components/pComponents/dashboard/campaigns/InformationField";
 import moment from "moment";
 
-import Badge from "@components/pComponents/Badge";
 import { publishingOptions } from "@lib/dashboard/publishingOptions";
 import {
   deleteOfferGroup,
@@ -28,12 +21,7 @@ import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
 import DescriptionList from "@components/dashboard/campaign/DescriptionList";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import EditCampaign from '@components/dashboard/campaign/EditCampaign'
-
-// Hilfsfunktion von Tailwind, um Klassennamen zu mergen
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import EditCampaign from "@components/dashboard/campaign/EditCampaign";
 
 export default function Campaigns({ params: { id } }) {
   // State für dieses Component:
@@ -42,7 +30,7 @@ export default function Campaigns({ params: { id } }) {
   const [campaign, setcampaign] = useState({});
   const [loading, setLoading] = useState(true);
   const [addOfferModalOpen, setAddOfferModalOpen] = useState(false);
-  const [editCampaignModalOpen, setEditCampaignModalOpen] = useState(true);
+  const [editCampaignModalOpen, setEditCampaignModalOpen] = useState(false);
   const [editOfferModal, setEditOfferModal] = useState(false);
   const [chosenOfferGroupID, setChosenOfferGroupID] = useState();
   const [offerToEdit, setOfferToEdit] = useState();
@@ -76,7 +64,11 @@ export default function Campaigns({ params: { id } }) {
       )}
       {editCampaignModalOpen && (
         <Modal open={editCampaignModalOpen} setOpen={setEditCampaignModalOpen}>
-          <EditCampaign campaign={campaign} setCampaign={setcampaign}/>
+          <EditCampaign
+            campaign={campaign}
+            setCampaign={setcampaign}
+            setOpen={setEditCampaignModalOpen}
+          />
         </Modal>
       )}
       {/* Das Modal, das die Offers bearbeitet */}
@@ -103,12 +95,10 @@ export default function Campaigns({ params: { id } }) {
       )}
 
       <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex justify-between mb-12">
-        <div>
-          {campaign.name}
-        </div>
+        <div>{campaign.name}</div>
         <button
           type="button"
-          onClick={()=>setEditCampaignModalOpen(true)}
+          onClick={() => setEditCampaignModalOpen(true)}
           className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           <CheckCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />

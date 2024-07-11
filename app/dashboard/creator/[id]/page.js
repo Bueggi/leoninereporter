@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "react-toastify";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
 import {
   ArrowDownIcon,
@@ -9,14 +9,17 @@ import {
   EnvelopeOpenIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import InformationBullet from "@components/pComponents/InformationBullet";
 import CreatorDescription from "@components/pComponents/dashboard/creator/CreatorDescription";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import Modal from "@components/pComponents/Modal";
+import EditCreator from '@components/dashboard/creator/EditCreator'
 
-export default function Modal({ params: { id } }) {
+export default function CreatorDetails({ params: { id } }) {
   // State für dieses Component:
   // 1. Der creator, den wir bearbeiten wollen / dessen Informationen wir einsehen wollen
   const [creator, setCreator] = useState({});
   const [loading, setLoading] = useState(true);
+  const [editCreatorModalOpen, setEditCreatorModalOpen] = useState(true);
 
   // Beim Mount des Components wird der creator aus der Datenbank geladen
   useEffect(() => {
@@ -78,10 +81,30 @@ export default function Modal({ params: { id } }) {
   if (!creator) return notFound();
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-        Informationen über {creator.channelName}
-      </h2>
+    <div className="">
+      {/* Modal for editing the creator */}
+      {editCreatorModalOpen && (
+        <Modal open={editCreatorModalOpen} setOpen={setEditCreatorModalOpen}>
+          <EditCreator
+            setOpen={setEditCreatorModalOpen}
+            state={creator}
+            setState={setCreator}
+          />
+        </Modal>
+      )}
+      <div className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex justify-between mb-12">
+        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+          Informationen über {creator.channelName}
+        </h2>
+        <button
+          type="button"
+          onClick={() => setEditCreatorModalOpen(true)}
+          className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          <CheckCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+          Creator bearbeiten
+        </button>
+      </div>
       {/* <InformationBullet /> */}
       <CreatorDescription creator={creator} />
       <h3 className="text-base font-semibold leading-6 text-gray-900">

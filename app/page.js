@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 
 export default function Homepage() {
+  const session = useSession(); // based on your data you should store it here in state
+  console.log(session);
+
   return (
     <div className="bg-white">
       <div className="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-14">
@@ -16,7 +18,7 @@ export default function Homepage() {
             <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:col-span-2 xl:col-auto">
               Home of Talents
             </h1>
-            
+
             <div className="mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1">
               <p className="text-lg leading-8 text-gray-600">
                 Willkommen in unserem Backend – dem geheimen Labor, wo wir
@@ -25,13 +27,22 @@ export default function Homepage() {
                 kampagnen, die unsere Zielgruppen im Sturm erobern.
               </p>
               <div className="mt-10 flex items-center gap-x-6">
-                <a
-                  href="#"
-                  onClick={() => signIn()}
-                  className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  LogIn
-                </a>
+                {session && session.status === "authenticated" ? (
+                  <a
+                    href="/dashboard"
+                    className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Zum Dashboard
+                  </a>
+                ) : (
+                  <a
+                    href="#"
+                    onClick={() => signIn()}
+                    className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    LogIn
+                  </a>
+                )}
               </div>
             </div>
             <img

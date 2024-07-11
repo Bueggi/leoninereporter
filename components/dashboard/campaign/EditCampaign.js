@@ -9,10 +9,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const EditCampaign = ({ campaign, setCampaign }) => {
-  const [state, setState] = useState(campaign);
+const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
+  const [state, setState] = useState({
+    ...campaign,
+    advertiserName: campaign.advertiser.name,
+  });
   const [advertisers, setAdvertisers] = useState();
-  const [isServiceplan, setIsServiceplan] = useState(true);
+  const [isServiceplan, setIsServiceplan] = useState(state.isServiceplan);
   const publishingLabels = publishingOptions.map((el) => el.title);
 
   // gets all advertisers from the database
@@ -39,7 +42,7 @@ const EditCampaign = ({ campaign, setCampaign }) => {
   const handleClick = async () => {
     try {
       const advertiserID = advertisers.filter(
-        (el) => el.name === state.advertiser.name
+        (el) => el.name === state.advertiserName
       );
 
       const updatedCampaign = {
@@ -67,7 +70,15 @@ const EditCampaign = ({ campaign, setCampaign }) => {
       );
       const { data, message } = await res.json();
       if (message) return toast.error(message);
+
       setState(data);
+      setCampaign({
+        ...data,
+        bookings: campaign.bookings,
+        offers: campaign.offers,
+      });
+      setOpen(false);
+      return toast.success("Die Kampagne wurde erfolgreich gespeichert");
     } catch (error) {
       toast(error);
     }
@@ -88,11 +99,17 @@ const EditCampaign = ({ campaign, setCampaign }) => {
         label="Advertiser"
         options={advertiserLabels}
         value={state && state.advertiser.name}
+        setState={setState}
+        state={state}
+        keyName="advertiserName"
       />
       <Dropdown
         label="Status"
         options={publishingLabels}
         value={state && state.status}
+        setState={setState}
+        state={state}
+        keyName="status"
       />
       <Ueberschrift label="Abrechnungsinformationen" />
       <div className="col-span-3 flex justify-between">
@@ -206,7 +223,14 @@ export const Toggle = ({ enabled, setEnabled }) => {
   );
 };
 
-export const Dropdown = ({ label, options, setStatus, value }) => {
+export const Dropdown = ({
+  label,
+  options,
+  setState,
+  state,
+  keyName,
+  value,
+}) => {
   return (
     <div>
       <label
@@ -218,7 +242,8 @@ export const Dropdown = ({ label, options, setStatus, value }) => {
       <select
         id="location"
         name="location"
-        defaultValue={value}
+        value={state[keyName]}
+        onChange={(e) => setState({ ...state, [`${keyName}`]: e.target.value })}
         className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
       >
         {options && options.map((el, i) => <option key={i}>{el}</option>)}
