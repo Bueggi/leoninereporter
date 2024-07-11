@@ -1,3 +1,5 @@
+import { Switch } from "@headlessui/react";
+
 export const Input = ({ label, type, value, setValue, keyName }) => {
     return (
       <div>
