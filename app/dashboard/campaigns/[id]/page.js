@@ -12,7 +12,6 @@ import {
   getcampaign,
   addOfferGroup,
   deleteOffer,
-  exportAsPODF,
 } from "./lib";
 import Modal from "@components/pComponents/Modal";
 import AddOffer from "@components/dashboard/campaign/offer/AddOffer";
@@ -22,6 +21,7 @@ import TableView from "@components/dashboard/campaign/booking/TableView";
 import DescriptionList from "@components/dashboard/campaign/DescriptionList";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import EditCampaign from "@components/dashboard/campaign/EditCampaign";
+import DownloadPDFButton from "@components/dashboard/campaign/DownloadPDF";
 
 export default function Campaigns({ params: { id } }) {
   // State für dieses Component:
@@ -127,7 +127,7 @@ export default function Campaigns({ params: { id } }) {
 
       <div className="mt-8">
         <div className="grid grid-cols-3 gap-8">
-          {campaign.offers.length ? (
+          {campaign.offers && campaign.offers.length ? (
             campaign.offers.map((el, i) => {
               return (
                 <div
@@ -155,7 +155,11 @@ export default function Campaigns({ params: { id } }) {
                       >
                         Neus Angebot
                       </button>
-                      <button
+                      <DownloadPDFButton
+                        offer={el}
+                        campaignName={campaign.name}
+                      />
+                      {/* <button
                         type="button"
                         onClick={() =>
                           exportAsPODF(el, setOfferArray, campaign.name)
@@ -163,7 +167,7 @@ export default function Campaigns({ params: { id } }) {
                         className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         PDF erstellen
-                      </button>
+                      </button> */}
                     </div>
                   </div>
 

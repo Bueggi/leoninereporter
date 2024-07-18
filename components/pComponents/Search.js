@@ -9,6 +9,7 @@ export default function Searchbar({ setLoading, model, setAllResults }) {
     try {
       setLoading(true);
       e.preventDefault();
+      console.log('MODEL KOMMT AN', model)
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/${model}/search`,
         {
@@ -18,6 +19,7 @@ export default function Searchbar({ setLoading, model, setAllResults }) {
         }
       );
       const { data, message } = await res.json();
+      console.log('RESULT IN SEARCH', data, message)
       if (data) {
         setLoading(false);
         return setAllResults({ data, mode: "search" });

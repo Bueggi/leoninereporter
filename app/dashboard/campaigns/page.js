@@ -26,7 +26,6 @@ const ListAdvertisers = () => {
   const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
 
   useEffect(() => {
-    console.log(getInitialData);
     getInitialData(setLoading, activePage, setAllCampaigns, setCount);
   }, [activePage]);
 

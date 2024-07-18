@@ -2,13 +2,7 @@ import Image from "next/image";
 import moment from "moment";
 
 const OfferTemplate = ({ offer }) => {
-  console.log(
-    "AUAIAIAIAIAIAIAIA",
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (accumulator === 0) return currentValue.start;
-      return accumulator > currentValue.start ? accumulator : currentValue.start;
-    }, 0)
-  );
+
   return (
     <div id="testID" className="w-full text-xl">
       <div className="mx-auto p-8 px-16 items-center align-middle justify-center w-[2208px] h-[1556px]">

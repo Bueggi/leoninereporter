@@ -4,11 +4,12 @@ import { NextResponse } from "next/server";
 const handler = async (req, res) => {
   try {
     const { searchstring } = await req.json();
+
     const result = await prisma.creator.findMany({
       where: {
-        name: {
+        channelName: {
           contains: searchstring,
-          mode: 'insensitive',
+          mode: "insensitive",
         },
       },
     });

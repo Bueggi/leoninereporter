@@ -16,7 +16,9 @@ const getInitialData = async (
     //fetching data from server - either in the range of active page or per default from page 1
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/list` +
-        (activePage ? `?page=${activePage}` : "")
+        (activePage ? `?page=${activePage}` : ""), {
+          cache: 'no-store'
+        }
     );
     const { data, count, message } = await res.json();
 
