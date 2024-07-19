@@ -1,8 +1,5 @@
-import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer';
 import { toast } from "react-toastify";
-import html2PDF from "jspdf-html2canvas";
-import OfferTemplate from "./OfferTemplate";
-import generatePDF, { usePDF, Resolution, Margin } from 'react-to-pdf';  
+
 
 // deleteOfferGroup
 // Mit dieser Funktion wird die Offergroup geloescht
@@ -120,73 +117,6 @@ const deleteOffer = async (id, state, setState) => {
   }
 };
 
-const exportAsPODF = async (offer, setOfferArray, name) => {
-  const MyDoc = () => (
-    <Document>
-      <Page>
-        // My document data
-      </Page>
-    </Document>
-  );
- 
-//   const options = {  
-//     // default is `save`  
-//     method: 'open',  
-//     // default is Resolution.MEDIUM = 3, which should be enough, higher values  
-//     // increases the image quality but also the size of the PDF, so be careful  
-//     // using values higher than 10 when having multiple pages generated, it  
-//     // might cause the page to crash or hang.  
-//     resolution: Resolution.HIGH,  
-//     page: {  
-//        // margin is in MM, default is Margin.NONE = 0  
-//        margin: Margin.SMALL,  
-//        // default is 'A4'  
-//        format: 'A4',  
-//        // default is 'portrait'  
-//        orientation: 'landscape',  
-//     },  
-//     canvas: {  
-//        // default is 'image/jpeg' for better size performance  
-//        mimeType: 'image/png',  
-//        qualityRatio: 1  
-//     },  
-//     // Customize any value passed to the jsPDF instance and html2canvas  
-//     // function. You probably will not need this and things can break,   
-//     // so use with caution.  
-//     overrides: {  
-//        // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options  
-//        pdf: {  
-//           compress: true  
-//        },  
-//        // see https://html2canvas.hertzen.com/configuration for more options  
-//        canvas: {  
-//           useCORS: true  
-//        }  
-//     },  
-//  };  
-
-
-//  const finalOffer = <OfferTemplate offer={offer} />;
-//  setOfferArray([finalOffer]);
-//  sleep(500).then(() => {
-//     let page = document.getElementsByTagName("body");
-//     generatePDF(page, options)
-//     // html2PDF(page, {
-//     //   jsPDF: {
-//     //     format: "a5",
-//     //     orientation: "landscape",
-//     //   },
-//     //   imageType: "image/png",
-//     //   output: `./${name}.pdf`,
-//     // });
-//     sleep(500).then(() => setOfferArray([]));
-//   // }
-// );
-
-  return;
-
-  // setOfferArray([]);
-};
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -198,5 +128,4 @@ export {
   getcampaign,
   addOfferGroup,
   deleteOffer,
-  exportAsPODF,
 };

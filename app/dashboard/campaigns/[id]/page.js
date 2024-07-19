@@ -40,7 +40,7 @@ export default function Campaigns({ params: { id } }) {
   // Beim Mount des Components wird der campaign aus der Datenbank geladen
   useEffect(() => {
     getcampaign(id, setcampaign, setLoading);
-  }, []);
+  }, [id]);
 
   // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
