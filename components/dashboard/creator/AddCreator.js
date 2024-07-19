@@ -10,9 +10,17 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
   const channelIDRef = useRef();
   const companyRef = useRef();
   const anbindungRef = useRef("TALENT");
-  const shareRef = useRef(3);
+  const shareRef = useRef(10);
   const goalRef = useRef(3);
-  const imageRef = useRef(3);
+  const managementRef = useRef();
+  const channelIDsRef = useRef([]);
+  const taxableRef = useRef();
+  const imageRef = useRef();
+  const invoiceAddressRef = useRef();
+  const paymentGoalRef = useRef(14);
+  const reverseChargeRef = useRef(false);
+
+
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -33,6 +41,11 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
             goal: goalRef.current.value,
             image: imageRef.current.value,
             anbindung: anbindungRef.current.value || "OWNED",
+            taxable: taxableRef.current.value,
+            management: managementRef.current.value,
+            invoiceAddress: invoiceAddressRef.current.value,
+            paymentGoal: paymentGoalRef.current.value,
+            reverseCharge: reverseChargeRef.current.value
           }),
         }
       );
@@ -75,6 +88,21 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           ref={imageRef}
           required={"required"}
         />
+        <RefTextInput
+          title="Management"
+          ref={managementRef}
+        />
+        <RefTextInput
+          title="Steuerpflichtig in"
+          ref={taxableRef}
+          required={"required"}
+        />
+        <Toggle ref={anbindungRef} label="Reverse Charge" />
+        <RefTextInput
+          title="Abrechnungsadresse"
+          ref={invoiceAddressRef}
+          required={"required"}
+        />
         <RefNumberInput
           title="Share"
           sign="%"
@@ -85,6 +113,13 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
         <RefNumberInput
           title="Goal"
           ref={goalRef}
+          sign="%"
+          placeholder="103"
+          required={"required"}
+        />
+        <RefNumberInput
+          title="Zahlungsziel"
+          ref={paymentGoalRef}
           sign="%"
           placeholder="103"
           required={"required"}
