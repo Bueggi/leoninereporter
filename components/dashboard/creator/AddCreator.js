@@ -4,23 +4,22 @@ import { useRef } from "react";
 import RefTextInput from "@components/pComponents/inputs/RefTextInput";
 import RefNumberInput from "@components/pComponents/inputs/RefNumberInputs";
 import Toggle from "@components/pComponents/Toggle";
+import FormSubHeading from "@components/pComponents/FormSubHeading";
 
 export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
-  const nameRef = useRef();
-  const channelIDRef = useRef();
-  const companyRef = useRef();
   const anbindungRef = useRef("TALENT");
-  const shareRef = useRef(10);
-  const goalRef = useRef(3);
-  const managementRef = useRef();
+  const channelIDRef = useRef();
   const channelIDsRef = useRef([]);
-  const taxableRef = useRef();
+  const channelName = useRef();
+  const companyRef = useRef();
+  const goalRef = useRef(3);
   const imageRef = useRef();
   const invoiceAddressRef = useRef();
+  const managementRef = useRef();
   const paymentGoalRef = useRef(14);
   const reverseChargeRef = useRef(false);
-
-
+  const shareRef = useRef(10);
+  const taxableRef = useRef();
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -34,7 +33,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: nameRef.current.value,
+            name: channelName.current.value,
             channelID: channelIDRef.current.value,
             share: shareRef.current.value,
             company: companyRef.current.value,
@@ -45,7 +44,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
             management: managementRef.current.value,
             invoiceAddress: invoiceAddressRef.current.value,
             paymentGoal: paymentGoalRef.current.value,
-            reverseCharge: reverseChargeRef.current.value
+            reverseCharge: reverseChargeRef.current.value,
           }),
         }
       );
@@ -70,28 +69,24 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
         className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
         onSubmit={handleClick}
       >
-        <RefTextInput title="Name" ref={nameRef} required={"required"} />
+        <FormSubHeading>CreatorInformationen</FormSubHeading>
+        <RefTextInput title="Name" ref={channelName} required={"required"} />
         <RefTextInput
           title="ChannelID"
           ref={channelIDRef}
           required={"required"}
         />
+
         <RefTextInput title="Company" ref={companyRef} required={"required"} />
-        {/* <RefTextInput
-        title="Anbindung"
-        ref={anbindungRef}
-        required={"required"}
-      /> */}
+
         <Toggle ref={anbindungRef} label="Talent" />
         <RefTextInput
           title="Link zum Bild"
           ref={imageRef}
           required={"required"}
         />
-        <RefTextInput
-          title="Management"
-          ref={managementRef}
-        />
+        <FormSubHeading>Zahlungsinformationen</FormSubHeading>
+
         <RefTextInput
           title="Steuerpflichtig in"
           ref={taxableRef}
@@ -103,6 +98,18 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           ref={invoiceAddressRef}
           required={"required"}
         />
+        <RefNumberInput
+          title="Zahlungsziel in Tagen"
+          ref={paymentGoalRef}
+          sign=""
+          placeholder="60"
+          required={"required"}
+        />
+
+        <RefTextInput title="Management" ref={managementRef} />
+
+        <FormSubHeading>Auszahlungsinformationen</FormSubHeading>
+
         <RefNumberInput
           title="Share"
           sign="%"
@@ -117,13 +124,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           placeholder="103"
           required={"required"}
         />
-        <RefNumberInput
-          title="Zahlungsziel"
-          ref={paymentGoalRef}
-          sign="%"
-          placeholder="103"
-          required={"required"}
-        />
+        
         <button
           type="submit"
           className="mt-8 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

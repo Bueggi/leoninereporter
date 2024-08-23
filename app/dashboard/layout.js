@@ -9,8 +9,9 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import moment from "moment";
-import 'moment/locale/de'
-moment.locale('de')
+import "moment/locale/de";
+import { signOut } from "next-auth/react";
+moment.locale("de");
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
@@ -35,7 +36,8 @@ const campaigns = [
     href: "/dashboard/creator",
     initial: "C",
     current: false,
-  },{
+  },
+  {
     id: 3,
     name: "Advertiser",
     href: "/dashboard/advertiser",
@@ -273,12 +275,12 @@ export default function DashboardLayout({ children }) {
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                       alt=""
                     />
-                    <span className="sr-only">Your profile</span>
                     <span aria-hidden="true">Tom Cook</span>
                   </a>
                 </li>
               </ul>
             </nav>
+            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'onClick={signOut}>Ausloggen</button>
           </div>
         </div>
 

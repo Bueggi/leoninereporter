@@ -9,7 +9,6 @@ import prisma from "@lib/prisma";
 // returns Object {success: BOOLEAN, data?, message?}
 const handler = async (req, res) => {
   try {
-  
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(
@@ -18,14 +17,9 @@ const handler = async (req, res) => {
       );
     }
 
+    console.log(session)
     const user = await prisma.user.findUnique({
-      where: { email: session.session.user.email },
-      select: {
-        email: true,
-        name: true,
-        id: true, 
-        role: true
-      },
+      where: { email: session.user.email }
     });
 
     if (user) {
