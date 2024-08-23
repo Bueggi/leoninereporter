@@ -43,24 +43,6 @@ const handler = async (req, res) => {
       },
     });
 
-    // id             String    @id @default(uuid())
-    // createdAt      DateTime  @default(now())
-    // updatedAt      DateTime  @updatedAt
-    // channelID      String    @unique
-    // channelIDs     String[]  @default([])
-    // channelName    String
-    // taxable        String?
-    // reverseCharge  Boolean?
-    // paymentGoal    Int?
-    // invoiceAddress String?
-    // management     String?
-    // share          Int
-    // company        String
-    // goal           Float
-    // demographics   Json?
-    // anbindung      Anbindung @default(OWNED)
-    // image          String
-
     return NextResponse.json(
       { success: true, data: newCreator },
       { status: 200 }
