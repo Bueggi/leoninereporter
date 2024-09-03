@@ -12,7 +12,7 @@ import {
 import CreatorDescription from "@components/pComponents/dashboard/creator/CreatorDescription";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import Modal from "@components/pComponents/Modal";
-import EditCreator from '@components/dashboard/creator/EditCreator'
+import EditCreator from "@components/dashboard/creator/EditCreator";
 
 export default function CreatorDetails({ params: { id } }) {
   // State für dieses Component:
@@ -80,6 +80,36 @@ export default function CreatorDetails({ params: { id } }) {
 
   if (!creator) return notFound();
 
+  const {
+    channelName,
+    channelID,
+    share,
+    demographics,
+    company,
+    goal,
+    image,
+    anbindung,
+    taxable,
+    management,
+    invoiceAddress,
+    paymentGoal,
+    reverseCharge,
+  } = creator;
+
+  const creatorList = [
+    { title: "Creatorname", value: channelName },
+    { title: "ChannelIDs", value: channelID },
+    { title: "Firma", value: company },
+    { title: "Rechnungsadresse", value: invoiceAddress },
+    { title: "Management", value: management },
+    { title: "Anbindung", value: anbindung },
+    { title: "Goal", value: goal },
+    { title: "Share", value: share },
+    { title: "Reverse Charge", value: reverseCharge },
+    { title: "Steuerpflichtig in Deutschland", value: taxable },
+    { title: "Zahlungsziel", value: paymentGoal },
+  ];
+
   return (
     <div className="">
       {/* Modal for editing the creator */}
@@ -106,7 +136,27 @@ export default function CreatorDetails({ params: { id } }) {
         </button>
       </div>
       {/* <InformationBullet /> */}
-      <CreatorDescription creator={creator} />
+
+      <div className="grid grid-cols-1  md:grid-cols-4 gap-8">
+        {creatorList.map((el, i) => {
+          console.log(creatorList[i].value);
+          return (
+            creatorList[i].value !== null && (
+              <div className="">
+                <div className="flex flex-col">
+                  <p className="text-xl font-bold">{el.value}</p>
+                  <h3 className="text-sm font-light text-slate-600">
+                    {el.title}
+                  </h3>
+                </div>
+              </div>
+            )
+          );
+        })}
+
+
+      </div>
+
       <h3 className="text-base font-semibold leading-6 text-gray-900">
         Diese Statistiken sind noch nicht programmiert, sondern nur Dummies
       </h3>

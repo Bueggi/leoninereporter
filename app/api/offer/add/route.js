@@ -6,8 +6,21 @@ import moment from "moment";
 
 const handler = async (req, res) => {
   try {
-    const { reach, start, end, product, rotation, tkp, output, targeting, offerGroupID } =
-      await req.json();
+    const {
+      reach,
+      start,
+      end,
+      product,
+      rotation,
+      tkp,
+      output,
+      targeting,
+      plz,
+      age,
+      platform,
+      offerGroupID,
+      frequencyCap
+    } = await req.json();
 
     // find offerGroup and return error if offerGroup does not exist
     const offerGroup = await prisma.offerGroup.findUnique({
@@ -32,6 +45,10 @@ const handler = async (req, res) => {
         output,
         targeting,
         offerGroupID,
+        plz,
+        age,
+        platform,
+        frequencyCap
       },
     });
 

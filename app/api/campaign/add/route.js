@@ -14,15 +14,18 @@ const handler = async (req, res) => {
         email: user.email,
       },
     });
-    const { name, status, advertiserID } =
+    const { name, status, advertiserID, customRiskFee, customRiskFeeAmount } =
       await req.json();
 
+      console.log(customRiskFee, customRiskFeeAmount)
     const newCampaign = await prisma.campaign.create({
       data: {
         name,
         status,
         advertiserID,
         creatorId: issuer.id,
+        customRiskFee,
+        customRiskFeeAmount: +customRiskFeeAmount,
       },
     });
 

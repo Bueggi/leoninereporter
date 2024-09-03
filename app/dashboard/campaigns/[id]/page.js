@@ -2,9 +2,10 @@
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
-import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import EmptyState from "@components/pComponents/EmptyState";
-import moment from "moment";
+
+import OfferDisplay from "@components/dashboard/campaign/offer/OfferDisplay";
 
 import { publishingOptions } from "@lib/dashboard/publishingOptions";
 import {
@@ -174,64 +175,14 @@ export default function Campaigns({ params: { id } }) {
                   <div className="mt-12">
                     {el.offers.length > 0 &&
                       el.offers.map((el, i) => (
-                        <div className="relative" key={i}>
-                          <div className="absolute top-2 -right-2 flex flex-col gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setOfferToEdit(el);
-                                setEditOfferModal(true);
-                              }}
-                              className="rounded-full border border-black bg-emerald-400 p-1 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-                            >
-                              <PencilIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </button>
-                            <button
-                              type="button"
-                              className="rounded-full border border-black bg-red-400 p-1 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                            >
-                              <TrashIcon
-                                onClick={() => {
-                                  deleteOffer(el.id, campaign, setcampaign);
-                                }}
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </div>
-                          <div className="rounded-md border-slate-700 border px-2 py-1 my-2 bg-slate-200 text-xs grid grid-cols-2 gap-2">
-                            <div className="flex flex-col">
-                              <span className="font-bold">Zeitraum:</span>
-                              {moment(el.start).format("L")} -
-                              {moment(el.end).format("L")}
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-bold">Reichweite:</span>
-                              {el.reach.toLocaleString("de-DE")}
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-bold">TKP:</span>
-                              {el.tkp.toLocaleString("de-DE", {
-                                style: "currency",
-                                currency: "EUR",
-                              })}
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-bold">Summe:</span>
-                              {((+el.tkp / 1000) * +el.reach).toLocaleString(
-                                "de-DE",
-                                { style: "currency", currency: "EUR" }
-                              )}
-                            </div>
-                            <div className="col-span-2 flex flex-col">
-                              <span className="font-bold">Rotation:</span>
-                              {el.rotation}
-                            </div>
-                          </div>
-                        </div>
+                        <OfferDisplay
+                          el={el}
+                          i={i}
+                          key={i}
+                          setOfferToEdit={setOfferToEdit}
+                          deleteOffer={deleteOffer}
+                          setEditOfferModal={setEditOfferModal}
+                        />
                       ))}
                     {!el.offers.length && (
                       <EmptyState

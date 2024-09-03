@@ -15,7 +15,7 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
     advertiserName: campaign.advertiser.name,
   });
   const [advertisers, setAdvertisers] = useState();
-  const [isServiceplan, setIsServiceplan] = useState(state.isServiceplan);
+  const [isServiceplan, setIsServiceplan] = useState(campaign.isServiceplan);
   const publishingLabels = publishingOptions.map((el) => el.title);
 
   // gets all advertisers from the database
@@ -49,13 +49,17 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
         name: state.name,
         advertiserID: advertiserID[0].id,
         ordernumber: state.ordernumber,
-        isServiceplan: state.isServiceplan,
+        isServiceplan: isServiceplan,
         product: isServiceplan ? state.product : null,
         onlineCampaign: isServiceplan ? state.onlineCampaign : null,
         productfamily: isServiceplan ? state.productfamily : null,
         customergroup: isServiceplan ? state.customergroup : null,
         customer: isServiceplan ? state.customer : null,
         status: state.status,
+        customRiskFee: state.customRiskFee,
+        customRiskFeeAmount: state.customRiskFee
+          ? state.customRiskFeeAmount
+          : null,
       };
 
       const res = await fetch(
@@ -94,6 +98,7 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
         type="text"
         keyName="name"
       />
+
 
       <Dropdown
         label="Advertiser"
@@ -157,13 +162,40 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
           />
         </div>
       )}
-      <button
-        type="button"
-        onClick={handleClick}
-        className="rounded-md bg-indigo-600 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-        Abschicken
-      </button>
+      <div className="col-span-3 flex justify-between">
+        <p className="block text-sm font-medium leading-6 text-gray-900">
+          Individuelle Risk Fee (anstatt der Standard Risk Fee)
+        </p>
+        <Toggle
+          enabled={state.customRiskFee}
+          setEnabled={() => {
+            setState({
+              ...state,
+              customRiskFee: !state.customRiskFee,
+            });
+          }}
+        />
+      </div>
+
+      {state.customRiskFee && (
+        <Input
+          label="Risk Fee in %"
+          value={state}
+          setValue={setState}
+          type="number"
+          keyName="customRiskFeeAmount"
+        />
+      )}
+
+      <div className="col-span-3">
+        <button
+          type="button"
+          onClick={handleClick}
+          className="rounded-md bg-indigo-600 mt-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Abschicken
+        </button>
+      </div>
     </div>
   );
 };
@@ -180,6 +212,7 @@ export const Input = ({ label, type, value, setValue, keyName }) => {
       <div className="mt-2">
         <input
           type={type}
+          step={0.01}
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           value={value[keyName] ? value[keyName] : ""}
           onChange={(e) => {

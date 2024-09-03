@@ -1,5 +1,9 @@
 import { Switch } from "@headlessui/react";
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
 export const Input = ({ label, type, value, setValue, keyName }) => {
     return (
       <div>
@@ -31,9 +35,15 @@ export const Input = ({ label, type, value, setValue, keyName }) => {
     );
   };
   
-  export const Toggle = ({ enabled, setEnabled }) => {
+  export const Toggle = ({label, enabled, setEnabled }) => {
     return (
       <div>
+         <label
+          htmlFor="email"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          {label && label}
+        </label>
         <Switch
           checked={enabled}
           onChange={() => setEnabled(!enabled)}

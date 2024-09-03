@@ -6,7 +6,7 @@ const handler = async (req, { params }) => {
   try {
     const { id } = params;
 
-    const { name } = await req.json();
+    const { name, riskFee } = await req.json();
 
     if (!name)
       return NextResponse.json(
@@ -21,6 +21,7 @@ const handler = async (req, { params }) => {
 
       data: {
         name,
+        riskFee: +riskFee,
       },
     });
 

@@ -10,7 +10,12 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
   const rotationRef = useRef();
   const tkpRef = useRef();
   const outputRef = useRef();
+  const platformRef = useRef();
   const targetingRef = useRef();
+  const ageRef = useRef();
+  const plzRef = useRef();
+  const frequencyCapRef = useRef();
+  const placementRef = useRef();
 
   const handleAddOfferClick = async (e) => {
     e.preventDefault();
@@ -31,6 +36,11 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             rotation: rotationRef.current.value,
             targeting: targetingRef.current.value,
             output: outputRef.current.value,
+            age: ageRef.current.value,
+            plz: plzRef.current.value,
+            platform: platformRef.current.value,
+            frequencyCap: frequencyCapRef.current.value,
+            placement: platformRef.current.value,
             offerGroupID,
           }),
         }
@@ -90,6 +100,21 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
           />
         </div>
         <FormSubHeading>Finanzielles</FormSubHeading>
+        <div className="mt-2">
+          <label
+            htmlFor="impressions"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Frequency Cap
+          </label>
+          <input
+            required
+            type="text"
+            name="impressions"
+            ref={frequencyCapRef}
+            className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
         <div className="mt-2">
           <label
             htmlFor="impressions"
@@ -159,12 +184,41 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>
+
+        <div className="mt-2">
+          <label
+            htmlFor="output"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Placement
+          </label>
+          <input
+            type="text"
+            name="output"
+            ref={placementRef}
+            className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+        <div className="mt-2">
+          <label
+            htmlFor="output"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Plattform
+          </label>
+          <input
+            type="text"
+            name="output"
+            ref={platformRef}
+            className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
         <div className="mt-2">
           <label
             htmlFor="rotation"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            Targeting
+            Geschlecht
           </label>
           <input
             type="text"
@@ -178,12 +232,26 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             htmlFor="output"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            Ausspielung
+            Alterstargeting
           </label>
           <input
             type="text"
             name="output"
-            ref={outputRef}
+            ref={ageRef}
+            className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+        </div>
+        <div className="mt-2">
+          <label
+            htmlFor="output"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            PLZ Ausspielung
+          </label>
+          <input
+            type="text"
+            name="output"
+            ref={plzRef}
             className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>

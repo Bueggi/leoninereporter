@@ -7,7 +7,6 @@ const Dashboard = () => {
     const user = await userRes.json();
 
     const token = user.data.access_token;
-   
 
     // const reportTypesRes = await fetch(
     //   "https://youtubereporting.googleapis.com/v1/reportTypes?onBehalfOfContentOwner=_NzgmdcDWuwDB6xqTRZ8QA",
@@ -18,7 +17,7 @@ const Dashboard = () => {
     //     },
     //   }
     // );
-    
+
     // const reportTypes = await reportTypesRes.json();
     // console.log(reportTypes);
 
@@ -49,21 +48,20 @@ const Dashboard = () => {
     //     },
     //   }
     // );
-    
-    const reportStatusRes2 = await fetch(
-      "https://youtubereporting.googleapis.com/v1/media/CONTENT_OWNER/_NzgmdcDWuwDB6xqTRZ8QA/jobs/54876ed0-32aa-4b8a-8df8-484d8976dde1/reports/11375386548?alt=media",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    // https://youtubereporting.googleapis.com/v1/jobs/54876ed0-32aa-4b8a-8df8-484d8976dde1/reports/54876ed0-32aa-4b8a-8df8-484d8976dde1?onBehalfOfContentOwner=_NzgmdcDWuwDB6xqTRZ8QA
+    // https://youtubereporting.googleapis.com/v1/media/CONTENT_OWNER/_NzgmdcDWuwDB6xqTRZ8QA/jobs/54876ed0-32aa-4b8a-8df8-484d8976dde1/reports/11375386548?alt=media&onBehalfOfContentOwner=_NzgmdcDWuwDB6xqTRZ8QA
+    // const reportStatusRes2 = await fetch(
+    //   "https://youtubereporting.googleapis.com/v1/jobs/54876ed0-32aa-4b8a-8df8-484d8976dde1/reports/11375421131?onBehalfOfContentOwner=_NzgmdcDWuwDB6xqTRZ8QA",
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   }
+    // );
 
-    const reportStatus = await reportStatusRes2.json();
-
-    console.log(reportStatus)
-
+    const getReport = await fetch(`${process.env.NEXT_PUBLIC_HOSTURL}/api/reports/singleReport`);
+    const suspense = await getReport.json()
   };
 
   return (

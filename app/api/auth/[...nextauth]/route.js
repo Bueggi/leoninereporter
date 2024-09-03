@@ -59,6 +59,7 @@ export const authOptions = {
       // console.log({ token, account });
 
       if (account) {
+        console.log(account.access_token)
         const updatedUser = await prisma.user.update({
           where: {
             email: token.email,

@@ -10,11 +10,16 @@ const handler = async (req, { params }) => {
       channelName,
       channelID,
       share,
+      demographics,
       company,
       goal,
-      demographics,
-      anbindung,
       image,
+      anbindung,
+      taxable,
+      management,
+      invoiceAddress,
+      paymentGoal,
+      reverseCharge,
     } = await req.json();
 
     const checkArray = [
@@ -23,9 +28,12 @@ const handler = async (req, { params }) => {
       share,
       company,
       goal,
-      demographics,
       anbindung,
-      image,
+      taxable,
+      management,
+      invoiceAddress,
+      paymentGoal,
+      reverseCharge,
     ];
 
     if (checkArray.some((el) => el === undefined))

@@ -35,6 +35,7 @@ const EditAdvertiser = ({ setOpen, state, setState }) => {
       return setOpen(false);
     }
   };
+  console.log(formState)
   return (
     <>
       <form
@@ -47,6 +48,13 @@ const EditAdvertiser = ({ setOpen, state, setState }) => {
           value={formState}
           setValue={setFormState}
           keyName={"name"}
+        />
+        <Input
+          label={"Risk Fee"}
+          type={"number"}
+          value={formState}
+          setValue={setFormState}
+          keyName={"riskFee"}
         />
 
         <div className="col-span-3 flex gap-4">

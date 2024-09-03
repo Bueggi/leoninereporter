@@ -4,13 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import Statusbox from "../../pComponents/Statusbox";
 import SelectField from "@components/pComponents/SelectField";
 import { publishingOptions } from "@lib/dashboard/publishingOptions";
+import { Toggle } from "./EditCampaign";
 
 export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
-
   const nameRef = useRef();
-  const chosenAdvertiserRef = useRef();
+  const chosenAdvertiserRef = useRef(null);
   const [status, setStatus] = useState(publishingOptions[0]);
   const [advertiserList, setAdvertiserList] = useState([]);
+  const [customRiskFeeRef, setCustomRiskFeeRef] = useState(false);
+  const customRiskFeeAmountRef = useRef();
 
   // get initial states
   // useEffect for getting the advertisers as a value to the list
@@ -52,12 +54,16 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             name: nameRef.current.value,
             advertiserID: advertiserID[0].id,
             status: status.title,
+            customRiskFee: customRiskFeeRef,
+            customRiskFeeAmount:
+              customRiskFeeRef == true
+                ? customRiskFeeAmountRef.current.value
+                : null,
           }),
         }
       );
 
       const { data, message } = await res.json();
-      console.log("Kampagne wurde angelegt", data, message);
       if (!res.ok) toast.error(message);
       else toast.success(`Die Kampagne ${data.name} wurde angelegt`);
 
@@ -93,7 +99,6 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             />
           </div>
         </div>
-
         <label
           htmlFor="status"
           className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
@@ -105,14 +110,12 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             <Statusbox selected={status} setSelected={setStatus} />
           </div>
         </div>
-
         <label
           htmlFor="status"
           className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
         >
           Advertiser
         </label>
-
         <div className="mt-2 sm:col-span-2 sm:mt-0">
           <div className="flex rounded-md shadow-sm  sm:max-w-md">
             <SelectField
@@ -122,7 +125,40 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             />
           </div>
         </div>
-
+        <label
+          htmlFor="advertisername"
+          className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+        >
+          Individuelle RiskFee (sonst wird die Standard-Risk Fee des Advertisers
+          berechnet)
+        </label>
+        <div className="mt-2 sm:col-span-2 sm:mt-0 flex gap-4">
+          <Toggle enabled={customRiskFeeRef} setEnabled={setCustomRiskFeeRef} />
+        </div>
+        {customRiskFeeRef && (
+          <div className="col-span-3 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4">
+            <label
+              htmlFor="advertisername"
+              className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+            >
+              Risk Fee in %
+            </label>
+            <div className="mt-2 sm:col-span-2 sm:mt-0 transition transition-all ease-in-out delay-150">
+              <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <input
+                  type="number"
+                  step={0.1}
+                  name="advertisername"
+                  id="advertisername"
+                  autoComplete="advertisername"
+                  className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  ref={customRiskFeeAmountRef}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        )}
         <div className="mt-2 sm:col-span-3 sm:mt-0">
           <button
             type="submit"

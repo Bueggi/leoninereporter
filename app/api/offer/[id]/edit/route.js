@@ -5,7 +5,20 @@ import prisma from "../../../../../lib/prisma";
 const handler = async (req, { params }) => {
   try {
     const { id } = params;
-    const { start, end, reach, rotation, tkp, product } = await req.json();
+    const {
+      start,
+      end,
+      reach,
+      rotation,
+      tkp,
+      product,
+      platform,
+      age,
+      targeting,
+      plz,
+      frequencyCap,
+      placement,
+    } = await req.json();
 
     const offer = await prisma.offer.findFirst({ where: { id } });
 
@@ -27,6 +40,12 @@ const handler = async (req, { params }) => {
         rotation,
         tkp: +tkp,
         product,
+        placement,
+        targeting,
+        age,
+        plz,
+        platform,
+        frequencyCap
       },
     });
 

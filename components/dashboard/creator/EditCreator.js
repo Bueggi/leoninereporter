@@ -1,4 +1,8 @@
-import { Input, Ueberschrift } from "@components/dashboard/forms/FormInputs";
+import {
+  Input,
+  Toggle,
+  Ueberschrift,
+} from "@components/dashboard/forms/FormInputs";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -21,7 +25,18 @@ const EditCreator = ({ setOpen, state, setState }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            ...formState,
+            channelName: formState.channelName,
+            channelID: formState.channelID,
+            share: formState.share,
+            company: formState.company,
+            goal: formState.goal,
+            image: formState.image,
+            anbindung: formState.anbindung || "OWNED",
+            taxable: formState.taxable,
+            management: formState.management,
+            invoiceAddress: formState.invoiceAddress,
+            paymentGoal: formState.paymentGoal,
+            reverseCharge: formState.reverseCharge,
           }),
         }
       );
@@ -30,9 +45,10 @@ const EditCreator = ({ setOpen, state, setState }) => {
       setState(data);
       return toast.success("Der Creator wurde erfolgreich bearbeitet");
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
   };
+
   return (
     <>
       <form
@@ -44,45 +60,95 @@ const EditCreator = ({ setOpen, state, setState }) => {
           label={"Name"}
           type={"text"}
           value={formState}
-          setValue={setFormState}
           keyName={"channelName"}
+          setValue={setFormState}
         />
         <Input
           label={"Channel ID"}
           type={"text"}
           value={formState}
-          setValue={setFormState}
           keyName={"channelID"}
+          setValue={setFormState}
         />
         <Input
           label={"Firma"}
           type={"text"}
           value={formState}
-          setValue={setFormState}
           keyName={"company"}
+          setValue={setFormState}
+        />
+        <Toggle
+          label="Channel ist Talent"
+          enabled={formState.anbindung === "TALENT"}
+          setEnabled={(enabled) =>
+            setFormState((prev) => ({
+              ...prev,
+              anbindung: enabled ? "TALENT" : "OWNED",
+            }))
+          }
         />
         <Input
           label={"Link zum Bild"}
           type={"text"}
           value={formState}
-          setValue={setFormState}
           keyName={"image"}
+          setValue={setFormState}
         />
-        <Ueberschrift label={"Abrechnungsinformationen"} />
+
+        <Ueberschrift label={"Zahlungsinformationen"} />
         <Input
-          label={"Ziel (in %)"}
+          label={"Steuerpflichtig in"}
+          type={"text"}
+          value={formState}
+          keyName={"taxable"}
+          setValue={setFormState}
+        />
+        <Toggle
+          label="Reverse Charge"
+          enabled={formState}
+          keyName={"reverseCharge"}
+          setEnabled={(enabled) =>
+            setFormState((prev) => ({ ...prev, reverseCharge: enabled }))
+          }
+        />
+        <Input
+          label={"Abrechnungsadresse"}
+          type={"text"}
+          value={formState}
+          keyName={"invoiceAddress"}
+          setValue={setFormState}
+        />
+        <Input
+          label={"Zahlungsziel in Tagen"}
           type={"number"}
           value={formState}
+          keyName={"paymentGoal"}
           setValue={setFormState}
-          keyName={"goal"}
-        />{" "}
+        />
+        <Input
+          label={"Management"}
+          type={"text"}
+          value={formState}
+          keyName={"management"}
+          setValue={setFormState}
+        />
+
+        <Ueberschrift label={"Auszahlungsinformationen"} />
         <Input
           label={"Share (in %)"}
           type={"number"}
           value={formState}
-          setValue={setFormState}
           keyName={"share"}
+          setValue={setFormState}
         />
+        <Input
+          label={"Goal (in %)"}
+          type={"number"}
+          value={formState}
+          keyName={"goal"}
+          setValue={setFormState}
+        />
+
         <div className="col-span-3 flex gap-4">
           <button
             type="submit"
