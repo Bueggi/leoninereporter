@@ -9,7 +9,6 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
   const productRef = useRef();
   const rotationRef = useRef();
   const tkpRef = useRef();
-  const outputRef = useRef();
   const platformRef = useRef();
   const targetingRef = useRef();
   const ageRef = useRef();
@@ -35,12 +34,11 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             tkp: tkpRef.current.value,
             rotation: rotationRef.current.value,
             targeting: targetingRef.current.value,
-            output: outputRef.current.value,
             age: ageRef.current.value,
             plz: plzRef.current.value,
             platform: platformRef.current.value,
             frequencyCap: frequencyCapRef.current.value,
-            placement: platformRef.current.value,
+            placement: placementRef.current.value,
             offerGroupID,
           }),
         }
@@ -60,7 +58,8 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
       toast.success("Das Angebot wurde erfolgreich angelegt");
       setOpen(false);
     } catch (error) {
-      toast.error(error);
+      console.log(error);
+      return toast(error.message);
     }
   };
 
@@ -164,6 +163,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             </option>
             <option value="SKIPPABLE">Skippable Ad</option>
             <option value="BUMPER">Bumper Ad (6&apos;)</option>
+            <option value="SHAREOFVOICE">100% Share of Voice</option>
           </select>
         </div>
 
@@ -215,7 +215,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
         </div>
         <div className="mt-2">
           <label
-            htmlFor="rotation"
+            htmlFor="targeting"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
             Geschlecht
@@ -224,6 +224,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             type="text"
             name="targeting"
             ref={targetingRef}
+            required
             className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>

@@ -1,15 +1,17 @@
 "use client";
 import { toast } from "react-toastify";
-import { useRef } from "react";
-import RefTextInput from "@components/pComponents/inputs/RefTextInput";
+import { useRef, useState } from "react";
+import RefTextInput, {
+  StateTextInput,
+} from "@components/pComponents/inputs/RefTextInput";
 import RefNumberInput from "@components/pComponents/inputs/RefNumberInputs";
 import Toggle from "@components/pComponents/Toggle";
 import FormSubHeading from "@components/pComponents/FormSubHeading";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
 export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
+  const [channelIDs, setchannelIDs] = useState(['']);
   const anbindungRef = useRef("TALENT");
-  const channelIDRef = useRef();
-  const channelIDsRef = useRef([]);
   const channelName = useRef();
   const companyRef = useRef();
   const goalRef = useRef(3);
@@ -34,7 +36,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           },
           body: JSON.stringify({
             name: channelName.current.value,
-            channelID: channelIDRef.current.value,
+            channelIDs,
             share: shareRef.current.value,
             company: companyRef.current.value,
             goal: goalRef.current.value,
@@ -71,11 +73,30 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
       >
         <FormSubHeading>CreatorInformationen</FormSubHeading>
         <RefTextInput title="Name" ref={channelName} required={"required"} />
-        <RefTextInput
-          title="ChannelID"
-          ref={channelIDRef}
-          required={"required"}
-        />
+        {channelIDs.map((el, i) => {
+          return (
+            <StateTextInput
+              title="ChannelIDs"
+              placeholder={"ChannelID des Creators"}
+              value={el}
+              index={i}
+              setState={setchannelIDs}
+              state={channelIDs}
+            />
+          );
+        })}
+        <div className="col-span-3 flex justify-center">
+          <span>
+            <a>
+              <PlusCircleIcon
+                className="w-8 h-8 text-indigo-700"
+                onClick={() => {
+                  setchannelIDs([...channelIDs, ""]);
+                }}
+              />
+            </a>
+          </span>
+        </div>
 
         <RefTextInput title="Company" ref={companyRef} required={"required"} />
 
@@ -124,7 +145,7 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           placeholder="103"
           required={"required"}
         />
-        
+
         <button
           type="submit"
           className="mt-8 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

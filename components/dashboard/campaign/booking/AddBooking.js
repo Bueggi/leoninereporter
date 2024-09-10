@@ -158,6 +158,7 @@ export default function AddBooking({ campaignID, state, setState, setOpen }) {
               <option value="NONSKIPPABLE">Nonskippable Short Ad (20&apos;)</option>
               <option value="SKIPPABLE">Skippable Ad</option>
               <option value="BUMPER">Bumper Ad (6&apos;)</option>
+              <option value="SHAREOFVOICE">100% Share of Voice</option>
             </select>
           </div>
           <div className="col-span-1 md:col-span-3 text-xs leading-6 sm:order-none sm:w-auto sm:leading-7 text-indigo-600 font-bold mt-4">

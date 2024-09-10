@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import prisma from "@lib/prisma";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import { getServerSession } from "next-auth/next";
 import moment from "moment";
 
 const handler = async (req, res) => {
@@ -21,6 +19,8 @@ const handler = async (req, res) => {
       offerGroupID,
       frequencyCap
     } = await req.json();
+
+    console.log('got hit')
 
     // find offerGroup and return error if offerGroup does not exist
     const offerGroup = await prisma.offerGroup.findUnique({

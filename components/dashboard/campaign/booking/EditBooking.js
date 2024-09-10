@@ -171,6 +171,7 @@ export default function EditBooking({
               <option value="NONSKIPPABLE">Nonskippable Short Ad (20&apos;)</option>
               <option value="SKIPPABLE">Skippable Ad</option>
               <option value="BUMPER">Bumper Ad (6&apos;)</option>
+              <option value="SHAREOFVOICE">100% Share of Voice</option>
             </select>
           </div>
 

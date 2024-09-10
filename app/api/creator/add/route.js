@@ -5,7 +5,6 @@ const handler = async (req, res) => {
   try {
     const {
       name,
-      channelID,
       image,
       share,
       company,
@@ -19,7 +18,9 @@ const handler = async (req, res) => {
       management,
     } = await req.json();
 
-    if (!name || !channelID || !share || !company || !goal || !image)
+    console.log(channelIDs)
+
+    if (!name || !share || !company || !goal || !image)
       return NextResponse.json(
         { success: false, message: "Der Name darf nicht leer sein" },
         { status: 500 }
@@ -28,7 +29,6 @@ const handler = async (req, res) => {
     const newCreator = await prisma.creator.create({
       data: {
         channelName: name,
-        channelID,
         channelIDs,
         image,
         share: +share,

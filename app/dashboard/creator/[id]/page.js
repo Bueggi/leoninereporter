@@ -82,7 +82,7 @@ export default function CreatorDetails({ params: { id } }) {
 
   const {
     channelName,
-    channelID,
+    channelIDs,
     share,
     demographics,
     company,
@@ -98,17 +98,19 @@ export default function CreatorDetails({ params: { id } }) {
 
   const creatorList = [
     { title: "Creatorname", value: channelName },
-    { title: "ChannelIDs", value: channelID },
+    { title: "ChannelIDs", value: channelIDs.join(',') },
     { title: "Firma", value: company },
     { title: "Rechnungsadresse", value: invoiceAddress },
     { title: "Management", value: management },
     { title: "Anbindung", value: anbindung },
-    { title: "Goal", value: goal },
-    { title: "Share", value: share },
+    { title: "Goal", value: goal + "%" },
+    { title: "Share", value: share + "%" },
     { title: "Reverse Charge", value: reverseCharge },
     { title: "Steuerpflichtig in Deutschland", value: taxable },
     { title: "Zahlungsziel", value: paymentGoal },
   ];
+
+  console.log(channelIDs)
 
   return (
     <div className="">
@@ -139,7 +141,6 @@ export default function CreatorDetails({ params: { id } }) {
 
       <div className="grid grid-cols-1  md:grid-cols-4 gap-8">
         {creatorList.map((el, i) => {
-          console.log(creatorList[i].value);
           return (
             creatorList[i].value !== null && (
               <div className="">
@@ -153,8 +154,6 @@ export default function CreatorDetails({ params: { id } }) {
             )
           );
         })}
-
-
       </div>
 
       <h3 className="text-base font-semibold leading-6 text-gray-900">
