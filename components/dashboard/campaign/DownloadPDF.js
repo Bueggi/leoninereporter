@@ -9,8 +9,10 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import moment from "moment";
+import ReactDOM from "react-dom";
+import { PDFViewer } from "@react-pdf/renderer";
 
-const DownloadPDFButton = ({ campaignName, offer }) => {
+const DownloadPDFButton = ({ campaignName, offer, advertiser }) => {
   Font.register({
     family: "Lato",
     fonts: [
@@ -20,23 +22,34 @@ const DownloadPDFButton = ({ campaignName, offer }) => {
   });
 
   return (
-    <PDFDownloadLink
-      document={<MyDoc campaignName={campaignName} offer={offer} />}
-      fileName="somename.pdf"
-      style={tw(
-        "inline-flex items-center gap-x-1.5 rounded-md bg-indigo-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      )}
-    >
-      {({ blob, url, loading, error }) =>
-        loading ? "Loading document..." : "Download"
-      }
-    </PDFDownloadLink>
+    <>
+      <PDFDownloadLink
+        document={<MyDoc campaignName={campaignName} offer={offer} advertiser={advertiser} />}
+        fileName={`${campaignName}.pdf`}
+        style={tw(
+          "inline-flex items-center gap-x-1.5 rounded-md bg-indigo-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        )}
+      >
+        {({ blob, url, loading, error }) =>
+          loading ? "Loading document..." : "Download"
+        }
+      </PDFDownloadLink>
+      {/* <PDFViewer width={2000} height={2000}>
+        <MyDoc
+          campaignName={campaignName}
+          offer={offer}
+          advertiser={advertiser}
+        />
+      </PDFViewer> */}
+    </>
   );
 };
 
 export default DownloadPDFButton;
 
-export const MyDoc = ({ campaignName, offer }) => {
+export const MyDoc = ({ campaignName, offer, advertiser }) => {
+  const { placement, product, platform, frequencyCap, output, plz, age } =
+    offer;
   const today = moment().format("DD.MM.YYYY");
   const gueltigkeitsDatum = moment().add(14, "days").format("DD.MM.YYYY");
   const zeitraum =
@@ -176,94 +189,181 @@ export const MyDoc = ({ campaignName, offer }) => {
       <Page
         size="A4"
         style={tw("p-4  px-12 flex flex-row flex-wrap gap-4 w-full")}
-        orientation="landscape"
+        orientation="portrait"
       >
+        <View style={tw("w-full flex flex-row justify-end")}>
+          <Image src="/HoTLogo.png" style={tw("max-w-[8rem]")} />
+        </View>
+
+        <View style={tw("block flex flex-col mb-4")}>
+          <Text style={tw("text-[7px] text-slate-600 block")}>
+            LEONINE Licensing GmbH · Taunusstr. 21 · 80807 München
+          </Text>
+          <Text style={tw("text-sm text-slate-600 mt-4")}>
+            {advertiser.name && advertiser.name}
+          </Text>
+          <Text style={tw("text-sm text-slate-600")}>
+            {advertiser.address && advertiser.address}
+          </Text>
+          <Text style={tw("text-sm text-slate-600")}>
+            {advertiser.plz &&
+              advertiser.city &&
+              advertiser.plz + " " + advertiser.city}
+          </Text>
+          <Text style={tw("text-sm text-slate-600")}>
+            {advertiser.country && advertiser.country}
+          </Text>
+        </View>
+
+        <View style={tw("min-w-full flex flex-row justify-between")}>
+          <Text
+            style={tw(
+              "text-2xl flex flex-col font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight"
+            )}
+          >
+            Angebot für Kampagne {campaignName}
+          </Text>
+        </View>
         <View style={tw("flex flex-col")}>
           <Text
             className="text-blue-200"
-            style={tw("mt-2 flex items-center text-sm text-gray-500")}
+            style={tw("flex items-center text-sm text-gray-500")}
           >
             Angebotsnummer: {offer.offernumber}
           </Text>
           <Text
             className="text-blue-200"
-            style={tw("flex text-sm items-center text-gray-500 mb-2")}
+            style={tw("flex gap-4 text-sm items-center text-gray-500 mb-2")}
           >
-            Datum des Angebots: {today}
+            Datum des Angebots: {today} &nbsp; - &nbsp; Gültig bis:{" "}
+            {gueltigkeitsDatum}
           </Text>
-          <View style={tw("min-w-full flex flex-row justify-between")}>
-            <Text
-              style={tw(
-                "text-3xl flex flex-col font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight mb-12"
-              )}
-            >
-              Angebot für Kampagne {campaignName}
-            </Text>
-            <Image src="/HoTLogo.png" style={tw("max-w-[8rem]")} />
-          </View>
-          <View style={tw("flex flex-row gap-8 ")}>
-            <Text style={tw("flex align-middle text-sm text-gray-500")}>
-              Product: Home of Talents // Relevant Commitment
-            </Text>
-            <Text style={tw("flex align-middle text-sm text-gray-500")}>
-              Zeitraum: {zeitraum}
-            </Text>
-            <Text style={tw("flex align-middle text-sm text-gray-500")}>
-              Budget: {totalBudget}
-            </Text>
-            <Text style={tw("flex align-middle text-sm text-gray-500")}>
-              Rotation: {rotation}
-            </Text>
-            <Text style={tw("flex align-middle text-sm text-gray-500")}>
-              Targeting: {targeting}
+          <View style={tw("mt-12 text-sm")}>
+            <Text>Sehr geehrte Damen und Herren,</Text>
+            <Text>
+              wir freuen uns, Ihnen nachfolgendes Angebot zu unterbreiten:
             </Text>
           </View>
-          <View style={tw("min-w-full mt-20")}>
+          <View style={tw("flex flex-col gap-2 mt-8")}>
             <Text
               style={tw(
-                "text-xl flex flex-col font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight mb-4"
+                "text-xl flex flex-col font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight mb-1"
               )}
             >
               Angebotsübersicht{" "}
             </Text>
-
+            <View style={tw("flex flex-row gap-6")}>
+              <View style={tw("flex flex-col")}>
+                {product && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Product: {product}
+                  </Text>
+                )}
+                <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                  Zeitraum: {zeitraum}
+                </Text>
+                <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                  Budget: {totalBudget}
+                </Text>
+                {rotation && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Rotation: {rotation}
+                  </Text>
+                )}
+                {targeting && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Targeting: {targeting}
+                  </Text>
+                )}
+              </View>
+              <View style={tw("flex flex-col")}>
+                {age && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Alter:{age}
+                  </Text>
+                )}
+                {platform && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Plattform:{platform}
+                  </Text>
+                )}
+                {placement && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Placement: {placement}
+                  </Text>
+                )}
+                {frequencyCap && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Frequency Cap: {frequencyCap}
+                  </Text>
+                )}
+                {plz && (
+                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                    Postleitzahl: {plz}
+                  </Text>
+                )}
+                <Text
+                  style={tw("flex align-middle text-sm text-gray-500")}
+                ></Text>
+              </View>
+            </View>
+          </View>
+          <View style={tw("min-w-full mt-8")}>
             <View
               style={tw("flex flex-row bg-indigo-200 min-w-full text-sm mb-2")}
             >
               <View style={tw("flex-1 py-2 px-4")}>
                 <Text style={tw("")}> Home of Talents Media</Text>
               </View>
-              <View style={tw("flex-1 py-2 px-4 justify-items-end")}>
+              <View style={tw("flex-1 py-2 px-4 justify-end")}>
                 <Text>TKP(net)</Text>
               </View>
-              <View style={tw("flex-1 py-2 px-4 justify-items-end")}>
+              <View style={tw("flex-1 py-2 px-4 justify-end")}>
                 <Text> AIs</Text>
               </View>
-              <View style={tw("flex-1 py-2 px-4 justify-items-end")}>
+              <View style={tw("flex-1 py-2 px-4 justify-end")}>
                 <Text>Budget (net)</Text>
               </View>
             </View>
 
-            <View style={tw("flex flex-row min-w-full justify-between")}>
+            <View style={tw("flex flex-row min-w-full justify-end")}>
               <View style={tw("flex flex-col flex-1 px-4")}>
                 <Text style={tw("text-sm font-bold")}>Non Skip Short Ad</Text>
                 <Text style={tw("text-sm font-bold")}>Skippable Ad</Text>
                 <Text style={tw("text-sm font-bold")}>Bumper</Text>
               </View>
               <View style={tw("flex flex-col flex-1 px-4")}>
-                <Text style={tw("text-sm font-bold")}>{nonskipTKP}</Text>
-                <Text style={tw("text-sm font-bold")}>{skippableTKP}</Text>
-                <Text style={tw("text-sm font-bold")}>{bumperTKP}</Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
+                  {nonskipTKP}
+                </Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
+                  {skippableTKP}
+                </Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
+                  {bumperTKP}
+                </Text>
               </View>
-              <View style={tw("flex flex-col flex-1 px-4")}>
-                <Text style={tw("text-sm font-bold")}>{nonskipReach}</Text>
-                <Text style={tw("text-sm font-bold")}>{skippableReach}</Text>
-                <Text style={tw("text-sm font-bold")}>{bumperReach}</Text>
+              <View
+                style={tw("flex flex-col flex-1 px-4 justify-self-end ml-auto")}
+              >
+                <Text style={tw("text-sm font-bold flex ml-auto mr-12")}>
+                  {new Intl.NumberFormat('de-DE').format(nonskipReach)}
+                </Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
+                  {new Intl.NumberFormat('de-DE').format(skippableReach)}
+                </Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
+                  {new Intl.NumberFormat('de-DE').format(bumperReach)}
+                </Text>
               </View>
-              <View style={tw("flex flex-col flex-1 px-4")}>
-                <Text style={tw("text-sm font-bold")}>{nonskipBudget}</Text>
-                <Text style={tw("text-sm font-bold")}>{skippableBudget}</Text>
-                <Text style={tw("text-sm font-bold  min-w-full")}>
+              <View style={tw("flex flex-col flex-1 px-4 justify-end")}>
+                <Text style={tw("text-sm font-bold ml-auto mr-8")}>
+                  {nonskipBudget}
+                </Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-8")}>
+                  {skippableBudget}
+                </Text>
+                <Text style={tw("text-sm font-bold ml-auto mr-8")}>
                   {bumperBudget}
                 </Text>
               </View>
@@ -280,51 +380,56 @@ export const MyDoc = ({ campaignName, offer }) => {
               <View style={tw("flex-1 py-2 px-4")}>
                 <Text> </Text>
               </View>
-              <View style={tw("flex-1 py-2 px-4")}>
-                <Text> {totalReach}</Text>
+              <View style={tw("flex-1 py-2 px-4 ml-auto")}>
+                <Text style={tw("ml-auto mr-12")}> {new Intl.NumberFormat('de-DE').format(totalReach)}</Text>
               </View>
-              <View style={tw("flex-1 py-2 px-4")}>
-                <Text> {totalBudget}</Text>
+              <View style={tw("flex-1 py-2 px-4 ml-auto")}>
+                <Text style={tw("ml-auto mr-8")}> {totalBudget}</Text>
               </View>
             </View>
           </View>
         </View>
-
-        <View style={tw("flex flex-col gap-4 mt-36")}>
-          <Text style={tw("text-center text-xs text-gray-400")}>
+        <View style={tw("mt-8")}>
+          <Text style={tw("text-sm")}>
             Das vereinbarte Buchungsvolumen kann innerhalb des
             Leistungszeitraums frei im Rahmen der vereinbarten Rotation verteilt
-            werden - Turnusmäßige Leistungsnachweise erfolgen in Form von
-            PDF-Reports und Excel-Reports jeweils montags nach Kampagnenstart.
+            werden. Turnunsmäßige Leistungsnachweise erfolgen in Form von PDF-
+            und Excel-Reports, jeweils montags nach Kampagnenstart.
           </Text>
-          <Text style={tw("text-center text-xs text-gray-400")}>
-            Dieses Angebot wird gemacht durch „Home Of Talents“, eine Marke der
-            Leonine Licensing GmbH. Unternehmenssitz: Taunusstr. 21, 80807
-            München Geschäftsführung: Fred Kogel, Dr. Lisa Giehl, Stephan
-            Katzmann, Bernhard zu Castell
+          <Text style={tw("text-sm mt-3")}>
+            Bei den genannten Beträgen handelt es sich um Nettobeträge, die
+            jeweils zzgl. der jeweils gültigen MwSt. gelten. Rechnungen im
+            Zusammenhang mit unserem Angebot sind innerhalb von 14 Tagen ab
+            Rechnungszugang fällig.
           </Text>
-          <Text style={tw("text-center text-xs text-gray-400")}>
-            Kontakt: +49 89 999 513 – 0 Fax: +49 89 999 513 – 190 Email
-            info@leoninestudios.com Registereintrag: Gesellschaft mit
-            beschränkter Haftung registriert im Handelsregister beim Amtsgericht
-            München unter der Registernummer HRB 272 911 USt-ID DE 323 797 373 -
-            Wir freuen uns über baldige Rückmeldung, unser Angebot gilt bis zum
-            {gueltigkeitsDatum}
+          <Text style={tw("text-sm mt-3")}>
+            Wir freuen uns über baldige Rückmeldung.
           </Text>
-          <Text style={tw("text-center text-xs text-gray-400")}>
+        </View>
+
+        <View style={tw("flex flex-col gap-4 mt-16")}>
+          <Text style={tw("text-center text-[6px] text-gray-400")}>
             Alle in diesem Angebot enthaltenen Angaben sind vertraulich. Die
             Parteien verpflichten sich die im Rahmen dieses Angebots
             ausgetauschten Informationen, sowie alle im Falle der Durchführung
-            eines Auftrages bekannt werdenden Informationen und Daten
-            vertraulich zu behandeln und Dritten nicht zugänglich zu machen.
-            Verbundene Unternehmen iSd § 15 AktG gelten nicht als Dritte.
-            Leonine ist zur Weitergabe vertraulicher Informationen insoweit
-            berechtigt, als es zur Durchführung des Auftrags notwendig ist.
-            Änderungen und Ergänzungen dieser Bedingungen bedürfen zu ihrer
-            Rechtswirksamkeit der Schriftform. Das gleiche gilt für eine
-            Abbedingung dieser Schriftformbestimmung. Erfüllungsort und
-            ausschließlicher Gerichtsstand ist soweit zulässig München
+            eines Auftrages bekanntwerdenden Informationen und Daten vertraulich
+            zu behandeln und Dritten nicht zugänglich zu machen. Verbundene
+            Unternehmen iSd § 15 AktG gelten nicht als Dritte. Leonine ist zur
+            Weitergabe vertraulicher Informationen insoweit berechtigt, als es
+            zur Durchführung des Auftrags notwendig ist. Änderungen und
+            Ergänzungen dieser Bedingungen bedürfen zu ihrer Rechtswirksamkeit
+            der Schriftform. Das gleiche gilt für eine Abbedingung dieser
+            Schriftformbestimmung. Erfüllungsort und ausschließlicher
+            Gerichtsstand ist soweit zulässig München.
           </Text>
+     
+          <Text style={tw("text-center text-[6px] text-gray-400")}>
+          LEONINE Licensing GmbH · Taunusstr. 21 · 80807 München · Tel: +49 89 999 513 0 · Fax: +49 89 999 513 190 · Email
+            info@leoninestudios.com · Geschäftsführer: Fred Kogel, Dr. Lisa Giehl, Stephan Kathmann, Bernhard zu Castell · Sitz der Gesellschaft: München ·
+            Registereintrag: Gesellschaft mit beschränkter Haftung registriert im Handelsregister beim Amtsgericht
+            München unter der Registernummer HRB 272 911 · UniCredit Bank-AG · IBAN DE83 7002 0002 7620 80 · BIC HYVEDEMMXXX · USt-IdNr. DE 323 797 373
+          </Text>
+          
         </View>
       </Page>
     </Document>

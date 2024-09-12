@@ -3,11 +3,14 @@ import {
   Toggle,
   Ueberschrift,
 } from "@components/dashboard/forms/FormInputs";
+import { StateTextInput } from "@components/pComponents/inputs/RefTextInput";
+import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 const EditCreator = ({ setOpen, state, setState }) => {
   const [formState, setFormState] = useState(state);
+  const [channelIDs, setchannelIDs] = useState(formState.channelIDs);
 
   const resetDefaults = () => {
     setFormState(state);
@@ -26,7 +29,7 @@ const EditCreator = ({ setOpen, state, setState }) => {
           },
           body: JSON.stringify({
             channelName: formState.channelName,
-            channelID: formState.channelID,
+            channelIDs: channelIDs,
             share: formState.share,
             company: formState.company,
             goal: formState.goal,
@@ -49,6 +52,12 @@ const EditCreator = ({ setOpen, state, setState }) => {
     }
   };
 
+  const removeChannelID = (i) => {
+    const newChannelIDs = channelIDs;
+    newChannelIDs.splice(i, 1);
+    return setchannelIDs([...newChannelIDs]);
+  };
+
   return (
     <>
       <form
@@ -61,13 +70,6 @@ const EditCreator = ({ setOpen, state, setState }) => {
           type={"text"}
           value={formState}
           keyName={"channelName"}
-          setValue={setFormState}
-        />
-        <Input
-          label={"Channel ID"}
-          type={"text"}
-          value={formState}
-          keyName={"channelID"}
           setValue={setFormState}
         />
         <Input
@@ -94,6 +96,42 @@ const EditCreator = ({ setOpen, state, setState }) => {
           keyName={"image"}
           setValue={setFormState}
         />
+
+        {channelIDs.map((el, i) => {
+          return (
+            <>
+              <div className="block col-span-3 relative">
+                <StateTextInput
+                  title="ChannelIDs"
+                  placeholder={"ChannelID des Creators"}
+                  value={el}
+                  index={i}
+                  setState={setchannelIDs}
+                  state={channelIDs}
+                />
+                <div className="absolute bottom-1 right-48">
+                  <MinusCircleIcon
+                    className="w-8 h-8 text-indigo-700"
+                    onClick={() => removeChannelID(i)}
+                  />
+                </div>
+              </div>
+            </>
+          );
+        })}
+
+        <div className="col-span-3 flex justify-center">
+          <span>
+            <a>
+              <PlusCircleIcon
+                className="w-8 h-8 text-indigo-700"
+                onClick={() => {
+                  setchannelIDs([...channelIDs, ""]);
+                }}
+              />
+            </a>
+          </span>
+        </div>
 
         <Ueberschrift label={"Zahlungsinformationen"} />
         <Input

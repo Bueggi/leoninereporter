@@ -3,7 +3,7 @@ import prisma from "../../../../lib/prisma";
 
 const handler = async (req, res) => {
   try {
-    const { name, riskFee } = await req.json();
+    const { name, riskFee, plz, city, country, address } = await req.json();
     if (name === "")
       return NextResponse.json(
         { success: false, message: "Der Name darf nicht leer sein" },
@@ -14,6 +14,10 @@ const handler = async (req, res) => {
       data: {
         name,
         riskFee: +riskFee,
+        city,
+        address,
+        plz,
+        country,
       },
     });
 

@@ -7,10 +7,10 @@ import RefTextInput, {
 import RefNumberInput from "@components/pComponents/inputs/RefNumberInputs";
 import Toggle from "@components/pComponents/Toggle";
 import FormSubHeading from "@components/pComponents/FormSubHeading";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 
 export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
-  const [channelIDs, setchannelIDs] = useState(['']);
+  const [channelIDs, setchannelIDs] = useState([""]);
   const anbindungRef = useRef("TALENT");
   const channelName = useRef();
   const companyRef = useRef();
@@ -65,24 +65,40 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
     }
   };
 
+  const removeChannelID = (i) => {
+    const newChannelIDs = channelIDs;
+    newChannelIDs.splice(i, 1);
+    return setchannelIDs([...newChannelIDs]);
+  };
+
   return (
     <>
       <form
-        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
+        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6 relative"
         onSubmit={handleClick}
       >
         <FormSubHeading>CreatorInformationen</FormSubHeading>
         <RefTextInput title="Name" ref={channelName} required={"required"} />
         {channelIDs.map((el, i) => {
           return (
-            <StateTextInput
-              title="ChannelIDs"
-              placeholder={"ChannelID des Creators"}
-              value={el}
-              index={i}
-              setState={setchannelIDs}
-              state={channelIDs}
-            />
+            <>
+              <div className="block col-span-3 relative">
+                <StateTextInput
+                  title="ChannelIDs"
+                  placeholder={"ChannelID des Creators"}
+                  value={el}
+                  index={i}
+                  setState={setchannelIDs}
+                  state={channelIDs}
+                />
+                <div className="absolute bottom-1 right-48">
+                  <MinusCircleIcon
+                    className="w-8 h-8 text-indigo-700"
+                    onClick={() => removeChannelID(i)}
+                  />
+                </div>
+              </div>
+            </>
           );
         })}
         <div className="col-span-3 flex justify-center">

@@ -14,6 +14,10 @@ const handler = async (req, { params }) => {
         advertiser: {
           select: {
             name: true,
+            address: true,
+            country: true, 
+            plz: true, 
+            city: true
           },
         },
         offers: {

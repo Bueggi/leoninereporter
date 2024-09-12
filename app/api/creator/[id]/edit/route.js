@@ -8,7 +8,7 @@ const handler = async (req, { params }) => {
 
     const {
       channelName,
-      channelID,
+      channelIDs,
       share,
       demographics,
       company,
@@ -24,7 +24,6 @@ const handler = async (req, { params }) => {
 
     const checkArray = [
       channelName,
-      channelID,
       share,
       company,
       goal,
@@ -49,7 +48,7 @@ const handler = async (req, { params }) => {
 
       data: {
         channelName,
-        channelID,
+        channelIDs,
         share: +share,
         company,
         goal: +goal,

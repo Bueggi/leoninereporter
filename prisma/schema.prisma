@@ -145,6 +145,11 @@ model Advertiser {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   name      String     @unique
+  company   String?
+  address   String?
+  plz       String?
+  city      String?
+  country   String?
   riskFee   Int?
   campaigns Campaign[]
 }

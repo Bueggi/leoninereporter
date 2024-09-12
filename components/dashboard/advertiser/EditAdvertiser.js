@@ -35,7 +35,7 @@ const EditAdvertiser = ({ setOpen, state, setState }) => {
       return setOpen(false);
     }
   };
-  console.log(formState)
+
   return (
     <>
       <form
@@ -48,6 +48,34 @@ const EditAdvertiser = ({ setOpen, state, setState }) => {
           value={formState}
           setValue={setFormState}
           keyName={"name"}
+        />
+        <Input
+          label={"Adresse"}
+          type={"text"}
+          value={formState}
+          setValue={setFormState}
+          keyName={"address"}
+        />
+        <Input
+          label={"Postleitzahl"}
+          type={"text"}
+          value={formState}
+          setValue={setFormState}
+          keyName={"plz"}
+        />
+        <Input
+          label={"Stadt"}
+          type={"text"}
+          value={formState}
+          setValue={setFormState}
+          keyName={"city"}
+        />
+        <Input
+          label={"Land"}
+          type={"text"}
+          value={formState}
+          setValue={setFormState}
+          keyName={"country"}
         />
         <Input
           label={"Risk Fee"}
