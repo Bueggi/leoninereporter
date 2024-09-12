@@ -27,7 +27,7 @@ const RefTextInput = forwardRef((props, ref) => {
     </>
   );
 });
-
+RefTextInput.displayName = "RefTextInput";
 export default RefTextInput;
 
 export const StateTextInput = ({
@@ -74,3 +74,5 @@ export const StateTextInput = ({
     </>
   );
 };
+
+StateTextInput.displayName = "StateTextInput";
