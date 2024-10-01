@@ -22,7 +22,7 @@ const Task = ({ task, index }) => {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
             isDragging={snapshot.isDragging}
-          ></div>
+          ></div> 
           <div>{task.id}</div>
           <div>{task.title}</div>
           {provided.placeholder}
