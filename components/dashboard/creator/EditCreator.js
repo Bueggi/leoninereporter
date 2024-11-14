@@ -26,6 +26,7 @@ const EditCreator = ({ setOpen, state, setState }) => {
     e.preventDefault();
 
     try {
+      console.log(formState)
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${state.id}/edit`,
         {
@@ -46,6 +47,8 @@ const EditCreator = ({ setOpen, state, setState }) => {
             invoiceAddress: formState.invoiceAddress,
             paymentGoal: formState.paymentGoal,
             reverseCharge: formState.reverseCharge,
+            city: formState.city,
+            country: formState.country
           }),
         }
       );

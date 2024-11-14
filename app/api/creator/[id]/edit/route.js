@@ -12,7 +12,6 @@ const handler = async (req, { params }) => {
       company,
       demographics,
       goal,
-      image,
       anbindung,
       invoiceAddress,
       management,
@@ -25,15 +24,10 @@ const handler = async (req, { params }) => {
       taxable,
     } = await req.json();
 
+    console.log(channelName);
+
     // Validierung, um sicherzustellen, dass alle benötigten Daten vorhanden sind
-    const requiredFields = [
-      channelName,
-      company,
-      goal,
-      image,
-      anbindung,
-      share,
-    ];
+    const requiredFields = [channelName, company, goal, anbindung, share];
 
     if (requiredFields.some((field) => field === undefined || field === null)) {
       return NextResponse.json(
@@ -48,12 +42,14 @@ const handler = async (req, { params }) => {
         id,
       },
       data: {
-        channelName,
-        channelIDs: Array.isArray(channelIDs) ? channelIDs : [],
+        channelName: channelName,
+        channelIDs: {
+          deleteMany: {},
+          createMany: { data: channelIDs },
+        },
         company,
         demographics: demographics || {},
         goal: parseFloat(goal),
-        image,
         anbindung,
         invoiceAddress,
         management,

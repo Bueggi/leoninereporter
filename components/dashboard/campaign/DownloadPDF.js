@@ -442,9 +442,24 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
                       Enddatum: {moment(item.end).format("DD.MM.YYYY")}
                     </Text>
                     <Text>Produkt: {item.product}</Text>
-                    <Text>Impressionen: {item.reach}</Text>
-                    <Text>TKP: {item.tkp}</Text>
-                    <Text>Budget: {item.budget}</Text>
+                    <Text>
+                      Impressionen:{" "}
+                      {new Intl.NumberFormat("de-DE").format(item.reach)}
+                    </Text>
+                    <Text>
+                      TKP:{" "}
+                      {new Intl.NumberFormat("de-DE", {
+                        style: "currency",
+                        currency: "EUR",
+                      }).format(item.tkp)}
+                    </Text>
+                    <Text>
+                      Budget:{" "}
+                      {new Intl.NumberFormat("de-DE", {
+                        style: "currency",
+                        currency: "EUR",
+                      }).format(item.budget)}
+                    </Text>
                     <Text>Frequency Cap: {item.frequencyCap}</Text>
                   </View>
                   <View>
@@ -457,57 +472,6 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
                   </View>
                 </View>
               </View>
-              // age
-              // :
-              // "18-35"
-              // createdAt
-              // :
-              // "2024-11-14T10:22:09.875Z"
-              // end
-              // :
-              // "2024-11-23T23:00:00.000Z"
-              // frequencyCap
-              // :
-              // "3 pro Woche"
-              // id
-              // :
-              // "b1ff33c2-5f5e-419c-bdf2-19e6d697e5e0"
-              // offerGroupID
-              // :
-              // "c21c4a5e-8885-40e6-b754-1b402b30cc3d"
-              // output
-              // :
-              // null
-              // placement
-              // :
-              // null
-              // platform
-              // :
-              // "CCTV"
-              // plz
-              // :
-              // ""
-              // product
-              // :
-              // "NONSKIPPABLE"
-              // reach
-              // :
-              // 11111111
-              // rotation
-              // :
-              // "Best of Entertainment"
-              // start
-              // :
-              // "2024-11-14T23:00:00.000Z"
-              // targeting
-              // :
-              // "M/F/D"
-              // tkp
-              // :
-              // 11
-              // updatedAt
-              // :
-              // "2024-11-14T10:45:52.170Z"
             );
           })}
         </View>
