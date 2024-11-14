@@ -25,7 +25,6 @@ export default function RootLayout({ children, session }) {
           content="Home of Talents - Reportings und Angebote"
           key="title"
         />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
       </Head>
 
       <body className={inter.className + "h-full"}>
