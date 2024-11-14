@@ -17,7 +17,6 @@ const handler = async (req, res) => {
       );
     }
 
-    console.log(session)
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
     });

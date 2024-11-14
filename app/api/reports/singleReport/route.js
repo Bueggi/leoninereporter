@@ -1,17 +1,25 @@
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
-  const token = "ya29.a0AcM612yKYpzIjn_9HHDi_H8929wAQXePe3OPiBUdqrbRBeNuIaNRFBTSp8-rcDj6Y_wsh0j0r_mbtV9NW3cYcjpze02AX5-EvHHf97g7pgJKQbjknAW4Dryziw-2POpOF4RUukyTUBFjIahuxSPXldRs3LUV0HRL4UAkQ09KaCgYKAS4SARESFQHGX2MiAJ_ylangJ3iP2ecY4EugEw0175"; // Ersetze dies durch dein tatsächliches OAuth 2.0 Token
-  const downloadUrl =
-    "https://youtubereporting.googleapis.com/v1/media/CONTENT_OWNER/_NzgmdcDWuwDB6xqTRZ8QA/jobs/54876ed0-32aa-4b8a-8df8-484d8976dde1/reports/11375421131?alt=media&onBehalfOfContentOwner=_NzgmdcDWuwDB6xqTRZ8QA";
-
+const handler = async (req) => {
+  // jobId und reportId aus der Anfrage auslesen
+  const { token, downloadUrl } = await req.json();
+  // Fehler ausgeben, wenn eine der beiden Variablen nicht angegeben wurde
+  if (!token)
+    return NextResponse.json(
+      { message: "Du musst eine JobID und eine ReportID angeben" },
+      { status: 400 }
+    );
+  console.log(token, downloadUrl);
   try {
     const reportDownloadRes = await fetch(downloadUrl, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Accept-Encoding": "gzip",
       },
     });
+
+
 
     if (!reportDownloadRes.ok) {
       return NextResponse.json(
@@ -36,4 +44,6 @@ export async function GET(req) {
       { status: 500 }
     );
   }
-}
+};
+
+export { handler as POST };

@@ -18,6 +18,7 @@ export default function CreatorDetails({ params: { id } }) {
   // State für dieses Component:
   // 1. Der creator, den wir bearbeiten wollen / dessen Informationen wir einsehen wollen
   const [creator, setCreator] = useState({});
+  console.log("creator", creator);
   const [loading, setLoading] = useState(true);
   const [editCreatorModalOpen, setEditCreatorModalOpen] = useState(false);
 
@@ -46,6 +47,19 @@ export default function CreatorDetails({ params: { id } }) {
   };
 
   if (loading) return <LoadingSpinner />;
+
+  // Fallback, falls der Creator nicht gefunden wird
+  if (!creator || Object.keys(creator).length === 0) {
+    return (
+      <div className="text-center mt-20">
+        <h2 className="text-2xl font-bold">Creator nicht gefunden</h2>
+        <p className="mt-4 text-gray-600">
+          Der angeforderte Creator existiert nicht oder konnte nicht geladen
+          werden.
+        </p>
+      </div>
+    );
+  }
 
   const stats = [
     {
@@ -78,8 +92,6 @@ export default function CreatorDetails({ params: { id } }) {
     return classes.filter(Boolean).join(" ");
   }
 
-  if (!creator) return notFound();
-
   const {
     channelName,
     channelIDs,
@@ -98,23 +110,20 @@ export default function CreatorDetails({ params: { id } }) {
 
   const creatorList = [
     { title: "Creatorname", value: channelName },
-    { title: "ChannelIDs", value: channelIDs.join(',') },
     { title: "Firma", value: company },
     { title: "Rechnungsadresse", value: invoiceAddress },
     { title: "Management", value: management },
     { title: "Anbindung", value: anbindung },
     { title: "Goal", value: goal + "%" },
     { title: "Share", value: share + "%" },
-    { title: "Reverse Charge", value: reverseCharge },
+    { title: "Reverse Charge", value: reverseCharge ? "Ja" : "Nein" },
     { title: "Steuerpflichtig in Deutschland", value: taxable },
     { title: "Zahlungsziel", value: paymentGoal },
   ];
 
-  console.log(channelIDs)
-
   return (
     <div className="">
-      {/* Modal for editing the creator */}
+      {/* Modal für das Bearbeiten des Creators */}
       {editCreatorModalOpen && (
         <Modal open={editCreatorModalOpen} setOpen={setEditCreatorModalOpen}>
           <EditCreator
@@ -137,89 +146,187 @@ export default function CreatorDetails({ params: { id } }) {
           Creator bearbeiten
         </button>
       </div>
-      {/* <InformationBullet /> */}
-
-      <div className="grid grid-cols-1  md:grid-cols-4 gap-8">
-        {creatorList.map((el, i) => {
-          return (
-            creatorList[i].value !== null && (
-              <div className="">
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">{el.value}</p>
-                  <h3 className="text-sm font-light text-slate-600">
-                    {el.title}
+      {/* Creator Informationen */}
+     
+      <div className="bg-white py-24 sm:py-32">
+        <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+          <h2 className="text-base/7 font-semibold text-indigo-600">
+            Informationen über den Creator
+          </h2>
+          <p className="mt-2 max-w-lg text-pretty text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
+            {creator.channelName}
+          </p>
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6 lg:grid-rows-2">
+            <div className="relative lg:col-span-3">
+              <div className="absolute inset-px max-h rounded-lg bg-white max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]" />
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)] lg:rounded-tl-[calc(2rem+1px)]">
+                <div className="p-10 pt-4">
+                  <h3 className="text-sm/4 font-semibold text-indigo-600">
+                    Allgemein
                   </h3>
+                  <p className="mt-2 text-lg font-medium tracking-tight text-gray-950">
+                    Adresse & Management
+                  </p>
+                  <p className="mt-2 max-w-lg text-sm/6 text-gray-600">
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
+                      <CreatorInfos
+                        titel={"Ansprechpartner"}
+                        information={creator.channelName}
+                      />
+                      <CreatorInfos
+                        titel={"Managment"}
+                        information={creator.management}
+                      />
+                      <CreatorInfos
+                        titel={"Firma"}
+                        information={creator.company}
+                      />
+                      <CreatorInfos
+                        titel={"Rechnungsadresse"}
+                        information={`${creator.invoiceAddress}, ${creator.city}, ${creator.country}`}
+                      />
+                 
+                    </div>
+                  </p>
                 </div>
               </div>
-            )
-          );
-        })}
-      </div>
-
-        {/* <h3 className="text-base font-semibold leading-6 text-gray-900">
-          Diese Statistiken sind noch nicht programmiert, sondern nur Dummies
-        </h3>
-        <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {stats.map((item) => (
-            <div
-              key={item.id}
-              className="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6"
-            >
-              <dt>
-                <div className="absolute rounded-md bg-indigo-500 p-3">
-                  <item.icon className="h-6 w-6 text-white" aria-hidden="true" />
-                </div>
-                <p className="ml-16 truncate text-sm font-medium text-gray-500">
-                  {item.name}
-                </p>
-              </dt>
-              <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
-                <p className="text-2xl font-semibold text-gray-900">
-                  {item.stat}
-                </p>
-                <p
-                  className={classNames(
-                    item.changeType === "increase"
-                      ? "text-green-600"
-                      : "text-red-600",
-                    "ml-2 flex items-baseline text-sm font-semibold"
-                  )}
-                >
-                  {item.changeType === "increase" ? (
-                    <ArrowUpIcon
-                      className="h-5 w-5 flex-shrink-0 self-center text-green-500"
-                      aria-hidden="true"
+              <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem] lg:rounded-tl-[2rem]" />
+            </div>
+            <div className="relative lg:col-span-3">
+              <div className="absolute inset-px rounded-lg bg-white lg:rounded-tr-[2rem]" />
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-tr-[calc(2rem+1px)]">
+                <div className="p-10 pt-4">
+                  <h3 className="text-sm/4 font-semibold text-indigo-600">
+                    Finanzinformationen
+                  </h3>
+                  <p className="mt-2 text-lg font-medium tracking-tight text-gray-950">
+                    Goal & Share
+                  </p>
+       
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
+                      <CreatorInfos
+                        titel={"Share"}
+                        information={`${creator.share} %`}
+                      />
+                      <CreatorInfos
+                        titel={"Ziel"}
+                        information={`${creator.goal} %`}
+                      />
+                      <CreatorInfos
+                        titel={"Zahlungsziel"}
+                        information={`${creator.paymentGoal} Tage`}
+                      />
+                      
+                      <CreatorInfos
+                        titel={"Reverse Charge"}
+                        information={creator.reverseCharge ? 'Ja, anwenden' : 'Nicht anwenden'}
+                      />
+                      <CreatorInfos
+                        titel={"Steuerpflicht in DE"}
+                        information={creator.taxable ? 'Ja' : 'Nein'}
+                      />
+                      
+                
+                    <CreatorInfos
+                      titel={"Firma"}
+                      information={creator.company}
                     />
-                  ) : (
-                    <ArrowDownIcon
-                      className="h-5 w-5 flex-shrink-0 self-center text-red-500"
-                      aria-hidden="true"
+                    <CreatorInfos
+                      titel={"Adresse"}
+                      information={creator.invoiceAddress}
                     />
-                  )}
-
-                  <span className="sr-only">
-                    {" "}
-                    {item.changeType === "increase"
-                      ? "Increased"
-                      : "Decreased"}{" "}
-                    by{" "}
-                  </span>
-                  {item.change}
-                </p>
-                <div className="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
-                  <div className="text-sm">
-                    <a
-                      href="#"
-                      className="font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      View all<span className="sr-only"> {item.name} stats</span>
-                    </a>
+                    <CreatorInfos
+                      titel={"Adresse"}
+                      information={creator.invoiceAddress}
+                    />
                   </div>
                 </div>
-              </dd>
+              </div>
+              <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-tr-[2rem]" />
             </div>
-          ))}
-        </dl> */}
+            {/* <div className="relative lg:col-span-2">
+              <div className="absolute inset-px rounded-lg bg-white lg:rounded-bl-[2rem]" />
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-bl-[calc(2rem+1px)]">
+                <img
+                  alt=""
+                  src="https://tailwindui.com/plus/img/component-images/bento-01-speed.png"
+                  className="h-80 object-cover object-left"
+                />
+                <div className="p-10 pt-4">
+                  <h3 className="text-sm/4 font-semibold text-indigo-600">
+                    Speed
+                  </h3>
+                  <p className="mt-2 text-lg font-medium tracking-tight text-gray-950">
+                    Built for power users
+                  </p>
+                  <p className="mt-2 max-w-lg text-sm/6 text-gray-600">
+                    Sed congue eros non finibus molestie. Vestibulum euismod
+                    augue.
+                  </p>
+                </div>
+              </div>
+              <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-bl-[2rem]" />
+            </div> */}
+            {/* <div className="relative lg:col-span-2">
+              <div className="absolute inset-px rounded-lg bg-white" />
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]">
+                <img
+                  alt=""
+                  src="https://tailwindui.com/plus/img/component-images/bento-01-integrations.png"
+                  className="h-80 object-cover object-center"
+                />
+                <div className="p-10 pt-4">
+                  <h3 className="text-sm/4 font-semibold text-indigo-600">
+                    Integrations
+                  </h3>
+                  <p className="mt-2 text-lg font-medium tracking-tight text-gray-950">
+                    Connect your favorite tools
+                  </p>
+                  <p className="mt-2 max-w-lg text-sm/6 text-gray-600">
+                    Maecenas at augue sed elit dictum vulputate, in nisi aliquam
+                    maximus arcu.
+                  </p>
+                </div>
+              </div>
+              <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5" />
+            </div> */}
+            {/* <div className="relative lg:col-span-2">
+              <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-br-[2rem]" />
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-br-[calc(2rem+1px)]">
+                <img
+                  alt=""
+                  src="https://tailwindui.com/plus/img/component-images/bento-01-network.png"
+                  className="h-80 object-cover object-center"
+                />
+                <div className="p-10 pt-4">
+                  <h3 className="text-sm/4 font-semibold text-indigo-600">
+                    Network
+                  </h3>
+                  <p className="mt-2 text-lg font-medium tracking-tight text-gray-950">
+                    Globally distributed CDN
+                  </p>
+                  <p className="mt-2 max-w-lg text-sm/6 text-gray-600">
+                    Aenean vulputate justo commodo auctor vehicula in malesuada
+                    semper.
+                  </p>
+                </div>
+              </div>
+              <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-b-[2rem] lg:rounded-br-[2rem]" />
+            </div> */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
+export const CreatorInfos = ({ titel, information }) => {
+  return (
+    <div>
+      <dt className="text-sm/6 font-medium text-gray-900">{titel}</dt>
+      <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
+        {information}
+      </dd>
+    </div>
+  );
+};

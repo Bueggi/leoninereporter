@@ -1,60 +1,69 @@
 import { NextResponse } from "next/server";
-
 import prisma from "@lib/prisma";
 
 const handler = async (req, { params }) => {
   try {
     const { id } = params;
 
+    // Die JSON-Daten aus dem Request extrahieren
     const {
       channelName,
       channelIDs,
-      share,
+      company,
       demographics,
+      goal,
+      image,
+      anbindung,
+      invoiceAddress,
+      management,
+      paymentGoal,
+      reverseCharge,
+      share,
+      city,
+      country,
+      realName,
+      taxable,
+    } = await req.json();
+
+    // Validierung, um sicherzustellen, dass alle benötigten Daten vorhanden sind
+    const requiredFields = [
+      channelName,
       company,
       goal,
       image,
       anbindung,
-      taxable,
-      management,
-      invoiceAddress,
-      paymentGoal,
-      reverseCharge,
-    } = await req.json();
-
-    const checkArray = [
-      channelName,
       share,
-      company,
-      goal,
-      anbindung,
-      taxable,
-      management,
-      invoiceAddress,
-      paymentGoal,
-      reverseCharge,
     ];
 
-    if (checkArray.some((el) => el === undefined))
+    if (requiredFields.some((field) => field === undefined || field === null)) {
       return NextResponse.json(
-        { success: false, message: "Es wurden nicht alle Daten angegeben" },
+        { success: false, message: "Erforderliche Felder fehlen" },
         { status: 400 }
       );
+    }
 
+    // `share`, `goal` und `paymentGoal` in Zahlen umwandeln
     const updatedCreator = await prisma.creator.update({
       where: {
         id,
       },
-
       data: {
         channelName,
-        channelIDs,
-        share: +share,
+        channelIDs: Array.isArray(channelIDs) ? channelIDs : [],
         company,
-        goal: +goal,
-        demographics,
-        anbindung,
+        demographics: demographics || {},
+        goal: parseFloat(goal),
         image,
+        anbindung,
+        invoiceAddress,
+        management,
+        paymentGoal: paymentGoal ? parseInt(paymentGoal, 10) : null,
+        reverseCharge: reverseCharge ?? false,
+        share: parseInt(share, 10),
+        city,
+        country,
+        realName,
+        taxable,
       },
     });
 

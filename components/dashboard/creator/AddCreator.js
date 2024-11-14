@@ -2,7 +2,7 @@
 import { toast } from "react-toastify";
 import { useRef, useState } from "react";
 import RefTextInput, {
-  StateTextInput,
+  StateObjectInput,
 } from "@components/pComponents/inputs/RefTextInput";
 import RefNumberInput from "@components/pComponents/inputs/RefNumberInputs";
 import Toggle from "@components/pComponents/Toggle";
@@ -10,165 +10,175 @@ import FormSubHeading from "@components/pComponents/FormSubHeading";
 import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 
 export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
-  const [channelIDs, setchannelIDs] = useState([""]);
-  const anbindungRef = useRef("TALENT");
-  const channelName = useRef();
+  const [channelIDs, setChannelIDs] = useState([
+    { channelName: "", channelID: "" },
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Refs für Eingabefelder
+  const anbindungRef = useRef("OWNED");
+  const channelNameRef = useRef();
   const companyRef = useRef();
-  const goalRef = useRef(3);
-  const imageRef = useRef();
+  const goalRef = useRef();
   const invoiceAddressRef = useRef();
   const managementRef = useRef();
-  const paymentGoalRef = useRef(14);
+  const paymentGoalRef = useRef();
   const reverseChargeRef = useRef(false);
-  const shareRef = useRef(10);
+  const shareRef = useRef();
+  const cityRef = useRef();
+  const countryRef = useRef();
   const taxableRef = useRef();
 
-  const handleClick = async (e) => {
-    e.preventDefault();
+  const validateInputs = () => {
+    const newErrors = {};
+    if (!channelNameRef.current.value)
+      newErrors.channelName = "Channel Name ist erforderlich";
+    if (channelIDs.some((el) => !el.channelName || !el.channelID))
+      newErrors.channelIDs = "Channel Name und ID sind erforderlich";
+    if (!companyRef.current.value)
+      newErrors.company = "Company ist erforderlich";
+    if (!taxableRef.current.value)
+      newErrors.taxable = "Steuerpflichtiges Land ist erforderlich";
+    if (!invoiceAddressRef.current.value)
+      newErrors.invoiceAddress = "Rechnungsadresse ist erforderlich";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateInputs()) {
+      toast.error("Bitte alle Pflichtfelder ausfüllen");
+      return;
+    }
+
+    setLoading(true);
     try {
+      console.log(shareRef.current.value)
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/add`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: channelName.current.value,
+            channelName: channelNameRef.current.value,
             channelIDs,
-            share: shareRef.current.value,
             company: companyRef.current.value,
             goal: goalRef.current.value,
-            image: imageRef.current.value,
-            anbindung: anbindungRef.current.value || "OWNED",
+            anbindung: anbindungRef.current.value,
             taxable: taxableRef.current.value,
             management: managementRef.current.value,
             invoiceAddress: invoiceAddressRef.current.value,
             paymentGoal: paymentGoalRef.current.value,
             reverseCharge: reverseChargeRef.current.value,
+            share: shareRef.current.value,
+            city: cityRef.current.value,
+            country: countryRef.current.value,
           }),
         }
       );
 
       const { data, message } = await res.json();
-
       if (!res.ok) return toast.error(message);
-      else toast.success(`Der Creator ${data.channelName} wurde angelegt`);
+      console.log(data, message)
+      
+
+      toast.success(
+        `Der Creator ${data.channelName} wurde erfolgreich angelegt`
+      );
       setAllCreators({
-        count: allCreators.count++,
+        count: allCreators.count + 1,
         data: [...allCreators.data, data],
       });
       setOpen(false);
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Fehler beim Hinzufügen: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const removeChannelID = (i) => {
-    const newChannelIDs = channelIDs;
+    const newChannelIDs = [...channelIDs];
     newChannelIDs.splice(i, 1);
-    return setchannelIDs([...newChannelIDs]);
+    setChannelIDs(newChannelIDs);
   };
 
   return (
-    <>
-      <form
-        className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6 relative"
-        onSubmit={handleClick}
-      >
-        <FormSubHeading>CreatorInformationen</FormSubHeading>
-        <RefTextInput title="Name" ref={channelName} required={"required"} />
-        {channelIDs.map((el, i) => {
-          return (
-            <>
-              <div className="block col-span-3 relative">
-                <StateTextInput
-                  title="ChannelIDs"
-                  placeholder={"ChannelID des Creators"}
-                  value={el}
-                  index={i}
-                  setState={setchannelIDs}
-                  state={channelIDs}
-                />
-                <div className="absolute bottom-1 right-48">
-                  <MinusCircleIcon
-                    className="w-8 h-8 text-indigo-700"
-                    onClick={() => removeChannelID(i)}
-                  />
-                </div>
-              </div>
-            </>
-          );
-        })}
-        <div className="col-span-3 flex justify-center">
-          <span>
-            <a>
-              <PlusCircleIcon
-                className="w-8 h-8 text-indigo-700"
-                onClick={() => {
-                  setchannelIDs([...channelIDs, ""]);
-                }}
-              />
-            </a>
-          </span>
+    <form className="grid grid-cols-3 gap-4 py-6" onSubmit={handleSubmit}>
+      <FormSubHeading>Creator Informationen</FormSubHeading>
+      <RefTextInput title="Vertragspartner" ref={channelNameRef} required />
+      <RefTextInput title="Firma" ref={companyRef} />
+
+      <div className=" grid grid-cols-3 col-span-3 gap-4">
+        <div>
+          <RefTextInput
+            title="Abrechnungsadresse"
+            ref={invoiceAddressRef}
+            required
+          />
         </div>
+        <div>
+          <RefTextInput title="Stadt" ref={cityRef} />
+        </div>
+        <div>
+          <RefTextInput title="Land" ref={countryRef} />
+        </div>
+      </div>
+      <RefTextInput title="Management" ref={managementRef} />
+      <FormSubHeading>Angebundene Channels</FormSubHeading>
 
-        <RefTextInput title="Company" ref={companyRef} required={"required"} />
+      {channelIDs.map((el, i) => (
+        <div className="col-span-3 relative" key={i}>
+          <div className="flex gap-4">
+            <StateObjectInput
+              title="Channel Name"
+              value={el}
+              index={i}
+              field="channelName"
+              setState={setChannelIDs}
+              state={channelIDs}
+            />
+            <StateObjectInput
+              title="Channel ID"
+              value={el}
+              index={i}
+              field="channelID"
+              setState={setChannelIDs}
+              state={channelIDs}
+            />
+          </div>
+          <MinusCircleIcon
+            className="w-6 h-6 text-red-500 cursor-pointer absolute right-3 top-2"
+            onClick={() => removeChannelID(i)}
+          />
+        </div>
+      ))}
+      <PlusCircleIcon
+        className="w-8 h-8 text-green-500 cursor-pointer col-span-3"
+        onClick={() =>
+          setChannelIDs([...channelIDs, { channelName: "", channelID: "" }])
+        }
+      />
 
-        <Toggle ref={anbindungRef} label="Talent" />
-        <RefTextInput
-          title="Link zum Bild"
-          ref={imageRef}
-          required={"required"}
-        />
-        <FormSubHeading>Zahlungsinformationen</FormSubHeading>
+      <Toggle ref={anbindungRef} label="Anbindung (Talent/Owned)" />
 
-        <RefTextInput
-          title="Steuerpflichtig in"
-          ref={taxableRef}
-          required={"required"}
-        />
-        <Toggle ref={anbindungRef} label="Reverse Charge" />
-        <RefTextInput
-          title="Abrechnungsadresse"
-          ref={invoiceAddressRef}
-          required={"required"}
-        />
-        <RefNumberInput
-          title="Zahlungsziel in Tagen"
-          ref={paymentGoalRef}
-          sign=""
-          placeholder="60"
-          required={"required"}
-        />
+      <FormSubHeading>Zahlungsinformationen</FormSubHeading>
+      <RefTextInput title="Steuerpflichtig in" ref={taxableRef} required />
+      <Toggle ref={reverseChargeRef} label="Reverse Charge" />
 
-        <RefTextInput title="Management" ref={managementRef} />
+      <RefNumberInput title="Zahlungsziel in Tagen" ref={paymentGoalRef} />
+      <RefNumberInput title="Share (%)" ref={shareRef} />
+      <RefNumberInput title="Goal (%)" ref={goalRef} />
 
-        <FormSubHeading>Auszahlungsinformationen</FormSubHeading>
-
-        <RefNumberInput
-          title="Share"
-          sign="%"
-          placeholder="10"
-          ref={shareRef}
-          required={"required"}
-        />
-        <RefNumberInput
-          title="Goal"
-          ref={goalRef}
-          sign="%"
-          placeholder="103"
-          required={"required"}
-        />
-
-        <button
-          type="submit"
-          className="mt-8 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Abschicken
-        </button>
-      </form>
-    </>
+      <button
+        type="submit"
+        disabled={loading}
+        className="col-span-3 mt-4 bg-indigo-600 text-white p-3 rounded"
+      >
+        {loading ? "Wird gesendet..." : "Creator hinzufügen"}
+      </button>
+    </form>
   );
 }

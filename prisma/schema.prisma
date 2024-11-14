@@ -121,7 +121,7 @@ model Creator {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   anbindung      Anbindung @default(OWNED)
-  channelIDs     String[]  @default([])
+  channelIDs     Channel[] @relation("CreatorChannels")
   channelName    String
   company        String
   demographics   Json?
@@ -132,7 +132,20 @@ model Creator {
   paymentGoal    Int?
   reverseCharge  Boolean?
   share          Int
+  city           String?
+  country        String?
+  realName       String?
   taxable        String?
+}
+
+model Channel {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  channelName String
+  channelID   String
+  creator     Creator? @relation("CreatorChannels", fields: [creatorId], references: [id])
+  creatorId   String?
 }
 
 enum Anbindung {

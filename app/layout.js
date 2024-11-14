@@ -2,9 +2,10 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 
 import SessionProvider from "../lib/SessionProvider";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +18,16 @@ export default function RootLayout({ children, session }) {
   const doc = new jsPDF();
   return (
     <html lang="en" className="h-full bg-gray-50">
+      <Head>
+        <title>Home of Talents - Reportings und Angebote</title>
+        <meta
+          property="og:title"
+          content="Home of Talents - Reportings und Angebote"
+          key="title"
+        />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </Head>
+
       <body className={inter.className + "h-full"}>
         <SessionProvider session={session}>
           <ToastContainer></ToastContainer>

@@ -8,8 +8,18 @@ const handler = async (req, { params }) => {
     const singleCreator = await prisma.creator.findUnique({
       where: {
         id,
-      }
+      },
+      include: {
+        channelIDs: {
+          select: {
+            channelID: true, 
+            channelName: true
+          }
+        },
+      },
     });
+
+    console.log(singleCreator);
 
     return NextResponse.json(
       { success: true, data: singleCreator },

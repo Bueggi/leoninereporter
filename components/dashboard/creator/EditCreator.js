@@ -3,15 +3,21 @@ import {
   Toggle,
   Ueberschrift,
 } from "@components/dashboard/forms/FormInputs";
-import { StateTextInput } from "@components/pComponents/inputs/RefTextInput";
+import { StateObjectInput, StateTextInput } from "@components/pComponents/inputs/RefTextInput";
 import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 const EditCreator = ({ setOpen, state, setState }) => {
   const [formState, setFormState] = useState(state);
-  const [channelIDs, setchannelIDs] = useState(formState.channelIDs);
-
+  const [channelIDs, setChannelIDs] = useState(
+    state.channelIDs?.length > 0
+      ? state.channelIDs.map((id) => ({
+          channelName: id.channelName || "",
+          channelID: id.channelID || "",
+        }))
+      : [{ channelName: "", channelID: "" }]
+  );
   const resetDefaults = () => {
     setFormState(state);
   };
@@ -66,7 +72,7 @@ const EditCreator = ({ setOpen, state, setState }) => {
       >
         <Ueberschrift label={"Creatorinformationen"} />
         <Input
-          label={"Name"}
+          label={"Ansprechpartner"}
           type={"text"}
           value={formState}
           keyName={"channelName"}
@@ -79,6 +85,27 @@ const EditCreator = ({ setOpen, state, setState }) => {
           keyName={"company"}
           setValue={setFormState}
         />
+        <Input
+          label={"Abrechnungsadresse"}
+          type={"text"}
+          value={formState}
+          keyName={"invoiceAddress"}
+          setValue={setFormState}
+        />
+        <Input
+          label={"Stadt"}
+          type={"text"}
+          value={formState}
+          keyName={"city"}
+          setValue={setFormState}
+        />
+        <Input
+          label={"Land"}
+          type={"text"}
+          value={formState}
+          keyName={"country"}
+          setValue={setFormState}
+        />
         <Toggle
           label="Channel ist Talent"
           enabled={formState.anbindung === "TALENT"}
@@ -89,32 +116,33 @@ const EditCreator = ({ setOpen, state, setState }) => {
             }))
           }
         />
-        <Input
-          label={"Link zum Bild"}
-          type={"text"}
-          value={formState}
-          keyName={"image"}
-          setValue={setFormState}
-        />
 
         {channelIDs.map((el, i) => {
           return (
             <>
               <div className="block col-span-3 relative">
-                <StateTextInput
-                  title="ChannelIDs"
-                  placeholder={"ChannelID des Creators"}
+                <StateObjectInput
+                  title="Channel Name"
                   value={el}
                   index={i}
-                  setState={setchannelIDs}
+                  field="channelName"
+                  setState={setChannelIDs}
                   state={channelIDs}
+                  required
                 />
-                <div className="absolute bottom-1 right-48">
-                  <MinusCircleIcon
-                    className="w-8 h-8 text-indigo-700"
-                    onClick={() => removeChannelID(i)}
-                  />
-                </div>
+                <StateObjectInput
+                  title="Channel ID"
+                  value={el}
+                  index={i}
+                  field="channelID"
+                  setState={setChannelIDs}
+                  state={channelIDs}
+                  required
+                />
+                <MinusCircleIcon
+                  className="w-6 h-6 text-red-500 cursor-pointer"
+                  onClick={() => removeChannelID(i)}
+                />
               </div>
             </>
           );
@@ -126,7 +154,7 @@ const EditCreator = ({ setOpen, state, setState }) => {
               <PlusCircleIcon
                 className="w-8 h-8 text-indigo-700"
                 onClick={() => {
-                  setchannelIDs([...channelIDs, ""]);
+                  setChannelIDs([...channelIDs, ""]);
                 }}
               />
             </a>

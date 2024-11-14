@@ -13,32 +13,38 @@ import EmptyState from "@components/pComponents/EmptyState";
 import Searchbar from "@components/pComponents/Search";
 import Badge from "@components/pComponents/Badge";
 import PageHeading from "@components/pComponents/PageHeading";
-import Image from "next/image";
+import { toast } from "react-toastify";
 
 const ListCreator = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
-  let [allCreators, setAllCreators] = useState({ data: [], count: 0 });
+  const [allCreators, setAllCreators] = useState({ data: [], count: 0, mode: "page" });
   const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState();
+  const [count, setCount] = useState(0);
   // get active page from url query parameter
   const searchParams = useSearchParams();
   const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
 
   const getInitialData = async () => {
     setLoading(true);
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/list?page=${activePage}`
-    );
-    const { data, count, message } = await res.json();
-    if (data) {
-      setAllCreators({ data, mode: "page" });
-      setCount(count);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/list?page=${activePage}`
+      );
+      const { data, count, message } = await res.json();
+      if (data) {
+        setAllCreators({ data, count, mode: "page" });
+        setCount(count);
+        setLoading(false);
+        console.log(data)
+      } else {
+        toast.error(message || "Fehler beim Laden der Daten");
+        setLoading(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Ein unbekannter Fehler ist aufgetreten");
       setLoading(false);
-      return;
-    } else {
-      toast.error(message);
     }
   };
 
@@ -48,7 +54,7 @@ const ListCreator = () => {
 
   return (
     <>
-      {/* Das Modal, um Inhalte hinzuzufügen */}
+      {/* Modal zum Hinzufügen von Inhalten */}
       {addModalOpen && (
         <Modal open={addModalOpen} setOpen={setAddModalOpen}>
           <AddCreator
@@ -58,6 +64,7 @@ const ListCreator = () => {
           />
         </Modal>
       )}
+      {/* Modal zum Löschen von Inhalten */}
       {deleteModalOpen && (
         <Modal open={deleteModalOpen} setOpen={setDeleteModalOpen}>
           <DeleteCreator
@@ -68,7 +75,7 @@ const ListCreator = () => {
           />
         </Modal>
       )}
-      <div className="px-4 sm:px-6 lg:px-8 ">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <PageHeading
             title="Creator"
@@ -87,17 +94,19 @@ const ListCreator = () => {
         <div className="mt-8 flow-root">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             {loading && <LoadingSpinner />}
-            {/* Table for results */}
+            {/* Tabelle für Ergebnisse */}
             {!loading &&
               (!allCreators.data.length ? (
-              
-                <EmptyState title="Es gibt keine Crator in der Datenbank" />
+                <EmptyState title="Es gibt keine Creator in der Datenbank" />
               ) : (
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                   <div className="max-w-md mb-12">
                     <Searchbar
                       model="creator"
-                      setAllResults={setAllCreators}
+                      setAllResults={(results) => {
+                        setAllCreators({ data: results, count, mode: "search" });
+                        setLoading(false);
+                      }}
                       setLoading={setLoading}
                     />
                   </div>
@@ -113,15 +122,21 @@ const ListCreator = () => {
                           </th>
                           <th
                             scope="col"
-                            className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
+                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                           >
                             Erstellt am
                           </th>
                           <th
                             scope="col"
-                            className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
+                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                           >
                             Anbindung
+                          </th>
+                          <th
+                            scope="col"
+                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                          >
+                            Channels
                           </th>
                           <th
                             scope="col"
@@ -131,48 +146,55 @@ const ListCreator = () => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 ">
-                        {allCreators.data.map((item, i) => (
-                          <tr
-                            key={i}
-                            className="even:bg-white odd:bg-slate-200"
-                          >
+                      <tbody className="divide-y divide-gray-200">
+                        {allCreators.data.map((item) => (
+                          <tr key={item.id} className="even:bg-white odd:bg-slate-200">
+                            {/* Name */}
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                               <Link
-                                href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/creator/${item.id}`}
+                                href={`/dashboard/creator/${item.id}`}
+                                className="hover:underline"
                               >
                                 {item.channelName}
                               </Link>
                             </td>
+                            {/* Erstellt am */}
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                               {moment(item.createdAt).format("LL")}
                             </td>
+                            {/* Anbindung */}
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              {
-                                <Badge
-                                  label={item.anbindung}
-                                  color={
-                                    item.anbindung === "OWNED" ? "green" : "red"
-                                  }
-                                />
-                              }
+                              <Badge
+                                label={item.anbindung}
+                                color={item.anbindung === "OWNED" ? "green" : "red"}
+                              />
                             </td>
+                            {/* Channels */}
+                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">
+                              {item.channelIDs && item.channelIDs.length > 0 ? (
+                                <ul className="list-disc list-inside">
+                                  {item.channelIDs.map((channel, idx) => (
+                                    <li key={idx}>
+                                      <span className="font-medium">{channel.channelName}</span>:{" "}
+                                      <span>{channel.channelID}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <span>Keine Channels</span>
+                              )}
+                            </td>
+                            {/* Bearbeiten */}
                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                              <a
-                                href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/creator/${item.id}/edit`}
-                                className="text-indigo-600 hover:text-indigo-900 mr-4"
-                              >
+                              <Link href={`/dashboard/creator/${item.id}/edit`}>
                                 <button
                                   type="button"
-                                  className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                  className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mr-4"
                                 >
-                                  <PencilIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
+                                  <PencilIcon className="h-5 w-5" aria-hidden="true" />
+                                  <span className="sr-only">Bearbeiten</span>
                                 </button>
-                                <span className="sr-only">, {item.name}</span>
-                              </a>
+                              </Link>
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -180,26 +202,20 @@ const ListCreator = () => {
                                   setIdToDelete(item.id);
                                   setDeleteModalOpen(true);
                                 }}
-                                className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="rounded-full bg-red-600 p-2 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                               >
-                                <TrashIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
+                                <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                                <span className="sr-only">Löschen</span>
                               </button>
-                              <span className="sr-only">, {item.name}</span>
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                  {/* Zeige die Pagination
-                Aber zeige sie nur dann, wenn die Ergebnisse nicht durch die Suche zustandegekommen sind
-                Hintergrund: Ich vermute, dass die Anzahl der Suchergebnisse nicht häuäfig größer als 20 ist, daher akzeptiere ich ggf. den höheren ServerLoad durch die Suche
-                Mittelfristig kann man aber auch noch eine "SearchPagination" implementieren oder eine Pagination, die unabhängig von dem Modus funktioniert */}
+                  {/* Pagination anzeigen, wenn nicht im Suchmodus */}
                   {allCreators.mode !== "search" && (
-                    <Suspense>
+                    <Suspense fallback={<LoadingSpinner />}>
                       <Pagination
                         count={count}
                         activePage={activePage}
@@ -209,7 +225,7 @@ const ListCreator = () => {
                   )}
                 </div>
               ))}
-            {/* Table end */}
+            {/* Ende der Tabelle */}
           </div>
         </div>
       </div>

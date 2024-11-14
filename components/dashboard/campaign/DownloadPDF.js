@@ -24,7 +24,13 @@ const DownloadPDFButton = ({ campaignName, offer, advertiser }) => {
   return (
     <>
       <PDFDownloadLink
-        document={<MyDoc campaignName={campaignName} offer={offer} advertiser={advertiser} />}
+        document={
+          <MyDoc
+            campaignName={campaignName}
+            offer={offer}
+            advertiser={advertiser}
+          />
+        }
         fileName={`${campaignName}.pdf`}
         style={tw(
           "inline-flex items-center gap-x-1.5 rounded-md bg-indigo-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -80,6 +86,11 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
     )
   );
 
+  const plzAcc = offer.offers.reduce((acc, el) => {
+    if (acc.indexOf(el) !== -1) return acc;
+    return [...acc, el.plz];
+  }, []);
+
   const rotation = offer.offers.reduce((acc, el) => {
     if (acc.indexOf(el) !== -1) return acc;
     return [...acc, el.rotation];
@@ -87,7 +98,7 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
 
   const targeting = offer.offers.reduce((acc, el) => {
     if (acc.indexOf(el) !== -1) return acc;
-    return [...acc, el.output];
+    return [...acc, el.targeting];
   }, []);
 
   const bumperTKP = new Intl.NumberFormat("de-DE", {
@@ -252,8 +263,8 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
             >
               Angebotsübersicht{" "}
             </Text>
-            <View style={tw("flex flex-row gap-6")}>
-              <View style={tw("flex flex-col")}>
+            <View style={tw("flex flex-col gap-6")}>
+              <View style={tw("flex flex-col min-w-full")}>
                 {product && (
                   <Text style={tw("flex align-middle text-sm text-gray-500")}>
                     Product: {product}
@@ -265,46 +276,9 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
                 <Text style={tw("flex align-middle text-sm text-gray-500")}>
                   Budget: {totalBudget}
                 </Text>
-                {rotation && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Rotation: {rotation}
-                  </Text>
-                )}
-                {targeting && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Targeting: {targeting}
-                  </Text>
-                )}
-              </View>
-              <View style={tw("flex flex-col")}>
-                {age && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Alter:{age}
-                  </Text>
-                )}
-                {platform && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Plattform:{platform}
-                  </Text>
-                )}
-                {placement && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Placement: {placement}
-                  </Text>
-                )}
-                {frequencyCap && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Frequency Cap: {frequencyCap}
-                  </Text>
-                )}
-                {plz && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Postleitzahl: {plz}
-                  </Text>
-                )}
-                <Text
-                  style={tw("flex align-middle text-sm text-gray-500")}
-                ></Text>
+                <Text style={tw("flex align-middle text-sm text-gray-500")}>
+                  Reichweite: {totalReach}
+                </Text>
               </View>
             </View>
           </View>
@@ -322,7 +296,7 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
                 <Text> AIs</Text>
               </View>
               <View style={tw("flex-1 py-2 px-4 justify-end")}>
-                <Text>Budget (net)</Text>
+                <Text>Budget (net) Hallo</Text>
               </View>
             </View>
 
@@ -347,13 +321,13 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
                 style={tw("flex flex-col flex-1 px-4 justify-self-end ml-auto")}
               >
                 <Text style={tw("text-sm font-bold flex ml-auto mr-12")}>
-                  {new Intl.NumberFormat('de-DE').format(nonskipReach)}
+                  {new Intl.NumberFormat("de-DE").format(nonskipReach)}
                 </Text>
                 <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {new Intl.NumberFormat('de-DE').format(skippableReach)}
+                  {new Intl.NumberFormat("de-DE").format(skippableReach)}
                 </Text>
                 <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {new Intl.NumberFormat('de-DE').format(bumperReach)}
+                  {new Intl.NumberFormat("de-DE").format(bumperReach)}
                 </Text>
               </View>
               <View style={tw("flex flex-col flex-1 px-4 justify-end")}>
@@ -381,7 +355,10 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
                 <Text> </Text>
               </View>
               <View style={tw("flex-1 py-2 px-4 ml-auto")}>
-                <Text style={tw("ml-auto mr-12")}> {new Intl.NumberFormat('de-DE').format(totalReach)}</Text>
+                <Text style={tw("ml-auto mr-12")}>
+                  {" "}
+                  {new Intl.NumberFormat("de-DE").format(totalReach)}
+                </Text>
               </View>
               <View style={tw("flex-1 py-2 px-4 ml-auto")}>
                 <Text style={tw("ml-auto mr-8")}> {totalBudget}</Text>
@@ -422,14 +399,117 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
             Schriftformbestimmung. Erfüllungsort und ausschließlicher
             Gerichtsstand ist soweit zulässig München.
           </Text>
-     
+
           <Text style={tw("text-center text-[6px] text-gray-400")}>
-          LEONINE Licensing GmbH · Taunusstr. 21 · 80807 München · Tel: +49 89 999 513 0 · Fax: +49 89 999 513 190 · Email
-            info@leoninestudios.com · Geschäftsführer: Fred Kogel, Dr. Lisa Giehl, Stephan Kathmann, Bernhard zu Castell · Sitz der Gesellschaft: München ·
-            Registereintrag: Gesellschaft mit beschränkter Haftung registriert im Handelsregister beim Amtsgericht
-            München unter der Registernummer HRB 272 911 · UniCredit Bank-AG · IBAN DE83 7002 0002 7620 80 · BIC HYVEDEMMXXX · USt-IdNr. DE 323 797 373
+            LEONINE Licensing GmbH · Taunusstr. 21 · 80807 München · Tel: +49 89
+            999 513 0 · Fax: +49 89 999 513 190 · Email info@leoninestudios.com
+            · Geschäftsführer: Fred Kogel, Dr. Lisa Giehl, Stephan Kathmann,
+            Bernhard zu Castell · Sitz der Gesellschaft: München ·
+            Registereintrag: Gesellschaft mit beschränkter Haftung registriert
+            im Handelsregister beim Amtsgericht München unter der Registernummer
+            HRB 272 911 · UniCredit Bank-AG · IBAN DE83 7002 0002 7620 80 · BIC
+            HYVEDEMMXXX · USt-IdNr. DE 323 797 373
           </Text>
-          
+        </View>
+      </Page>
+      <Page
+        size="A4"
+        style={tw("p-4  px-12 gap-4 w-full")}
+        orientation="portrait"
+      >
+        <View style={tw("")}>
+          <Text
+            style={tw(
+              "text-xl font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight mb-1 mt-12"
+            )}
+          >
+            Angebotsbausteine{" "}
+          </Text>
+        </View>
+        <View>
+          {offer.offers.map((item, index) => {
+            return (
+              <View>
+                <Text style={tw("flex flex-col text-sm text-indigo-500")} t>
+                  Produktbaustein {index + 1}
+                </Text>
+                <View style={tw("flex flex-row gap-12 text-xs")}>
+                  <View>
+                    <Text>
+                      Startdatum: {moment(item.start).format("DD.MM.YYYY")}
+                    </Text>
+                    <Text>
+                      Enddatum: {moment(item.end).format("DD.MM.YYYY")}
+                    </Text>
+                    <Text>Produkt: {item.product}</Text>
+                    <Text>Impressionen: {item.reach}</Text>
+                    <Text>TKP: {item.tkp}</Text>
+                    <Text>Budget: {item.budget}</Text>
+                    <Text>Frequency Cap: {item.frequencyCap}</Text>
+                  </View>
+                  <View>
+                    <Text>Rotation: {item.Rotation}</Text>
+                    <Text>Alterstargeting: {item.age}</Text>
+                    <Text>Geschlechtertargeting: {item.gender}</Text>
+                    <Text>Platzierung: {item.placement}</Text>
+                    <Text>Ausspielung: {item.platform}</Text>
+                    <Text>Postleitzahlen: {item.plz}</Text>
+                  </View>
+                </View>
+              </View>
+              // age
+              // :
+              // "18-35"
+              // createdAt
+              // :
+              // "2024-11-14T10:22:09.875Z"
+              // end
+              // :
+              // "2024-11-23T23:00:00.000Z"
+              // frequencyCap
+              // :
+              // "3 pro Woche"
+              // id
+              // :
+              // "b1ff33c2-5f5e-419c-bdf2-19e6d697e5e0"
+              // offerGroupID
+              // :
+              // "c21c4a5e-8885-40e6-b754-1b402b30cc3d"
+              // output
+              // :
+              // null
+              // placement
+              // :
+              // null
+              // platform
+              // :
+              // "CCTV"
+              // plz
+              // :
+              // ""
+              // product
+              // :
+              // "NONSKIPPABLE"
+              // reach
+              // :
+              // 11111111
+              // rotation
+              // :
+              // "Best of Entertainment"
+              // start
+              // :
+              // "2024-11-14T23:00:00.000Z"
+              // targeting
+              // :
+              // "M/F/D"
+              // tkp
+              // :
+              // 11
+              // updatedAt
+              // :
+              // "2024-11-14T10:45:52.170Z"
+            );
+          })}
         </View>
       </Page>
     </Document>

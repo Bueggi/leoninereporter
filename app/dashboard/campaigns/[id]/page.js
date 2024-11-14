@@ -169,6 +169,7 @@ export default function Campaigns({ params: { id } }) {
                         >
                           Neus Angebot
                         </button>
+                        {console.log(el,'Angebot fuer')}
                         <DownloadPDFButton
                           offer={el}
                           campaignName={campaign.name}
