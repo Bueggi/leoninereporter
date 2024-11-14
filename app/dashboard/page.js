@@ -212,7 +212,7 @@ const Dashboard = () => {
           <ul className="divide-y divide-gray-100">
             {reportList.map((el, i) => {
               return (
-                <li className="flex flex-row gap-12">
+                <li className="flex flex-row gap-12" key={i}>
                   <div>JobId: {el.jobId}</div>
                   <div>ReportID: {el.id}</div>
 

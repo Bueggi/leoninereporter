@@ -429,7 +429,7 @@ export const MyDoc = ({ campaignName, offer, advertiser }) => {
         <View>
           {offer.offers.map((item, index) => {
             return (
-              <View>
+              <View key={index}>
                 <Text style={tw("flex flex-col text-sm text-indigo-500")} t>
                   Produktbaustein {index + 1}
                 </Text>
