@@ -47,6 +47,8 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
 
       const updatedCampaign = {
         name: state.name,
+        contact: state.contact,
+        contactEmail: state.contactEmail,
         advertiserID: advertiserID[0].id,
         ordernumber: state.ordernumber,
         isServiceplan: isServiceplan,
@@ -186,6 +188,23 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
           keyName="customRiskFeeAmount"
         />
       )}
+
+<Ueberschrift label="Kontaktinformationen" />
+      <Input
+        label="Ansprechpartner"
+        value={state}
+        setValue={setState}
+        type="text"
+        keyName="contact"
+      />
+      <Input
+        label="Email des Ansprechpartners"
+        value={state}
+        setValue={setState}
+        type="text"
+        keyName="contactEmail"
+      />
+
 
       <div className="col-span-3">
         <button

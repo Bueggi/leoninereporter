@@ -7,6 +7,8 @@ const handler = async (req, { params }) => {
 
     // Die JSON-Daten aus dem Request extrahieren
     const {
+      bankData,
+      instagram,
       channelName,
       channelIDs,
       company,
@@ -60,6 +62,8 @@ const handler = async (req, { params }) => {
         country,
         realName,
         taxable,
+        bankData,
+        instagram,
       },
     });
 

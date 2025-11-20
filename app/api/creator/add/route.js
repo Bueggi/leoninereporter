@@ -16,8 +16,10 @@ const handler = async (req) => {
       paymentGoal,
       invoiceAddress,
       management,
-      city, 
+      city,
       country,
+      bankData,
+      instagram,
     } = await req.json();
 
     console.log(share, company, goal);
@@ -60,11 +62,13 @@ const handler = async (req) => {
     // Erstellung des Creators mit verschachtelten ChannelIDs
     const newCreator = await prisma.creator.create({
       data: {
+        bankData,
+        instagram,
         channelName,
-        image: '',
+        image: "",
         share: parseFloat(share),
         company,
-        city, 
+        city,
         country,
         goal: parseFloat(goal),
         anbindung: anbindung || "OWNED",
@@ -85,7 +89,7 @@ const handler = async (req) => {
       },
     });
 
-    console.log(newCreator, 'creator wurde angelegt')
+    console.log(newCreator, "creator wurde angelegt");
 
     return NextResponse.json(
       { success: true, data: newCreator },

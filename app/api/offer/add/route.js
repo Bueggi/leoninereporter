@@ -16,11 +16,14 @@ const handler = async (req, res) => {
       plz,
       age,
       platform,
+      placement,
       offerGroupID,
-      frequencyCap
+      frequencyCap,
+      upcharge,
+      upchargeTKP,
     } = await req.json();
 
-    console.log('got hit')
+
 
     // find offerGroup and return error if offerGroup does not exist
     const offerGroup = await prisma.offerGroup.findUnique({
@@ -48,7 +51,10 @@ const handler = async (req, res) => {
         plz,
         age,
         platform,
-        frequencyCap
+        placement,
+        frequencyCap,
+        upcharge: +upcharge,
+        upchargeTKP: +upchargeTKP,
       },
     });
 
@@ -57,6 +63,7 @@ const handler = async (req, res) => {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }

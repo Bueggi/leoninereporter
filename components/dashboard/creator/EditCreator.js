@@ -3,7 +3,10 @@ import {
   Toggle,
   Ueberschrift,
 } from "@components/dashboard/forms/FormInputs";
-import { StateObjectInput, StateTextInput } from "@components/pComponents/inputs/RefTextInput";
+import {
+  StateObjectInput,
+  StateTextInput,
+} from "@components/pComponents/inputs/RefTextInput";
 import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -26,7 +29,7 @@ const EditCreator = ({ setOpen, state, setState }) => {
     e.preventDefault();
 
     try {
-      console.log(formState)
+      console.log(formState);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${state.id}/edit`,
         {
@@ -35,6 +38,8 @@ const EditCreator = ({ setOpen, state, setState }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            bankData: formState.bankData,
+            instagram: formState.instagram,
             channelName: formState.channelName,
             channelIDs: channelIDs,
             share: formState.share,
@@ -48,7 +53,7 @@ const EditCreator = ({ setOpen, state, setState }) => {
             paymentGoal: formState.paymentGoal,
             reverseCharge: formState.reverseCharge,
             city: formState.city,
-            country: formState.country
+            country: formState.country,
           }),
         }
       );
@@ -164,7 +169,21 @@ const EditCreator = ({ setOpen, state, setState }) => {
           </span>
         </div>
 
+        <Input
+          label={"Instagram-Handle"}
+          type={"text"}
+          value={formState}
+          keyName={"instagram"}
+          setValue={setFormState}
+        />
         <Ueberschrift label={"Zahlungsinformationen"} />
+        <Input
+          label={"Bankverbindung"}
+          type={"text"}
+          value={formState}
+          keyName={"bankData"}
+          setValue={setFormState}
+        />
         <Input
           label={"Steuerpflichtig in"}
           type={"text"}

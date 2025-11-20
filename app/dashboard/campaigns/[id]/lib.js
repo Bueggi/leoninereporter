@@ -1,5 +1,5 @@
+import { getSession } from "next-auth/react";
 import { toast } from "react-toastify";
-
 
 // deleteOfferGroup
 // Mit dieser Funktion wird die Offergroup geloescht
@@ -78,7 +78,7 @@ const getcampaign = async (id, setcampaign, setLoading) => {
     const { data, message } = await chosencampaignRes.json();
 
     setcampaign(data);
-    setLoading(false);
+    return setLoading(false);
   } catch (error) {
     setLoading(false);
     return toast.error(error);
@@ -117,15 +117,14 @@ const deleteOffer = async (id, state, setState) => {
   }
 };
 
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 
-export {
-  deleteOfferGroup,
-  getcampaign,
-  addOfferGroup,
-  deleteOffer,
-};
+const  returnSession = async () => {
+  const session = await getSession()
+  return session
+}
+
+export { deleteOfferGroup, getcampaign, addOfferGroup, deleteOffer, returnSession };

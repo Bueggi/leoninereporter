@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-import moment from "moment";
 
 const handler = async (req, res) => {
   try {
@@ -14,10 +13,17 @@ const handler = async (req, res) => {
         email: user.email,
       },
     });
-    const { name, status, advertiserID, customRiskFee, customRiskFeeAmount } =
-      await req.json();
+    const {
+      name,
+      status,
+      advertiserID,
+      customRiskFee,
+      customRiskFeeAmount,
+      contact,
+      contactEmail,
+    } = await req.json();
 
-      console.log(customRiskFee, customRiskFeeAmount)
+    console.log(customRiskFee, customRiskFeeAmount);
     const newCampaign = await prisma.campaign.create({
       data: {
         name,
@@ -26,6 +32,8 @@ const handler = async (req, res) => {
         creatorId: issuer.id,
         customRiskFee,
         customRiskFeeAmount: +customRiskFeeAmount,
+        contact,
+        contactEmail,
       },
     });
 

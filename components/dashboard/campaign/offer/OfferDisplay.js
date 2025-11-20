@@ -1,5 +1,6 @@
 import moment from "moment";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import adFormatNames from "@lib/dashboard/AdFormatNames";
 
 const OfferDisplay = ({
   el,
@@ -7,6 +8,8 @@ const OfferDisplay = ({
   setEditOfferModal,
   setOfferToEdit,
   deleteOffer,
+  campaign,
+  setCampaign,
 }) => {
   return (
     <div className="relative" key={i}>
@@ -27,7 +30,7 @@ const OfferDisplay = ({
         >
           <TrashIcon
             onClick={() => {
-              deleteOffer(el.id, campaign, setcampaign);
+              deleteOffer(el.id, campaign, setCampaign);
             }}
             className="h-5 w-5"
             aria-hidden="true"
@@ -35,6 +38,12 @@ const OfferDisplay = ({
         </button>
       </div>
       <div className="rounded-md border-slate-700 border px-2 py-1 my-2 bg-slate-200 text-xs grid grid-cols-2 gap-2">
+        <div className="flex col-span-2 font-bold text-base">
+          {
+            adFormatNames.filter((formats) => formats.name === el.product)[0]
+              .displayName
+          }
+        </div>
         <div className="flex flex-col">
           <span className="font-bold">Zeitraum:</span>
           {moment(el.start).format("L")} -{moment(el.end).format("L")}

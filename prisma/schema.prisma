@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  url      = env("DATABASE_URL") // Ändere das von POSTGRES_PRISMA_URL
 }
 
 model User {
@@ -55,7 +55,10 @@ model Campaign {
   pdfLink             String?
   product             String?
   productfamily       String?
+  anrede              String?
   status              STATUS       @default(OFFER)
+  contact             String?
+  contactEmail        String?
 }
 
 model Booking {
@@ -76,8 +79,9 @@ model Booking {
 enum PRODUCT {
   NONSKIPPABLE
   SKIPPABLE
-  BUMPTER
-  SHAREOFVOICE
+  BUMPER
+  SOV
+  CTV
 }
 
 enum STATUS {
@@ -97,11 +101,13 @@ model Offer {
   platform     String?
   placement    String?
   reach        Int?
+  upcharge     Int?
+  upchargeTKP  Float?
   start        DateTime?
   end          DateTime?
   product      PRODUCT?
   rotation     String
-  tkp          Float?
+  tkp          Float
   output       String?
   targeting    String?
   offergroup   OfferGroup? @relation(fields: [offerGroupID], references: [id], onDelete: Cascade)
@@ -121,12 +127,14 @@ model Creator {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   anbindung      Anbindung @default(OWNED)
+  bankData       String?
   channelIDs     Channel[] @relation("CreatorChannels")
   channelName    String
   company        String
   demographics   Json?
   goal           Float
   image          String
+  instagram      String?
   invoiceAddress String?
   management     String?
   paymentGoal    Int?
@@ -135,6 +143,7 @@ model Creator {
   city           String?
   country        String?
   realName       String?
+  steuerID       String?
   taxable        String?
 }
 
@@ -168,27 +177,20 @@ model Advertiser {
 }
 
 model Report {
-  id        String        @id @default(uuid())
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  entries   ReportEntry[]
+  id      String        @id @default(uuid())
+  month   DateTime
+  entries ReportEntry[]
 }
 
 model ReportEntry {
-  id                        String   @id @default(uuid())
-  createdAt                 DateTime @default(now())
-  updatedAt                 DateTime @updatedAt
-  report                    Report   @relation(fields: [reportID], references: [id])
-  reportID                  String
-  channelID                 String
-  date                      DateTime
-  revenueAdsense            Float
-  revenueSubscription       Float
-  revenueShortsSubscription Float
-  revenueShortsAds          Float
-  revenuePaidFeatures       Float
-  revenueAdManager          Float
-  revenueAusgleich          Float
-  delta                     Float
-  payout                    Float
+  id             String @id @default(uuid())
+  report         Report @relation(fields: [reportID], references: [id])
+  reportID       String
+  channelId      String
+  type           String
+  revenueInEur   Float
+  sharePartner   Float
+  rateCardInEur  Float
+  riskFee        Float
+  deltaInPercent Float
 }

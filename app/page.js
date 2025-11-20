@@ -4,7 +4,6 @@ import { getSession, signIn, useSession } from "next-auth/react";
 
 export default function Homepage() {
   const session = useSession(); // based on your data you should store it here in state
-  console.log(session);
 
   return (
     <div className="bg-white">

@@ -12,6 +12,8 @@ const handler = async (req, { params }) => {
       }
     });
 
+    console.log(singlebooking)
+
     return NextResponse.json(
       { success: true, data: singlebooking },
       { status: 200 }

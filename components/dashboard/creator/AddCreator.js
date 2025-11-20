@@ -29,6 +29,9 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
   const cityRef = useRef();
   const countryRef = useRef();
   const taxableRef = useRef();
+  const instagramRef = useRef();
+  const bankDataRef = useRef();
+  const steuerIDRef = useRef();
 
   const validateInputs = () => {
     const newErrors = {};
@@ -55,13 +58,14 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
 
     setLoading(true);
     try {
-      console.log(shareRef.current.value)
+      console.log(shareRef.current.value);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/add`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            bankData: bankDataRef.current.value,
             channelName: channelNameRef.current.value,
             channelIDs,
             company: companyRef.current.value,
@@ -75,14 +79,14 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
             share: shareRef.current.value,
             city: cityRef.current.value,
             country: countryRef.current.value,
+            instagram: instagramRef.current.value,
           }),
         }
       );
 
       const { data, message } = await res.json();
       if (!res.ok) return toast.error(message);
-      console.log(data, message)
-      
+      console.log(data, message);
 
       toast.success(
         `Der Creator ${data.channelName} wurde erfolgreich angelegt`
@@ -161,10 +165,12 @@ export default function AddCreator({ setOpen, allCreators, setAllCreators }) {
           setChannelIDs([...channelIDs, { channelName: "", channelID: "" }])
         }
       />
+      <RefTextInput title="Instagram-Handle" ref={instagramRef} required />
 
       <Toggle ref={anbindungRef} label="Anbindung (Talent/Owned)" />
 
       <FormSubHeading>Zahlungsinformationen</FormSubHeading>
+      <RefTextInput title="IBAN" ref={bankDataRef} required />
       <RefTextInput title="Steuerpflichtig in" ref={taxableRef} required />
       <Toggle ref={reverseChargeRef} label="Reverse Charge" />
 

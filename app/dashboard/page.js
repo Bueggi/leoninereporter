@@ -16,19 +16,18 @@ const Dashboard = () => {
     const user = await userRes.json();
 
     const token = user.data.access_token;
-    
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTURL}/api/reports/analytics`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({token})
-    })
-  
 
-  }
-
-
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTURL}/api/reports/analytics`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      }
+    );
+  };
 
   const getData = async () => {
     const userRes = await fetch(
@@ -99,7 +98,7 @@ const Dashboard = () => {
     // const suspense = await getReport.json()
   };
 
-  const handleDownloadButtonClick = async (downloadUrl) => {
+  const handleDownloadButtonClick = async (downloadUrl, startTime, endTime) => {
     // get the users token
     const userRes = await fetch(
       `${process.env.NEXT_PUBLIC_HOSTURL}/api/users/me`
@@ -163,6 +162,8 @@ const Dashboard = () => {
           transaction_revenue:
             parseFloat(el.estimated_partner_transaction_revenue) || 0,
           yt_ad_revenue: parseFloat(el.estimated_youtube_ad_revenue) || 0,
+          startTime,
+          endTime,
         };
       } else {
         // Werte addieren, falls der Channel bereits existiert und Werte als Float konvertieren
@@ -182,6 +183,17 @@ const Dashboard = () => {
           parseFloat(el.estimated_youtube_ad_revenue) || 0;
       }
     });
+
+    const writeReportDataToDataBaseRes = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTURL}/api/reports/writeReport`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: revPerChannel }),
+      }
+    );
 
     console.log(revPerChannel);
 
@@ -204,7 +216,7 @@ const Dashboard = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-        Influencer Finder
+        Financial Report
       </h1>
 
       <div className="max-w-2xl">
@@ -215,11 +227,18 @@ const Dashboard = () => {
                 <li className="flex flex-row gap-12" key={i}>
                   <div>JobId: {el.jobId}</div>
                   <div>ReportID: {el.id}</div>
+                  <div>Datum: {el.startTime}</div>
 
                   <ArrowDownTrayIcon
                     className="text-slate-600 w-4 h-4 cursor-pointer"
                     // onClick={() => handleDownloadButtonClick(el.downloadUrl)}
-                    onClick={()=>fetchChannelEarnings()}
+                    onClick={() =>
+                      handleDownloadButtonClick(
+                        el.downloadUrl,
+                        el.startTime,
+                        el.endTime
+                      )
+                    }
                   />
                 </li>
               );
@@ -228,7 +247,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <button onClick={fetchChannelEarnings}>Klick mich fuer Finanzdaten</button>
+      <button onClick={getData}>Klick mich fuer Finanzdaten</button>
     </div>
   );
 };

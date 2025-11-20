@@ -18,7 +18,6 @@ export default function CreatorDetails({ params: { id } }) {
   // State für dieses Component:
   // 1. Der creator, den wir bearbeiten wollen / dessen Informationen wir einsehen wollen
   const [creator, setCreator] = useState({});
-  console.log("creator", creator);
   const [loading, setLoading] = useState(true);
   const [editCreatorModalOpen, setEditCreatorModalOpen] = useState(false);
 
@@ -147,7 +146,7 @@ export default function CreatorDetails({ params: { id } }) {
         </button>
       </div>
       {/* Creator Informationen */}
-     
+
       <div className="bg-white py-24 sm:py-32">
         <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
           <h2 className="text-base/7 font-semibold text-indigo-600">
@@ -185,7 +184,6 @@ export default function CreatorDetails({ params: { id } }) {
                         titel={"Rechnungsadresse"}
                         information={`${creator.invoiceAddress}, ${creator.city}, ${creator.country}`}
                       />
-                 
                     </div>
                   </p>
                 </div>
@@ -202,31 +200,34 @@ export default function CreatorDetails({ params: { id } }) {
                   <p className="mt-2 text-lg font-medium tracking-tight text-gray-950">
                     Goal & Share
                   </p>
-       
-                    <div className="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
-                      <CreatorInfos
-                        titel={"Share"}
-                        information={`${creator.share} %`}
-                      />
-                      <CreatorInfos
-                        titel={"Ziel"}
-                        information={`${creator.goal} %`}
-                      />
-                      <CreatorInfos
-                        titel={"Zahlungsziel"}
-                        information={`${creator.paymentGoal} Tage`}
-                      />
-                      
-                      <CreatorInfos
-                        titel={"Reverse Charge"}
-                        information={creator.reverseCharge ? 'Ja, anwenden' : 'Nicht anwenden'}
-                      />
-                      <CreatorInfos
-                        titel={"Steuerpflicht in DE"}
-                        information={creator.taxable ? 'Ja' : 'Nein'}
-                      />
-                      
-                
+
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-0">
+                    <CreatorInfos
+                      titel={"Share"}
+                      information={`${creator.share} %`}
+                    />
+                    <CreatorInfos
+                      titel={"Ziel"}
+                      information={`${creator.goal} %`}
+                    />
+                    <CreatorInfos
+                      titel={"Zahlungsziel"}
+                      information={`${creator.paymentGoal} Tage`}
+                    />
+
+                    <CreatorInfos
+                      titel={"Reverse Charge"}
+                      information={
+                        creator.reverseCharge
+                          ? "Ja, anwenden"
+                          : "Nicht anwenden"
+                      }
+                    />
+                    <CreatorInfos
+                      titel={"Steuerpflicht in DE"}
+                      information={creator.taxable ? "Ja" : "Nein"}
+                    />
+
                     <CreatorInfos
                       titel={"Firma"}
                       information={creator.company}

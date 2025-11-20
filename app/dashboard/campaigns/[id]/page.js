@@ -24,7 +24,7 @@ import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import EditCampaign from "@components/dashboard/campaign/EditCampaign";
 import DownloadPDFButton from "@components/dashboard/campaign/DownloadPDF";
 
-import { CldImage } from "next-cloudinary";
+import { useSession } from "next-auth/react";
 
 export default function Campaigns({ params: { id } }) {
   // State für dieses Component:
@@ -39,11 +39,19 @@ export default function Campaigns({ params: { id } }) {
   const [offerToEdit, setOfferToEdit] = useState();
   const [addBookingModal, setAddBookingModal] = useState(false);
   const [offerArray, setOfferArray] = useState([]);
+  // get the userSession
+  const { status, data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      // The user is not authenticated, handle it here.
+    },
+  });
 
   // Beim Mount des Components wird der campaign aus der Datenbank geladen
+
   useEffect(() => {
-    getcampaign(id, setcampaign, setLoading);
-  }, [id]);
+    if (session !== "loading") getcampaign(id, setcampaign, setLoading);
+  }, []);
 
   // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
@@ -109,15 +117,6 @@ export default function Campaigns({ params: { id } }) {
         </button>
       </h2>
 
-      {/* <CldImage
-        src="cld-sample-5" // Use this sample image or upload your own via the Media Explorer
-        width="500" // Transform the image: auto-crop to square aspect_ratio
-        height="500"
-        crop={{
-          type: "auto",
-          source: true,
-        }}
-      /> */}
 
       <DescriptionList campaign={campaign} />
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
@@ -169,12 +168,18 @@ export default function Campaigns({ params: { id } }) {
                         >
                           Neus Angebot
                         </button>
-                        {console.log(el,'Angebot fuer')}
-                        <DownloadPDFButton
-                          offer={el}
-                          campaignName={campaign.name}
-                          advertiser={campaign.advertiser}
-                        />
+
+                        {status !== "loading" && (
+                          <DownloadPDFButton
+                            offer={el}
+                            campaignName={campaign.name}
+                            advertiser={campaign.advertiser}
+                            contact={campaign.contact}
+                            contactEmail={campaign.contactEmail}
+                            user={session.user.name}
+                            userEmail={session.user.email}
+                          />
+                        )}
                       </div>
                     </div>
 
@@ -188,6 +193,8 @@ export default function Campaigns({ params: { id } }) {
                             setOfferToEdit={setOfferToEdit}
                             deleteOffer={deleteOffer}
                             setEditOfferModal={setEditOfferModal}
+                            campaign={campaign}
+                            setCampaign={setcampaign}
                           />
                         ))}
                       {!el.offers.length && (

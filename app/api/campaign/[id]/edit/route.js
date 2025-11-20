@@ -17,6 +17,8 @@ const handler = async (req, { params }) => {
       status,
       customRiskFee,
       customRiskFeeAmount,
+      contact,
+      contactEmail,
     } = await req.json();
 
     const { id } = params;
@@ -38,6 +40,8 @@ const handler = async (req, { params }) => {
         customer,
         status,
         customRiskFee,
+        contact,
+        contactEmail,
         customRiskFeeAmount: +customRiskFeeAmount,
       },
       include: {

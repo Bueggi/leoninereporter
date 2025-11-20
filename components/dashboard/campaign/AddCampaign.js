@@ -12,6 +12,8 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
   const [status, setStatus] = useState(publishingOptions[0]);
   const [advertiserList, setAdvertiserList] = useState([]);
   const [customRiskFeeRef, setCustomRiskFeeRef] = useState(false);
+  const contactRef = useRef();
+  const contactEmailRef = useRef();
   const customRiskFeeAmountRef = useRef();
 
   // get initial states
@@ -51,6 +53,8 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            contact: contactRef.current.value,
+            contactEmail: contactEmailRef.current.value,
             name: nameRef.current.value,
             advertiserID: advertiserID[0].id,
             status: status.title,
@@ -159,6 +163,44 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             </div>
           </div>
         )}
+        <label
+          htmlFor="contact"
+          className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+        >
+          Ansprechpartner
+        </label>
+        <div className="mt-2 sm:col-span-2 sm:mt-0">
+          <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+            <input
+              type="text"
+              name="contact"
+              id="contact"
+              autoComplete="contact"
+              className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              ref={contactRef}
+              required
+            />
+          </div>
+        </div>
+        <label
+          htmlFor="contactEmail"
+          className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+        >
+          Email des Ansprechpartners
+        </label>
+        <div className="mt-2 sm:col-span-2 sm:mt-0">
+          <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+            <input
+              type="text"
+              name="contactEmail"
+              id="contactEmail"
+              autoComplete="contactEmail"
+              className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              ref={contactEmailRef}
+              required
+            />
+          </div>
+        </div>
         <div className="mt-2 sm:col-span-3 sm:mt-0">
           <button
             type="submit"

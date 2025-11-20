@@ -18,6 +18,8 @@ const handler = async (req, { params }) => {
       plz,
       frequencyCap,
       placement,
+      upcharge,
+      upchargeTKP
     } = await req.json();
 
     const offer = await prisma.offer.findFirst({ where: { id } });
@@ -45,7 +47,9 @@ const handler = async (req, { params }) => {
         age,
         plz,
         platform,
-        frequencyCap
+        frequencyCap,
+        upcharge: +upcharge,
+        upchargeTKP: +upchargeTKP
       },
     });
 

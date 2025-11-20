@@ -1,4 +1,3 @@
-import { createTw } from "react-pdf-tailwind";
 import {
   PDFDownloadLink,
   Document,
@@ -9,15 +8,49 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import moment from "moment";
-import ReactDOM from "react-dom";
-import { PDFViewer } from "@react-pdf/renderer";
+import calculateUpchargeInformation from "./pdfgeneration/calculateUpchargeInformation";
+import ProductInformationRow from "../../pComponents/pdfgeneration/ProductInformationRow";
 
-const DownloadPDFButton = ({ campaignName, offer, advertiser }) => {
+// import tw main
+import { tw } from "@lib/tw";
+
+// import helperfunctions
+// TODO hier sind noch Components drin, die definitiv eine eigene Datei wert sind
+import {
+  calculateRuntime,
+  abortGenerationIfPointless,
+  Ueberschrift,
+  InfoSchrift,
+  FliessText,
+  TableRightSide,
+  numberToEUR,
+  Zeitraum,
+  calculateProductMetrics,
+  reduceInformationFromOffersToString,
+} from "@lib/dashboard/pdfGeneration/helperFunctions";
+
+const DownloadPDFButton = ({
+  campaignName,
+  offer,
+  advertiser,
+  contact,
+  contactEmail,
+  user,
+  userEmail,
+}) => {
   Font.register({
-    family: "Lato",
+    family: "Inter",
     fonts: [
-      { src: "/Lato-Regular.ttf", format: "truetype" },
-      { src: "/Lato-Bold.ttf", format: "truetype", fontWeight: 600 },
+      { src: "/Inter_18pt-Regular.ttf", format: "truetype" },
+      { src: "/Inter_18pt-Light.ttf", format: "truetype", fontWeight: 300 },
+      {
+        src: "/Inter_18pt-Medium.ttf",
+        format: "truetype",
+        fontWeight: "normal",
+      },
+      { src: "/Inter_18pt-SemiBold.ttf", format: "truetype", fontWeight: 600 },
+      { src: "/Inter_18pt-Bold.ttf", format: "truetype", fontWeight: "bold" },
+      { src: "/Inter_18pt-Black.ttf", format: "truetype", fontWeight: "black" },
     ],
   });
 
@@ -29,466 +62,401 @@ const DownloadPDFButton = ({ campaignName, offer, advertiser }) => {
             campaignName={campaignName}
             offer={offer}
             advertiser={advertiser}
+            contact={contact}
+            contactEmail={contactEmail}
+            user={user}
+            userEmail={userEmail}
           />
         }
         fileName={`${campaignName}.pdf`}
         style={tw(
-          "inline-flex items-center gap-x-1.5 rounded-md bg-indigo-700 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200"
         )}
       >
         {({ blob, url, loading, error }) =>
-          loading ? "Loading document..." : "Download"
+          loading ? "Generiere PDF..." : "Download PDF"
         }
       </PDFDownloadLink>
-      {/* <PDFViewer width={2000} height={2000}>
-        <MyDoc
-          campaignName={campaignName}
-          offer={offer}
-          advertiser={advertiser}
-        />
-      </PDFViewer> */}
     </>
   );
 };
 
 export default DownloadPDFButton;
 
-export const MyDoc = ({ campaignName, offer, advertiser }) => {
-  const { placement, product, platform, frequencyCap, output, plz, age } =
-    offer;
+export const MyDoc = ({ offer, contact, contactEmail, user, userEmail }) => {
+  // wenn die Offergroup noch keine Angebote angelegt hat, wird ein leeres Dokument zurückgegeben
+  if (offer.offers.length < 1)
+    return abortGenerationIfPointless(Document, Page, View, Text);
+
+  const upchargeMetrics = calculateUpchargeInformation(offer);
   const today = moment().format("DD.MM.YYYY");
   const gueltigkeitsDatum = moment().add(14, "days").format("DD.MM.YYYY");
-  const zeitraum =
-    moment(
-      offer.offers.reduce((accumulator, currentValue) => {
-        if (accumulator === 0) return currentValue.start;
-        return accumulator < currentValue.start
-          ? accumulator
-          : currentValue.start;
-      }, 0)
-    ).format("L") +
-    " - " +
-    moment(
-      offer.offers.reduce((accumulator, currentValue) => {
-        if (accumulator === 0) return currentValue.end;
-        return accumulator > currentValue.end ? accumulator : currentValue.end;
-      }, 0)
-    ).format("L");
+  const zeitraum = calculateRuntime(offer);
 
-  const totalBudget = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
+  const totalBudget = numberToEUR(
     offer.offers.reduce(
       (accumulator, currentValue) =>
         accumulator + (currentValue.reach * currentValue.tkp) / 1000,
       0
-    )
-  );
-
-  const plzAcc = offer.offers.reduce((acc, el) => {
-    if (acc.indexOf(el) !== -1) return acc;
-    return [...acc, el.plz];
-  }, []);
-
-  const rotation = offer.offers.reduce((acc, el) => {
-    if (acc.indexOf(el) !== -1) return acc;
-    return [...acc, el.rotation];
-  }, []);
-
-  const targeting = offer.offers.reduce((acc, el) => {
-    if (acc.indexOf(el) !== -1) return acc;
-    return [...acc, el.targeting];
-  }, []);
-
-  const bumperTKP = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (currentValue.product !== "BUMPER") return accumulator;
-      if (accumulator === 0) return currentValue.tkp;
-      return (accumulator + currentValue.tkp) / 2;
-    }, 0)
-  );
-
-  const bumperReach = offer.offers.reduce((accumulator, currentValue) => {
-    if (currentValue.product !== "BUMPER") return accumulator;
-
-    return accumulator + currentValue.reach;
-  }, 0);
-
-  const bumperBudget = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (currentValue.product !== "BUMPER") return accumulator;
-      return accumulator + currentValue.reach * (currentValue.tkp / 1000);
-    }, 0)
-  );
-
-  const totalTKP = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue.reach * (currentValue.tkp / 1000);
-    }, 0)
-  );
-
-  const nonskipTKP = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (currentValue.product !== "NONSKIPPABLE") return accumulator;
-      if (accumulator === 0) return currentValue.tkp;
-      return (accumulator + currentValue.tkp) / 2;
-    }, 0)
-  );
-
-  const nonskipReach = offer.offers.reduce((accumulator, currentValue) => {
-    if (currentValue.product !== "NONSKIPPABLE") return accumulator;
-
-    return accumulator + currentValue.reach;
-  }, 0);
-
-  const nonskipBudget = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (currentValue.product !== "NONSKIPPABLE") return accumulator;
-      return accumulator + currentValue.reach * (currentValue.tkp / 1000);
-    }, 0)
-  );
-
-  const skippableTKP = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (currentValue.product !== "SKIPPABLE") return accumulator;
-      if (accumulator === 0) return currentValue.tkp;
-      return (accumulator + currentValue.tkp) / 2;
-    }, 0)
-  );
-
-  const skippableReach = offer.offers.reduce((accumulator, currentValue) => {
-    if (currentValue.product !== "SKIPPABLE") return accumulator;
-
-    return accumulator + currentValue.reach;
-  }, 0);
-
-  const skippableBudget = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  }).format(
-    offer.offers.reduce((accumulator, currentValue) => {
-      if (currentValue.product !== "SKIPPABLE") return accumulator;
-      return accumulator + currentValue.reach * (currentValue.tkp / 1000);
-    }, 0)
+    ) + upchargeMetrics.totalCosts
   );
 
   const totalReach = offer.offers.reduce((accumulator, currentValue) => {
     return accumulator + currentValue.reach;
   }, 0);
 
+  // Produktspezifische Berechnungen
+  const productMetrics = calculateProductMetrics(offer);
+
   return (
     <Document>
-      <Page
-        size="A4"
-        style={tw("p-4  px-12 flex flex-row flex-wrap gap-4 w-full")}
-        orientation="portrait"
-      >
-        <View style={tw("w-full flex flex-row justify-end")}>
-          <Image src="/HoTLogo.png" style={tw("max-w-[8rem]")} />
+      {/* SEITE 1 - KERNINFOS */}
+      <Page size="A4" style={tw("bg-white text-black")}>
+        {/* Logo und Meta Info in einer Linie */}
+        <View
+          style={tw(
+            "flex flex-row justify-between items-start bg-[#AB8353] pt-12 px-12 pb-8 mb-6"
+          )}
+        >
+          <Image
+            src={"/HoT_Background.png"}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "115%",
+              height: "225%",
+              zIndex: -1,
+            }}
+          ></Image>
+          <View>
+            <FliessText>
+              <Text style={tw("text-white")}>LEONINE Licensing GmbH</Text>
+            </FliessText>
+            <FliessText>
+              <Text style={tw("text-white")}>
+                Taunusstr. 21 · 80807 München
+              </Text>
+            </FliessText>
+          </View>
+          <Image src="/HoTLogo.png" style={tw("w-24 h-auto opacity-90")} />
         </View>
+        <View style={tw("px-12")}>
+          {/* HERO SECTION - Fließend ohne harte Boxen */}
 
-        <View style={tw("block flex flex-col mb-4")}>
-          <Text style={tw("text-[7px] text-slate-600 block")}>
-            LEONINE Licensing GmbH · Taunusstr. 21 · 80807 München
-          </Text>
-          <Text style={tw("text-sm text-slate-600 mt-4")}>
-            {advertiser.name && advertiser.name}
-          </Text>
-          <Text style={tw("text-sm text-slate-600")}>
-            {advertiser.address && advertiser.address}
-          </Text>
-          <Text style={tw("text-sm text-slate-600")}>
-            {advertiser.plz &&
-              advertiser.city &&
-              advertiser.plz + " " + advertiser.city}
-          </Text>
-          <Text style={tw("text-sm text-slate-600")}>
-            {advertiser.country && advertiser.country}
-          </Text>
-        </View>
+          <View style={tw("relative mb-8")}>
+            {/* Kampagnenname als großer Eyecatcher */}
+            <Ueberschrift>
+              <Text>Angebot Nr. {offer.offernumber}</Text>
+            </Ueberschrift>
 
-        <View style={tw("min-w-full flex flex-row justify-between")}>
-          <Text
-            style={tw(
-              "text-2xl flex flex-col font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight"
-            )}
-          >
-            Angebot für Kampagne {campaignName}
-          </Text>
-        </View>
-        <View style={tw("flex flex-col")}>
-          <Text
-            className="text-blue-200"
-            style={tw("flex items-center text-sm text-gray-500")}
-          >
-            Angebotsnummer: {offer.offernumber}
-          </Text>
-          <Text
-            className="text-blue-200"
-            style={tw("flex gap-4 text-sm items-center text-gray-500 mb-2")}
-          >
-            Datum des Angebots: {today} &nbsp; - &nbsp; Gültig bis:{" "}
-            {gueltigkeitsDatum}
-          </Text>
-          <View style={tw("mt-12 text-sm")}>
-            <Text>Sehr geehrte Damen und Herren,</Text>
-            <Text>
-              wir freuen uns, Ihnen nachfolgendes Angebot zu unterbreiten:
+            {/* Angebotsnummer direkt darunter, subtil */}
+            <Zeitraum>
+              <Text style={tw("mt-2")}>
+                Angebotsdatum: {today} - Gültig bis: {gueltigkeitsDatum}
+              </Text>
+            </Zeitraum>
+          </View>
+
+          {/* ANREDE */}
+          <FliessText>
+            <Text style={tw("mb-4")}>
+              {/* Wenn ein Kontaktname angegeben wurde, dann soll er hier erscheinen, ansonsten eine generische Anrede */}
+              {contact ? "Hallo " + contact : "Sehr geehrte Damen und Herren"},
+              {"\n"}
+              wir freuen uns, folgendes Angebot zu unterbreiten:
             </Text>
-          </View>
-          <View style={tw("flex flex-col gap-2 mt-8")}>
-            <Text
-              style={tw(
-                "text-xl flex flex-col font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight mb-1"
-              )}
-            >
-              Angebotsübersicht{" "}
-            </Text>
-            <View style={tw("flex flex-col gap-6")}>
-              <View style={tw("flex flex-col min-w-full")}>
-                {product && (
-                  <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                    Product: {product}
-                  </Text>
-                )}
-                <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                  Zeitraum: {zeitraum}
-                </Text>
-                <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                  Budget: {totalBudget}
-                </Text>
-                <Text style={tw("flex align-middle text-sm text-gray-500")}>
-                  Reichweite: {totalReach}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View style={tw("min-w-full mt-8")}>
-            <View
-              style={tw("flex flex-row bg-indigo-200 min-w-full text-sm mb-2")}
-            >
-              <View style={tw("flex-1 py-2 px-4")}>
-                <Text style={tw("")}> Home of Talents Media</Text>
-              </View>
-              <View style={tw("flex-1 py-2 px-4 justify-end")}>
-                <Text>TKP(net)</Text>
-              </View>
-              <View style={tw("flex-1 py-2 px-4 justify-end")}>
-                <Text> AIs</Text>
-              </View>
-              <View style={tw("flex-1 py-2 px-4 justify-end")}>
-                <Text>Budget (net) Hallo</Text>
-              </View>
-            </View>
+          </FliessText>
 
-            <View style={tw("flex flex-row min-w-full justify-end")}>
-              <View style={tw("flex flex-col flex-1 px-4")}>
-                <Text style={tw("text-sm font-bold")}>Non Skip Short Ad</Text>
-                <Text style={tw("text-sm font-bold")}>Skippable Ad</Text>
-                <Text style={tw("text-sm font-bold")}>Bumper</Text>
-              </View>
-              <View style={tw("flex flex-col flex-1 px-4")}>
-                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {nonskipTKP}
-                </Text>
-                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {skippableTKP}
-                </Text>
-                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {bumperTKP}
-                </Text>
-              </View>
-              <View
-                style={tw("flex flex-col flex-1 px-4 justify-self-end ml-auto")}
-              >
-                <Text style={tw("text-sm font-bold flex ml-auto mr-12")}>
-                  {new Intl.NumberFormat("de-DE").format(nonskipReach)}
-                </Text>
-                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {new Intl.NumberFormat("de-DE").format(skippableReach)}
-                </Text>
-                <Text style={tw("text-sm font-bold ml-auto mr-12")}>
-                  {new Intl.NumberFormat("de-DE").format(bumperReach)}
-                </Text>
-              </View>
-              <View style={tw("flex flex-col flex-1 px-4 justify-end")}>
-                <Text style={tw("text-sm font-bold ml-auto mr-8")}>
-                  {nonskipBudget}
-                </Text>
-                <Text style={tw("text-sm font-bold ml-auto mr-8")}>
-                  {skippableBudget}
-                </Text>
-                <Text style={tw("text-sm font-bold ml-auto mr-8")}>
-                  {bumperBudget}
-                </Text>
-              </View>
-            </View>
+          {/* ANGEBOTSÜBERSICHT - Fließende Tabelle */}
 
-            <View
-              style={tw(
-                "flex flex-row bg-indigo-700 min-w-full text-sm text-white mt-2"
-              )}
-            >
-              <View style={tw("flex-1 py-2 px-4")}>
-                <Text style={tw("")}> Total</Text>
-              </View>
-              <View style={tw("flex-1 py-2 px-4")}>
-                <Text> </Text>
-              </View>
-              <View style={tw("flex-1 py-2 px-4 ml-auto")}>
-                <Text style={tw("ml-auto mr-12")}>
-                  {" "}
-                  {new Intl.NumberFormat("de-DE").format(totalReach)}
-                </Text>
-              </View>
-              <View style={tw("flex-1 py-2 px-4 ml-auto")}>
-                <Text style={tw("ml-auto mr-8")}> {totalBudget}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={tw("mt-8")}>
-          <Text style={tw("text-sm")}>
-            Das vereinbarte Buchungsvolumen kann innerhalb des
-            Leistungszeitraums frei im Rahmen der vereinbarten Rotation verteilt
-            werden. Turnunsmäßige Leistungsnachweise erfolgen in Form von PDF-
-            und Excel-Reports, jeweils montags nach Kampagnenstart.
-          </Text>
-          <Text style={tw("text-sm mt-3")}>
-            Bei den genannten Beträgen handelt es sich um Nettobeträge, die
-            jeweils zzgl. der jeweils gültigen MwSt. gelten. Rechnungen im
-            Zusammenhang mit unserem Angebot sind innerhalb von 14 Tagen ab
-            Rechnungszugang fällig.
-          </Text>
-          <Text style={tw("text-sm mt-3")}>
-            Wir freuen uns über baldige Rückmeldung.
-          </Text>
-        </View>
-
-        <View style={tw("flex flex-col gap-4 mt-16")}>
-          <Text style={tw("text-center text-[6px] text-gray-400")}>
-            Alle in diesem Angebot enthaltenen Angaben sind vertraulich. Die
-            Parteien verpflichten sich die im Rahmen dieses Angebots
-            ausgetauschten Informationen, sowie alle im Falle der Durchführung
-            eines Auftrages bekanntwerdenden Informationen und Daten vertraulich
-            zu behandeln und Dritten nicht zugänglich zu machen. Verbundene
-            Unternehmen iSd § 15 AktG gelten nicht als Dritte. Leonine ist zur
-            Weitergabe vertraulicher Informationen insoweit berechtigt, als es
-            zur Durchführung des Auftrags notwendig ist. Änderungen und
-            Ergänzungen dieser Bedingungen bedürfen zu ihrer Rechtswirksamkeit
-            der Schriftform. Das gleiche gilt für eine Abbedingung dieser
-            Schriftformbestimmung. Erfüllungsort und ausschließlicher
-            Gerichtsstand ist soweit zulässig München.
-          </Text>
-
-          <Text style={tw("text-center text-[6px] text-gray-400")}>
-            LEONINE Licensing GmbH · Taunusstr. 21 · 80807 München · Tel: +49 89
-            999 513 0 · Fax: +49 89 999 513 190 · Email info@leoninestudios.com
-            · Geschäftsführer: Fred Kogel, Dr. Lisa Giehl, Stephan Kathmann,
-            Bernhard zu Castell · Sitz der Gesellschaft: München ·
-            Registereintrag: Gesellschaft mit beschränkter Haftung registriert
-            im Handelsregister beim Amtsgericht München unter der Registernummer
-            HRB 272 911 · UniCredit Bank-AG · IBAN DE83 7002 0002 7620 80 · BIC
-            HYVEDEMMXXX · USt-IdNr. DE 323 797 373
-          </Text>
-        </View>
-      </Page>
-      <Page
-        size="A4"
-        style={tw("p-4  px-12 gap-4 w-full")}
-        orientation="portrait"
-      >
-        <View style={tw("")}>
-          <Text
-            style={tw(
-              "text-xl font-bold leading-tight text-gray-900 sm:truncate sm:tracking-tight mb-1 mt-12"
-            )}
-          >
-            Angebotsbausteine{" "}
-          </Text>
-        </View>
-        <View>
-          {offer.offers.map((item, index) => {
-            return (
-              <View key={index}>
-                <Text style={tw("flex flex-col text-sm text-indigo-500")} t>
-                  Produktbaustein {index + 1}
-                </Text>
-                <View style={tw("flex flex-row gap-12 text-xs")}>
-                  <View>
-                    <Text>
-                      Startdatum: {moment(item.start).format("DD.MM.YYYY")}
-                    </Text>
-                    <Text>
-                      Enddatum: {moment(item.end).format("DD.MM.YYYY")}
-                    </Text>
-                    <Text>Produkt: {item.product}</Text>
-                    <Text>
-                      Impressionen:{" "}
-                      {new Intl.NumberFormat("de-DE").format(item.reach)}
-                    </Text>
-                    <Text>
-                      TKP:{" "}
-                      {new Intl.NumberFormat("de-DE", {
-                        style: "currency",
-                        currency: "EUR",
-                      }).format(item.tkp)}
-                    </Text>
-                    <Text>
-                      Budget:{" "}
-                      {new Intl.NumberFormat("de-DE", {
-                        style: "currency",
-                        currency: "EUR",
-                      }).format(item.budget)}
-                    </Text>
-                    <Text>Frequency Cap: {item.frequencyCap}</Text>
+          {/* MINI META TABLE - 2 Spalten Minimalistisch & Kompakt */}
+          <View style={tw("mb-8")}>
+            <View style={tw("rounded-lg overflow-hidden")}>
+              <View style={tw("flex flex-row bg-stone-300 p-3")}>
+                {/* Linke Spalte */}
+                <View style={tw("flex-1 border-r border-stone-400 mr-2 ")}>
+                  {/* Row 1 */}
+                  <View style={tw("flex flex-row  items-center")}>
+                    <InfoSchrift>
+                      <Text>Zeitraum</Text>
+                    </InfoSchrift>
+                    <TableRightSide>
+                      <Text>{zeitraum}</Text>
+                    </TableRightSide>
                   </View>
-                  <View>
-                    <Text>Rotation: {item.Rotation}</Text>
-                    <Text>Alterstargeting: {item.age}</Text>
-                    <Text>Geschlechtertargeting: {item.gender}</Text>
-                    <Text>Platzierung: {item.placement}</Text>
-                    <Text>Ausspielung: {item.platform}</Text>
-                    <Text>Postleitzahlen: {item.plz}</Text>
+
+                  {/* Row 2 */}
+                  <View style={tw("flex flex-row  items-center")}>
+                    <InfoSchrift>
+                      <Text>Produkt</Text>
+                    </InfoSchrift>
+                    <TableRightSide>
+                      {/* <Text>{offer.offers[0] && offer.offers[0].product}</Text> */}
+                      <Text>
+                        {reduceInformationFromOffersToString(offer, "product")}
+                      </Text>
+                    </TableRightSide>
+                  </View>
+
+                  {/* Row 3 */}
+                  <View style={tw("flex flex-row items-center")}>
+                    <InfoSchrift>
+                      <Text>Frequency Cap</Text>
+                    </InfoSchrift>
+                    <TableRightSide>
+                      <Text>{offer.offers[0].frequencyCap}</Text>
+                    </TableRightSide>
+                  </View>
+
+                  {/* Row 4 */}
+
+                  {/* Row 5 */}
+                  {offer.offers[0].placement && (
+                    <View style={tw("flex flex-row items-center")}>
+                      <InfoSchrift>
+                        <Text>Platzierung</Text>
+                      </InfoSchrift>
+                      <TableRightSide>
+                        <Text>{offer.offers[0].placement}</Text>
+                      </TableRightSide>
+                    </View>
+                  )}
+                </View>
+
+                {/* Rechte Spalte */}
+                <View style={tw("flex-1")}>
+                  {/* Row 1 */}
+                  {offer.offers[0].placement && (
+                    <View style={tw("flex flex-row items-center")}>
+                      <InfoSchrift>
+                        <Text>Platform</Text>
+                      </InfoSchrift>
+                      <TableRightSide>
+                        <Text>{offer.offers[0].platform}</Text>
+                      </TableRightSide>
+                    </View>
+                  )}
+
+                  {/* Row 2 */}
+                  {offer.offers[0].plz && (
+                    <View style={tw("flex flex-row  items-center")}>
+                      <InfoSchrift>
+                        <Text>Geographie</Text>
+                      </InfoSchrift>
+                      <TableRightSide>
+                        <Text>{offer.offers[0].plz}</Text>
+                      </TableRightSide>
+                    </View>
+                  )}
+
+                  {/* Row 3 */}
+                  <View style={tw("flex flex-row  items-center")}>
+                    <InfoSchrift>
+                      <Text>Impressions</Text>
+                    </InfoSchrift>
+                    <TableRightSide>
+                      <Text>
+                        {new Intl.NumberFormat("de-DE").format(totalReach)}
+                      </Text>
+                    </TableRightSide>
+                  </View>
+
+                  {/* Row 4 */}
+                  <View style={tw("flex flex-row  items-center")}>
+                    <InfoSchrift>
+                      <Text>Budget</Text>
+                    </InfoSchrift>
+                    <TableRightSide>
+                      <Text>{totalBudget}</Text>
+                    </TableRightSide>
+                  </View>
+                  <View style={tw("flex flex-row  items-center")}>
+                    <InfoSchrift>
+                      <Text>Rotation</Text>
+                    </InfoSchrift>
+                    <TableRightSide>
+                      <Text>{offer.offers[0].rotation}</Text>
+                    </TableRightSide>
                   </View>
                 </View>
               </View>
-            );
-          })}
+            </View>
+          </View>
+
+          {/* PRODUKTÜBERSICHT - Fließende Tabelle */}
+          <View style={tw("mb-10")}>
+            {/* Header mit durchgehender Linie */}
+            <InfoSchrift>
+              <View
+                style={tw(
+                  "flex flex-row items-baseline border-b-2 border-black pb-2 mb-4"
+                )}
+              >
+                <Text
+                  style={tw(
+                    "flex-1 text-[8px] font-black uppercase tracking-wider"
+                  )}
+                >
+                  Home of Talents Media
+                </Text>
+                <Text
+                  style={tw(
+                    "w-20 text-right text-[8px] uppercase tracking-wider"
+                  )}
+                >
+                  TKP (net)
+                </Text>
+                <Text
+                  style={tw(
+                    "w-24 text-right text-[8px] uppercase tracking-wider"
+                  )}
+                >
+                  Impressions
+                </Text>
+                <Text
+                  style={tw(
+                    "w-24 text-right text-[8px] uppercase tracking-wider"
+                  )}
+                >
+                  Budget (net)
+                </Text>
+              </View>
+            </InfoSchrift>
+
+            {/* Products mit fließenden Linien */}
+
+            <ProductInformationRow
+              productMetrics={productMetrics}
+              product={"NONSKIPPABLE"}
+            />
+            <ProductInformationRow
+              productMetrics={productMetrics}
+              product={"SKIPPABLE"}
+            />
+            <ProductInformationRow
+              productMetrics={productMetrics}
+              product={"BUMPER"}
+            />
+
+            {productMetrics.CTV.reach > 0 && (
+              <ProductInformationRow
+                productMetrics={productMetrics}
+                product={"CTV"}
+              />
+            )}
+            {productMetrics.SOV.reach > 0 && (
+              <ProductInformationRow
+                productMetrics={productMetrics}
+                product={"SOV"}
+              />
+            )}
+
+            {/* Upcharges inline wenn vorhanden */}
+            {upchargeMetrics.isUpcharge && upchargeMetrics.totalCosts > 0 && (
+              <>
+                <View style={tw("border-t border-stone-300 mt-2 mb-2")}></View>
+                {/* AGEUPCHARGE */}
+                {upchargeMetrics.ageUpcharge.cost > 0 && (
+                  <ProductInformationRow
+                    productMetrics={upchargeMetrics.ageUpcharge}
+                    product={"+ Upcharge Age"}
+                  />
+                )}
+                {/* GENDERUPCHARGE */}
+                {upchargeMetrics.genderUpcharge.cost > 0 && (
+                  <ProductInformationRow
+                    productMetrics={upchargeMetrics.genderUpcharge}
+                    product={"+ Upcharge Gender"}
+                  />
+                )}
+
+                {upchargeMetrics.platformUpcharge.cost > 0 && (
+                  <ProductInformationRow
+                    productMetrics={upchargeMetrics.platformUpcharge}
+                    product={"+ Upcharge Platform"}
+                  />
+                )}
+
+                {upchargeMetrics.placementUpcharge.cost > 0 && (
+                  <ProductInformationRow
+                    productMetrics={upchargeMetrics.placementUpcharge}
+                    product={"+ Upcharge Placement"}
+                  />
+                )}
+              </>
+            )}
+
+            {/* Total als fließender Abschluss */}
+            <InfoSchrift>
+              <View
+                style={tw("flex flex-row pt-4 mt-2 border-t-2 border-black")}
+              >
+                <Text style={tw("flex-1 uppercase")}>Total</Text>
+                <Text style={tw("w-24 text-right")}>
+                  {new Intl.NumberFormat("de-DE").format(totalReach)}
+                </Text>
+                <Text style={tw("w-24 text-right")}>{totalBudget}</Text>
+              </View>
+            </InfoSchrift>
+          </View>
+
+          {/* HINWEISE */}
+          <View style={tw("mt-auto")}>
+            <FliessText>
+              <Text>
+                Das vereinbarte Buchungsvolumen kann innerhalb des
+                Leistungszeitraums frei im Rahmen der vereinbarten Rotation
+                verteilt werden. Turnusmäßige Leistungsnachweise erfolgen in
+                Form von PDF- und Excel-Reports, jeweils montags nach
+                Kampagnenstart.
+              </Text>
+              <Text>
+                Bei den genannten Beträgen handelt es sich um Nettobeträge, die
+                jeweils zzgl. der jeweils gültigen MwSt. gelten.
+              </Text>
+              <Text style={tw("mt-3")}>
+                Wir freuen uns über baldige Rückmeldung.
+              </Text>
+            </FliessText>
+
+            {/* Ersteller Info */}
+            <View
+              style={tw(
+                "flex flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200"
+              )}
+            >
+              <View>
+                <InfoSchrift>
+                  <Text style={tw("mb-1")}>Angebot erstellt für</Text>
+                </InfoSchrift>
+                <FliessText>
+                  <Text>
+                    {contact} · {contactEmail}
+                  </Text>
+                </FliessText>
+              </View>
+            </View>
+
+            <View
+              style={tw("flex flex-row justify-between items-end mt-4")}
+            ></View>
+            <View>
+              <InfoSchrift>
+                <Text style={tw("mb-1")}>Angebot erstellt von</Text>
+              </InfoSchrift>
+              <FliessText>
+                <Text style={tw("mb-3")}>
+                  {user} · {userEmail}
+                </Text>
+              </FliessText>
+            </View>
+            {/* <Text style={tw("text-[6px] text-gray-400")}>
+              LEONINE Licensing GmbH · HRB 272 911 · USt-IdNr. DE 323 797 373
+            </Text> */}
+          </View>
         </View>
       </Page>
     </Document>
   );
 };
-
-export const tw = createTw({
-  theme: {
-    fontFamily: {
-      sans: ["Lato"],
-    },
-    extend: {
-      colors: {
-        custom: "cornflowerblue",
-      },
-    },
-  },
-});
