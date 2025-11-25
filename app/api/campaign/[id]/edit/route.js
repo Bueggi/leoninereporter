@@ -6,6 +6,7 @@ const handler = async (req, { params }) => {
   try {
     const {
       name,
+      anrede,
       advertiserID,
       isServiceplan,
       ordernumber,
@@ -30,6 +31,7 @@ const handler = async (req, { params }) => {
 
       data: {
         name,
+        anrede,
         advertiserID,
         isServiceplan,
         ordernumber,

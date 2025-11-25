@@ -44,25 +44,9 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
       const advertiserID = advertisers.filter(
         (el) => el.name === state.advertiserName
       );
-
-      const updatedCampaign = {
-        name: state.name,
-        contact: state.contact,
-        contactEmail: state.contactEmail,
-        advertiserID: advertiserID[0].id,
-        ordernumber: state.ordernumber,
-        isServiceplan: isServiceplan,
-        product: isServiceplan ? state.product : null,
-        onlineCampaign: isServiceplan ? state.onlineCampaign : null,
-        productfamily: isServiceplan ? state.productfamily : null,
-        customergroup: isServiceplan ? state.customergroup : null,
-        customer: isServiceplan ? state.customer : null,
-        status: state.status,
-        customRiskFee: state.customRiskFee,
-        customRiskFeeAmount: state.customRiskFee
-          ? state.customRiskFeeAmount
-          : null,
-      };
+      console.log("///// STATE", state);
+      const updatedCampaign = { ...campaign, ...state };
+      console.log("///// UPDATED", updatedCampaign);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/${campaign.id}/edit`,
@@ -100,7 +84,6 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
         type="text"
         keyName="name"
       />
-
 
       <Dropdown
         label="Advertiser"
@@ -189,7 +172,7 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
         />
       )}
 
-<Ueberschrift label="Kontaktinformationen" />
+      <Ueberschrift label="Kontaktinformationen" />
       <Input
         label="Ansprechpartner"
         value={state}
@@ -204,7 +187,13 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
         type="text"
         keyName="contactEmail"
       />
-
+      <Input
+        label="Anrede"
+        value={state}
+        setValue={setState}
+        type="text"
+        keyName="anrede"
+      />
 
       <div className="col-span-3">
         <button

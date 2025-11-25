@@ -1,8 +1,8 @@
+import adFormatNames from "@lib/dashboard/AdFormatNames";
 import { useRef } from "react";
 import { toast } from "react-toastify";
 
 export default function AddBooking({ campaignID, state, setState, setOpen }) {
-
   const dispoRef = useRef();
   const startRef = useRef();
   const endRef = useRef();
@@ -11,7 +11,7 @@ export default function AddBooking({ campaignID, state, setState, setOpen }) {
   const rotationRef = useRef();
   const tkpRef = useRef();
   const targetingRef = useRef();
-  const outputRef = useRef()
+  const outputRef = useRef();
 
   const handleAddBookingClick = async (e) => {
     e.preventDefault();
@@ -55,10 +55,9 @@ export default function AddBooking({ campaignID, state, setState, setOpen }) {
 
   return (
     <div>
-
       <form onSubmit={handleAddBookingClick}>
         <div className="grid grid-cols-1 md:grid-cols-3">
-        <div className="col-span-1 md:col-span-3 text-xs leading-6 sm:order-none sm:w-auto sm:leading-7 text-indigo-600 font-bold">
+          <div className="col-span-1 md:col-span-3 text-xs leading-6 sm:order-none sm:w-auto sm:leading-7 text-indigo-600 font-bold">
             Rahmeninformationen
           </div>
           <div className="mt-2">
@@ -155,10 +154,9 @@ export default function AddBooking({ campaignID, state, setState, setOpen }) {
               ref={productRef}
               className=" block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
-              <option value="NONSKIPPABLE">Nonskippable Short Ad (20&apos;)</option>
-              <option value="SKIPPABLE">Skippable Ad</option>
-              <option value="BUMPER">Bumper Ad (6&apos;)</option>
-              <option value="SHAREOFVOICE">100% Share of Voice</option>
+              {adFormatNames.map((el) => {
+                return <option value={el.name}>{el.displayName}</option>;
+              })}
             </select>
           </div>
           <div className="col-span-1 md:col-span-3 text-xs leading-6 sm:order-none sm:w-auto sm:leading-7 text-indigo-600 font-bold mt-4">
@@ -179,9 +177,6 @@ export default function AddBooking({ campaignID, state, setState, setOpen }) {
               className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
-          
-          
-          
 
           <div className="mt-2">
             <label

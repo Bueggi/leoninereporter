@@ -15,6 +15,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
   const contactRef = useRef();
   const contactEmailRef = useRef();
   const customRiskFeeAmountRef = useRef();
+  const anredeRef = useRef();
 
   // get initial states
   // useEffect for getting the advertisers as a value to the list
@@ -53,6 +54,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            anrede: anredeRef.current.value,
             contact: contactRef.current.value,
             contactEmail: contactEmailRef.current.value,
             name: nameRef.current.value,
@@ -81,6 +83,33 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
     }
   };
 
+  const TextFeld = ({ titel, ref }) => {
+    return (
+      <>
+        {" "}
+        <label
+          htmlFor="advertisername"
+          className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+        >
+          {titel}
+        </label>
+        <div className="mt-2 sm:col-span-2 sm:mt-0">
+          <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+            <input
+              type="text"
+              name="advertisername"
+              id="advertisername"
+              autoComplete="advertisername"
+              className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              ref={ref}
+              required
+            />
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <form onSubmit={handleClick}>
       <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
@@ -94,15 +123,16 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
           <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
             <input
               type="text"
-              name="advertisername"
-              id="advertisername"
-              autoComplete="advertisername"
+              name="campaignname"
+              id="campaignname"
+              autoComplete="campaignname"
               className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               ref={nameRef}
               required
             />
           </div>
         </div>
+
         <label
           htmlFor="status"
           className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
@@ -163,8 +193,9 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             </div>
           </div>
         )}
+
         <label
-          htmlFor="contact"
+          htmlFor="advertisername"
           className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
         >
           Ansprechpartner
@@ -182,6 +213,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             />
           </div>
         </div>
+
         <label
           htmlFor="contactEmail"
           className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
@@ -201,6 +233,27 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             />
           </div>
         </div>
+
+        <label
+          htmlFor="advertisername"
+          className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+        >
+          Anrede
+        </label>
+        <div className="mt-2 sm:col-span-2 sm:mt-0">
+          <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+            <input
+              type="text"
+              name="anrede"
+              id="anrede"
+              autoComplete="anrede"
+              className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              ref={anredeRef}
+              required
+            />
+          </div>
+        </div>
+
         <div className="mt-2 sm:col-span-3 sm:mt-0">
           <button
             type="submit"

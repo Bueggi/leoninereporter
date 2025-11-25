@@ -37,6 +37,7 @@ const DownloadPDFButton = ({
   contactEmail,
   user,
   userEmail,
+  anrede,
 }) => {
   Font.register({
     family: "Inter",
@@ -66,6 +67,7 @@ const DownloadPDFButton = ({
             contactEmail={contactEmail}
             user={user}
             userEmail={userEmail}
+            anrede={anrede}
           />
         }
         fileName={`${campaignName}.pdf`}
@@ -83,7 +85,14 @@ const DownloadPDFButton = ({
 
 export default DownloadPDFButton;
 
-export const MyDoc = ({ offer, contact, contactEmail, user, userEmail }) => {
+export const MyDoc = ({
+  offer,
+  contact,
+  contactEmail,
+  user,
+  userEmail,
+  anrede,
+}) => {
   // wenn die Offergroup noch keine Angebote angelegt hat, wird ein leeres Dokument zurückgegeben
   if (offer.offers.length < 1)
     return abortGenerationIfPointless(Document, Page, View, Text);
@@ -162,8 +171,12 @@ export const MyDoc = ({ offer, contact, contactEmail, user, userEmail }) => {
           <FliessText>
             <Text style={tw("mb-4")}>
               {/* Wenn ein Kontaktname angegeben wurde, dann soll er hier erscheinen, ansonsten eine generische Anrede */}
-              {contact ? "Hallo " + contact : "Sehr geehrte Damen und Herren"},
-              {"\n"}
+              {contact
+                ? anrede
+                  ? anrede + " " + contact
+                  : "Hallo " + contact
+                : "Sehr geehrte Damen und Herren"}
+              ,{"\n"}
               wir freuen uns, folgendes Angebot zu unterbreiten:
             </Text>
           </FliessText>
@@ -187,69 +200,40 @@ export const MyDoc = ({ offer, contact, contactEmail, user, userEmail }) => {
                   </View>
 
                   {/* Row 2 */}
-                  <View style={tw("flex flex-row  items-center")}>
-                    <InfoSchrift>
-                      <Text>Produkt</Text>
-                    </InfoSchrift>
-                    <TableRightSide>
-                      {/* <Text>{offer.offers[0] && offer.offers[0].product}</Text> */}
-                      <Text>
-                        {reduceInformationFromOffersToString(offer, "product")}
-                      </Text>
-                    </TableRightSide>
-                  </View>
-
-                  {/* Row 3 */}
-                  <View style={tw("flex flex-row items-center")}>
-                    <InfoSchrift>
-                      <Text>Frequency Cap</Text>
-                    </InfoSchrift>
-                    <TableRightSide>
-                      <Text>{offer.offers[0].frequencyCap}</Text>
-                    </TableRightSide>
-                  </View>
-
-                  {/* Row 4 */}
+                  {["product", "frequencyCap", "rotation", "age"].map(
+                    (el, i) => {
+                      const title = {
+                        product: "Product",
+                        frequencyCap: "Frequency Cap",
+                        rotation: "Rotation",
+                        age: "Age-Targeting",
+                      };
+                      if (
+                        reduceInformationFromOffersToString(offer, el).length &&
+                        reduceInformationFromOffersToString(offer, el) !== null
+                      ) {
+                        return (
+                          <View style={tw("flex flex-row  items-center")}>
+                            <InfoSchrift>
+                              <Text>{title[el]}</Text>
+                            </InfoSchrift>
+                            <TableRightSide>
+                              {/* <Text>{offer.offers[0] && offer.offers[0].product}</Text> */}
+                              <Text>
+                                {reduceInformationFromOffersToString(offer, el)}
+                              </Text>
+                            </TableRightSide>
+                          </View>
+                        );
+                      }
+                    }
+                  )}
 
                   {/* Row 5 */}
-                  {offer.offers[0].placement && (
-                    <View style={tw("flex flex-row items-center")}>
-                      <InfoSchrift>
-                        <Text>Platzierung</Text>
-                      </InfoSchrift>
-                      <TableRightSide>
-                        <Text>{offer.offers[0].placement}</Text>
-                      </TableRightSide>
-                    </View>
-                  )}
                 </View>
 
                 {/* Rechte Spalte */}
                 <View style={tw("flex-1")}>
-                  {/* Row 1 */}
-                  {offer.offers[0].placement && (
-                    <View style={tw("flex flex-row items-center")}>
-                      <InfoSchrift>
-                        <Text>Platform</Text>
-                      </InfoSchrift>
-                      <TableRightSide>
-                        <Text>{offer.offers[0].platform}</Text>
-                      </TableRightSide>
-                    </View>
-                  )}
-
-                  {/* Row 2 */}
-                  {offer.offers[0].plz && (
-                    <View style={tw("flex flex-row  items-center")}>
-                      <InfoSchrift>
-                        <Text>Geographie</Text>
-                      </InfoSchrift>
-                      <TableRightSide>
-                        <Text>{offer.offers[0].plz}</Text>
-                      </TableRightSide>
-                    </View>
-                  )}
-
                   {/* Row 3 */}
                   <View style={tw("flex flex-row  items-center")}>
                     <InfoSchrift>
@@ -271,14 +255,32 @@ export const MyDoc = ({ offer, contact, contactEmail, user, userEmail }) => {
                       <Text>{totalBudget}</Text>
                     </TableRightSide>
                   </View>
-                  <View style={tw("flex flex-row  items-center")}>
-                    <InfoSchrift>
-                      <Text>Rotation</Text>
-                    </InfoSchrift>
-                    <TableRightSide>
-                      <Text>{offer.offers[0].rotation}</Text>
-                    </TableRightSide>
-                  </View>
+
+                  {["platform", "plz", "placement"].map((el, i) => {
+                    const title = {
+                      platform: "Platform",
+                      plz: "Geographie",
+                      placement: "Placement",
+                    };
+
+                    const reducedResult = reduceInformationFromOffersToString(
+                      offer,
+                      el
+                    );
+                    if (reducedResult.length && !!reducedResult) {
+                      return (
+                        <View style={tw("flex flex-row  items-center")}>
+                          <InfoSchrift>
+                            <Text>{title[el]}</Text>
+                          </InfoSchrift>
+                          <TableRightSide>
+                            {/* <Text>{offer.offers[0] && offer.offers[0].product}</Text> */}
+                            <Text>{reducedResult}</Text>
+                          </TableRightSide>
+                        </View>
+                      );
+                    }
+                  })}
                 </View>
               </View>
             </View>
@@ -426,16 +428,18 @@ export const MyDoc = ({ offer, contact, contactEmail, user, userEmail }) => {
                 "flex flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200"
               )}
             >
-              <View>
-                <InfoSchrift>
-                  <Text style={tw("mb-1")}>Angebot erstellt für</Text>
-                </InfoSchrift>
-                <FliessText>
-                  <Text>
-                    {contact} · {contactEmail}
-                  </Text>
-                </FliessText>
-              </View>
+              {contact.length && contactEmail.length && (
+                <View>
+                  <InfoSchrift>
+                    <Text style={tw("mb-1")}>Angebot erstellt für</Text>
+                  </InfoSchrift>
+                  <FliessText>
+                    <Text>
+                      {contact} · {contactEmail}
+                    </Text>
+                  </FliessText>
+                </View>
+              )}
             </View>
 
             <View

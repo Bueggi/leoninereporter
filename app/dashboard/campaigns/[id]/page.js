@@ -117,8 +117,8 @@ export default function Campaigns({ params: { id } }) {
         </button>
       </h2>
 
-
       <DescriptionList campaign={campaign} />
+
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
         <div className="flex flex-row gap-4">
           Angebotsgruppen
@@ -178,6 +178,7 @@ export default function Campaigns({ params: { id } }) {
                             contactEmail={campaign.contactEmail}
                             user={session.user.name}
                             userEmail={session.user.email}
+                            anrede={campaign.anrede}
                           />
                         )}
                       </div>
