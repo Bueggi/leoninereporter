@@ -148,7 +148,7 @@ export const MyDoc = ({
               </Text>
             </FliessText>
           </View>
-          <Image src="/HoTLogo.png" style={tw("w-24 h-auto opacity-90")} />
+          <Image src="/HoTLogo_White.png" style={tw("w-24 h-auto opacity-90")} />
         </View>
         <View style={tw("px-12")}>
           {/* HERO SECTION - Fließend ohne harte Boxen */}
