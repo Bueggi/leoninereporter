@@ -51,7 +51,7 @@ export default function Campaigns({ params: { id } }) {
 
   useEffect(() => {
     if (session !== "loading") getcampaign(id, setcampaign, setLoading);
-  }, []);
+  }, [id, session]);
 
   // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;

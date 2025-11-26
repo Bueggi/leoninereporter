@@ -9,7 +9,6 @@ const handler = async (req) => {
       { message: "Du musst eine JobID und eine ReportID angeben" },
       { status: 400 }
     );
-  console.log(token, downloadUrl);
   try {
     const reportDownloadRes = await fetch(downloadUrl, {
       method: "GET",

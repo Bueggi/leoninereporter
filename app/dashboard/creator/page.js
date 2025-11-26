@@ -14,41 +14,44 @@ import Searchbar from "@components/pComponents/Search";
 import Badge from "@components/pComponents/Badge";
 import PageHeading from "@components/pComponents/PageHeading";
 import { toast } from "react-toastify";
+import { STRING_LITERAL_DROP_BUNDLE } from "next/dist/shared/lib/constants";
 
-const ListCreator = () => {
+const ListCreatorContent = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
-  const [allCreators, setAllCreators] = useState({ data: [], count: 0, mode: "page" });
+  const [allCreators, setAllCreators] = useState({
+    data: [],
+    count: 0,
+    mode: "page",
+  });
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   // get active page from url query parameter
   const searchParams = useSearchParams();
   const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
 
-  const getInitialData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/list?page=${activePage}`
-      );
-      const { data, count, message } = await res.json();
-      if (data) {
-        setAllCreators({ data, count, mode: "page" });
-        setCount(count);
-        setLoading(false);
-        console.log(data)
-      } else {
-        toast.error(message || "Fehler beim Laden der Daten");
+  useEffect(() => {
+    const getInitialData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/list?page=${activePage}`
+        );
+        const { data, count, message } = await res.json();
+        if (data) {
+          setAllCreators({ data, count, mode: "page" });
+          setCount(count);
+          setLoading(false);
+        } else {
+          toast.error(message || "Fehler beim Laden der Daten");
+          setLoading(false);
+        }
+      } catch (error) {
+        toast.error(error.message || "Ein unbekannter Fehler ist aufgetreten");
         setLoading(false);
       }
-    } catch (error) {
-      toast.error(error.message || "Ein unbekannter Fehler ist aufgetreten");
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
+    };
     getInitialData();
   }, [activePage]);
 
@@ -104,7 +107,11 @@ const ListCreator = () => {
                     <Searchbar
                       model="creator"
                       setAllResults={(results) => {
-                        setAllCreators({ data: results, count, mode: "search" });
+                        setAllCreators({
+                          data: results,
+                          count,
+                          mode: "search",
+                        });
                         setLoading(false);
                       }}
                       setLoading={setLoading}
@@ -148,7 +155,10 @@ const ListCreator = () => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {allCreators.data.map((item) => (
-                          <tr key={item.id} className="even:bg-white odd:bg-slate-200">
+                          <tr
+                            key={item.id}
+                            className="even:bg-white odd:bg-slate-200"
+                          >
                             {/* Name */}
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                               <Link
@@ -166,7 +176,9 @@ const ListCreator = () => {
                             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                               <Badge
                                 label={item.anbindung}
-                                color={item.anbindung === "OWNED" ? "green" : "red"}
+                                color={
+                                  item.anbindung === "OWNED" ? "green" : "red"
+                                }
                               />
                             </td>
                             {/* Channels */}
@@ -175,8 +187,10 @@ const ListCreator = () => {
                                 <ul className="list-disc list-inside">
                                   {item.channelIDs.map((channel, idx) => (
                                     <li key={idx}>
-                                      <span className="font-medium">{channel.channelName}</span>:{" "}
-                                      <span>{channel.channelID}</span>
+                                      <span className="font-medium">
+                                        {channel.channelName}
+                                      </span>
+                                      : <span>{channel.channelID}</span>
                                     </li>
                                   ))}
                                 </ul>
@@ -191,7 +205,10 @@ const ListCreator = () => {
                                   type="button"
                                   className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mr-4"
                                 >
-                                  <PencilIcon className="h-5 w-5" aria-hidden="true" />
+                                  <PencilIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
                                   <span className="sr-only">Bearbeiten</span>
                                 </button>
                               </Link>
@@ -204,7 +221,10 @@ const ListCreator = () => {
                                 }}
                                 className="rounded-full bg-red-600 p-2 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                               >
-                                <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                                <TrashIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
                                 <span className="sr-only">Löschen</span>
                               </button>
                             </td>
@@ -230,6 +250,14 @@ const ListCreator = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const ListCreator = () => {
+  return (
+    <Suspense fallback={LoadingSpinner}>
+      <ListCreatorContent />
+    </Suspense>
   );
 };
 

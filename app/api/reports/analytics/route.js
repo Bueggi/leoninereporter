@@ -28,8 +28,6 @@ const handler = async (req) => {
     }
 
     const data = await response.json();
-    console.error(await response.text());
-    console.log(data);
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
     console.error("Fehler bei der Anfrage:", error);

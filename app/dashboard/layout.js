@@ -272,10 +272,12 @@ export default function DashboardLayout({ children }) {
                     href="#"
                     className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                   >
-                    <img
+                    <Image
                       className="h-8 w-8 rounded-full bg-gray-50"
                       src={session?.user?.image}
                       alt=""
+                      width={80}
+                      height={80}
                     />
                     <span aria-hidden="true">{session?.user?.name}</span>
                   </a>
@@ -305,9 +307,11 @@ export default function DashboardLayout({ children }) {
           </div>
           <a href="#">
             <span className="sr-only">Your profile</span>
-            <img
+            <Image
               className="h-8 w-8 rounded-full bg-gray-50"
               src={session?.user?.image}
+              width={30}
+              height={30}
               alt=""
             />
           </a>

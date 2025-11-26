@@ -8,7 +8,6 @@ export default async function handler(req, res) {
     const sanitisedEntries = [];
 
     for (let channelID in reportData.data) {
-      console.log(channelID);
       sanitisedEntries.push({
         channelID,
         delta: 0,

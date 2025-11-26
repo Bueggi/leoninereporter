@@ -1,3 +1,4 @@
+'use client'
 import { toast } from "react-toastify";
 const getAllAdvertisers = async (
   setAllAdvertisers,

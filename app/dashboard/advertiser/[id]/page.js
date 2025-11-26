@@ -23,22 +23,22 @@ export default function AdvertiserDetails({ params: { id } }) {
 
   // Beim Mount des Components wird der Advertiser aus der Datenbank geladen
   useEffect(() => {
+    const getAdvertiser = async () => {
+      setLoading(true);
+      const chosenAdvertiserRes = await fetch(
+        `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/${id}/list`
+      );
+      const { data, message } = await chosenAdvertiserRes.json();
+      if (!chosenAdvertiserRes.ok) return toast.error(message);
+      setAdvertiser(data);
+      setLoading(false);
+    };
     getAdvertiser();
-  }, []);
+  }, [id]);
 
   // 1. Greife auf die Datenbank zu - Frage den Advertiser aus der URL ab
   // 2. Wenn der Advertiser existiert, wird er in den State des Components geladen
   // 3. Wenn der Advertiser nicht existiert, wird ein Fehlerstatus ausgegeben
-  const getAdvertiser = async () => {
-    setLoading(true);
-    const chosenAdvertiserRes = await fetch(
-      `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/${id}/list`
-    );
-    const { data, message } = await chosenAdvertiserRes.json();
-    if (!chosenAdvertiserRes.ok) return toast.error(message);
-    setAdvertiser(data);
-    setLoading(false);
-  };
 
   if (loading) return <LoadingSpinner />;
 

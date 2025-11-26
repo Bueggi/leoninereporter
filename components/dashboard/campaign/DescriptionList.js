@@ -12,7 +12,7 @@ export default function DescriptionList({ campaign }) {
     contactEmail,
     anrede,
   } = campaign;
-  console.log(campaign);
+
   const start = returnStartDate(campaign);
   const end = returnEndDate(campaign);
   const information = [

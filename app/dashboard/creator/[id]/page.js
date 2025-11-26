@@ -23,27 +23,26 @@ export default function CreatorDetails({ params: { id } }) {
 
   // Beim Mount des Components wird der creator aus der Datenbank geladen
   useEffect(() => {
+    // 1. Greife auf die Datenbank zu - Frage den creator aus der URL ab
+    // 2. Wenn der creator existiert, wird er in den State des Components geladen
+    // 3. Wenn der creator nicht existiert, wird ein Fehlerstatus ausgegeben
+    const getCreator = async () => {
+      try {
+        setLoading(true);
+        const chosenCreatorRes = await fetch(
+          `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${id}/list`
+        );
+        const { data, message } = await chosenCreatorRes.json();
+        if (!chosenCreatorRes.ok) return toast.error(message);
+        setCreator(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        toast.error("Etwas ist schief gelaufen");
+      }
+    };
     getCreator();
-  }, []);
-
-  // 1. Greife auf die Datenbank zu - Frage den creator aus der URL ab
-  // 2. Wenn der creator existiert, wird er in den State des Components geladen
-  // 3. Wenn der creator nicht existiert, wird ein Fehlerstatus ausgegeben
-  const getCreator = async () => {
-    try {
-      setLoading(true);
-      const chosenCreatorRes = await fetch(
-        `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/${id}/list`
-      );
-      const { data, message } = await chosenCreatorRes.json();
-      if (!chosenCreatorRes.ok) return toast.error(message);
-      setCreator(data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast.error("Etwas ist schief gelaufen");
-    }
-  };
+  }, [id]);
 
   if (loading) return <LoadingSpinner />;
 

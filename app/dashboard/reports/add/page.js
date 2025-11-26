@@ -12,18 +12,17 @@ const AddReports = () => {
   const handleSendFile = (e) => {
     e.preventDefault();
     if (!chosenFile) return toast.error("Kein File wurde ausgewählt");
-    console.log(
-      Papa.parse(chosenFile, {
-        delimiter: ",",
-        complete: (result) => {
-          const output = Object.entries(result.data).map(([key, value]) => ({
-            key,
-            value,
-          }));
-          console.log(output);
-        },
-      })
-    );
+    // console.log(
+    //   Papa.parse(chosenFile, {
+    //     delimiter: ",",
+    //     complete: (result) => {
+    //       const output = Object.entries(result.data).map(([key, value]) => ({
+    //         key,
+    //         value,
+    //       }));
+    //     },
+    //   })
+    // );
 
     // console.log(e.target.files[0])
     // const data = Papa.parse(csv);

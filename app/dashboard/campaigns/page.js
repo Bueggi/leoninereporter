@@ -14,7 +14,7 @@ import calculateDate from "../../../lib/calculateDate";
 import { getColor } from "@lib/dashboard/publishingOptions";
 import { getInitialData, returnEndDate, returnStartDate } from "./lib";
 
-const ListAdvertisers = () => {
+const ListedCampaignsContent = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
@@ -169,9 +169,11 @@ const ListAdvertisers = () => {
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <div className="flex flex-col">
                               {returnStartDate(item)}
-                              
+
                               <span className="font-light text-xs">
-                                {returnStartDate(item) ? calculateDate(returnStartDate(item)) : "-"}
+                                {returnStartDate(item)
+                                  ? calculateDate(returnStartDate(item))
+                                  : "-"}
                               </span>
                             </div>
                           </td>
@@ -179,7 +181,9 @@ const ListAdvertisers = () => {
                             <div className="flex flex-col">
                               {returnEndDate(item)}
                               <span className="font-light text-xs">
-                                {returnEndDate(item) ? calculateDate(returnEndDate(item)): '-'}
+                                {returnEndDate(item)
+                                  ? calculateDate(returnEndDate(item))
+                                  : "-"}
                               </span>
                             </div>
                           </td>
@@ -246,4 +250,12 @@ const ListAdvertisers = () => {
   );
 };
 
-export default ListAdvertisers;
+const ListedCampaigns = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ListedCampaignsContent />
+    </Suspense>
+  );
+};
+
+export default ListedCampaigns;

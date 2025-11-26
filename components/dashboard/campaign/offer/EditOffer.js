@@ -125,7 +125,10 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
 
         {/* Start */}
         <div className="mt-2">
-          <label htmlFor="start" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="start"
+            className="block text-sm font-medium text-gray-900"
+          >
             Start
           </label>
           <input
@@ -142,7 +145,10 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
 
         {/* Ende */}
         <div className="mt-2">
-          <label htmlFor="ende" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="ende"
+            className="block text-sm font-medium text-gray-900"
+          >
             Ende
           </label>
           <input
@@ -162,7 +168,10 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
 
         {/* Frequency Cap */}
         <div className="mt-2">
-          <label htmlFor="impressions" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="impressions"
+            className="block text-sm font-medium text-gray-900"
+          >
             Frequency Cap
           </label>
           <input
@@ -179,7 +188,10 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
 
         {/* Impressions */}
         <div className="mt-2">
-          <label htmlFor="impressions" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="impressions"
+            className="block text-sm font-medium text-gray-900"
+          >
             Impressions
           </label>
           <input
@@ -196,7 +208,10 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
 
         {/* TKP */}
         <div className="mt-2">
-          <label htmlFor="tkp" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="tkp"
+            className="block text-sm font-medium text-gray-900"
+          >
             TKP
           </label>
           <input
@@ -214,7 +229,10 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
 
         {/* Produktfeld */}
         <div className="mt-2">
-          <label htmlFor="product" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="product"
+            className="block text-sm font-medium text-gray-900"
+          >
             Product
           </label>
           <select
@@ -225,15 +243,20 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
                        text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
                        focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
           >
-              {adFormatNames.map((adFormat, index) => (
-              <option value={adFormat.name}>{adFormat.displayName}</option>
+            {adFormatNames.map((adFormat, index) => (
+              <option key={index} value={adFormat.name}>
+                {adFormat.displayName}
+              </option>
             ))}
           </select>
         </div>
 
         {/* Rotation */}
         <div className="mt-2">
-          <label htmlFor="rotation" className="block text-sm font-medium text-gray-900">
+          <label
+            htmlFor="rotation"
+            className="block text-sm font-medium text-gray-900"
+          >
             Rotation
           </label>
           <input

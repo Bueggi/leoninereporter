@@ -219,7 +219,9 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
                        focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
           >
             {adFormatNames.map((adFormat, index) => (
-              <option value={adFormat.name}>{adFormat.displayName}</option>
+              <option key={index} value={adFormat.name}>
+                {adFormat.displayName}
+              </option>
             ))}
           </select>
         </div>

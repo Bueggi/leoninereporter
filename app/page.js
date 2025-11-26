@@ -1,6 +1,7 @@
 "use client";
 
 import { getSession, signIn, useSession } from "next-auth/react";
+import Image from "next/image";
 
 export default function Homepage() {
   const session = useSession(); // based on your data you should store it here in state
@@ -44,9 +45,11 @@ export default function Homepage() {
                 )}
               </div>
             </div>
-            <img
+            <Image
               alt=""
               src="/HoTLogo.png"
+              width={100}
+              height={100}
               className="aspect-[6/5] w-full max-w-lg rounded-2xl object-cover sm:mt-16 lg:mt-0 lg:max-w-none xl:row-span-2 xl:row-end-2 xl:mt-36"
             />
           </div>

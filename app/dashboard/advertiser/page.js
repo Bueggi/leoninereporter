@@ -10,9 +10,9 @@ import Link from "next/link";
 import Pagination from "@components/pComponents/Pagination";
 import { useSearchParams } from "next/navigation";
 import Searchbar from "@components/pComponents/Search";
-import {getAllAdvertisers} from './lib'
+import { getAllAdvertisers } from "./lib";
 
-const ListAdvertisers = () => {
+const ListAdvertiserContent = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
@@ -22,7 +22,6 @@ const ListAdvertisers = () => {
   // get active page from url query parameter
   const searchParams = useSearchParams();
   const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
-
 
   useEffect(() => {
     getAllAdvertisers(setAllAdvertisers, setCount, setLoading, activePage);
@@ -118,7 +117,6 @@ const ListAdvertisers = () => {
                     <tbody className="divide-y divide-gray-200 ">
                       {allAdvertisers.data.map((item, i) => (
                         <tr key={i} className="even:bg-white odd:bg-slate-200">
-                     
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <Link
                               href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/advertiser/${item.id}`}
@@ -130,7 +128,7 @@ const ListAdvertisers = () => {
                             {moment(item.createdAt).format("LL")}
                           </td>
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {item['_count'].campaigns}
+                            {item["_count"].campaigns}
                           </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <a
@@ -189,6 +187,14 @@ const ListAdvertisers = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const ListAdvertisers = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ListAdvertiserContent />
+    </Suspense>
   );
 };
 
