@@ -5,11 +5,10 @@ const nextConfig = {
     // …
     serverComponentsExternalPackages: ["@react-pdf/renderer"],
     missingSuspenseWithCSRBailout: false,
-    
   },
   typescript: {
     ignoreBuildErrors: true,
- },
+  },
   images: {
     remotePatterns: [
       {
@@ -25,6 +24,15 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
       },
     ],
+  },
+  experimental: {
+    serverComponentsExternalPackages: ["@prisma/adapter-pg", "pg"],
+  },
+  webpack: (config) => {
+    config.resolve.extensionAlias = {
+      ".js": [".ts", ".js"],
+    };
+    return config;
   },
 };
 

@@ -4,6 +4,7 @@
     "paths": {
       "@lib/*": ["lib/*"],
       "@components/*": ["components/*"],
+       "@/generated/*": ["./generated/*"]
     },
     "lib": [
       "dom",
@@ -35,5 +36,7 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+    "module": "ESNext",
+    "moduleResolution": "bundler"
 }
