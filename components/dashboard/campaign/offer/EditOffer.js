@@ -390,7 +390,7 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
           </label>
           <input
             type="number"
-            step={0.1}
+            step={0.01}
             name="upchargeTKP"
             ref={upchargeTKPRef}
             defaultValue={initialOffer.upchargeTKP}

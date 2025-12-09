@@ -16,9 +16,10 @@ const getInitialData = async (
     //fetching data from server - either in the range of active page or per default from page 1
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/list` +
-        (activePage ? `?page=${activePage}` : ""), {
-          cache: 'no-store'
-        }
+        (activePage ? `?page=${activePage}` : ""),
+      {
+        cache: "no-store",
+      }
     );
     const { data, count, message } = await res.json();
 
@@ -39,26 +40,24 @@ const getInitialData = async (
 const returnStartDate = (item) => {
   if (!item.bookings || !item.bookings.length) return undefined;
 
-  let earliestStartDate = new Date(item.bookings[0].start)
+  let earliestStartDate = new Date(item.bookings[0].start);
 
-  for ( let i = 0; i < item.bookings.length; i++) {
-    const checkDate = new Date(item.bookings[i].start)
-    if ( checkDate < earliestStartDate)  earliestStartDate = checkDate
+  for (let i = 0; i < item.bookings.length; i++) {
+    const checkDate = new Date(item.bookings[i].start);
+    if (checkDate < earliestStartDate) earliestStartDate = checkDate;
   }
-
 
   return moment(earliestStartDate).format("LL");
 };
 const returnEndDate = (item) => {
   if (!item.bookings || !item.bookings.length) return undefined;
 
-  let latestEndDate = new Date(item.bookings[0].end)
+  let latestEndDate = new Date(item.bookings[0].end);
 
-  for ( let i = 0; i < item.bookings.length; i++) {
-    const checkDate = new Date(item.bookings[i].end)
-    if ( checkDate > latestEndDate)  latestEndDate = checkDate
+  for (let i = 0; i < item.bookings.length; i++) {
+    const checkDate = new Date(item.bookings[i].end);
+    if (checkDate > latestEndDate) latestEndDate = checkDate;
   }
-
 
   return moment(latestEndDate).format("LL");
 };

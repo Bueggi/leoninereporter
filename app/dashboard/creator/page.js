@@ -36,7 +36,10 @@ const ListCreatorContent = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/list?page=${activePage}`
+          `${process.env.NEXT_PUBLIC_HOSTURL}/api/creator/list?page=${activePage}`,
+          {
+            cache: "no-store",
+          }
         );
         const { data, count, message } = await res.json();
         if (data) {

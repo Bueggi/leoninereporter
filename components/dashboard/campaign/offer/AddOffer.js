@@ -194,7 +194,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
           <input
             required
             type="number"
-            step={0.1}
+            step={0.01}
             ref={tkpRef}
             name="tkp"
             className="rounded-md border py-1.5 text-gray-900 shadow-sm 

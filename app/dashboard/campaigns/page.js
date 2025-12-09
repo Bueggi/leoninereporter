@@ -1,15 +1,20 @@
 "use client";
-import AddAdvertiser from "@components/dashboard/campaign/AddCampaign";
-import DeleteAdvertiser from "@components/dashboard/campaign/DeleteCampaign";
+
 import { useEffect, useState, Suspense } from "react";
-import LoadingSpinner from "@components/pComponents/LoadingSpinner";
-import Modal from "@components/pComponents/Modal";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
-import Link from "next/link";
+
+// Components
+import AddAdvertiser from "@components/dashboard/campaign/AddCampaign";
+import DeleteAdvertiser from "@components/dashboard/campaign/DeleteCampaign";
+import LoadingSpinner from "@components/pComponents/LoadingSpinner";
+import Modal from "@components/pComponents/Modal";
 import Pagination from "@components/pComponents/Pagination";
-import { useSearchParams } from "next/navigation";
 import Searchbar from "@components/pComponents/Search";
+
+// Libs
 import calculateDate from "../../../lib/calculateDate";
 import { getColor } from "@lib/dashboard/publishingOptions";
 import { getInitialData, returnEndDate, returnStartDate } from "./lib";
@@ -17,13 +22,16 @@ import { getInitialData, returnEndDate, returnStartDate } from "./lib";
 const ListedCampaignsContent = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [idToDelete, setIdToDelete] = useState();
-  let [allCampaigns, setAllCampaigns] = useState([]);
+  const [idToDelete, setIdToDelete] = useState(null); // Besser null als undefined
+  
+  // FIX 1: Initial State muss zur Struktur passen, um Crash zu vermeiden
+  // Nutze 'const' statt 'let'
+  const [allCampaigns, setAllCampaigns] = useState({ data: [], mode: "list" }); 
   const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState();
-  // get active page from url query parameter
+  const [count, setCount] = useState(0);
+
   const searchParams = useSearchParams();
-  const [activePage, setActivePage] = useState(searchParams.get("page") || 1);
+  const activePage = searchParams.get("page") || 1; // State für activePage ist oft redundant, wenn es aus der URL kommt
 
   useEffect(() => {
     getInitialData(setLoading, activePage, setAllCampaigns, setCount);
@@ -31,7 +39,7 @@ const ListedCampaignsContent = () => {
 
   return (
     <>
-      {/* Das Modal, um Inhalte hinzuzufügen */}
+      {/* Modals */}
       {addModalOpen && (
         <Modal open={addModalOpen} setOpen={setAddModalOpen}>
           <AddAdvertiser
@@ -41,6 +49,7 @@ const ListedCampaignsContent = () => {
           />
         </Modal>
       )}
+      
       {deleteModalOpen && (
         <Modal open={deleteModalOpen} setOpen={setDeleteModalOpen}>
           <DeleteAdvertiser
@@ -51,6 +60,7 @@ const ListedCampaignsContent = () => {
           />
         </Modal>
       )}
+
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
@@ -71,10 +81,11 @@ const ListedCampaignsContent = () => {
             </button>
           </div>
         </div>
+
         <div className="mt-8 flow-root">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             {loading && <LoadingSpinner />}
-            {/* Table for results */}
+            
             {!loading && (
               <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                 <div className="max-w-md mb-12">
@@ -84,67 +95,29 @@ const ListedCampaignsContent = () => {
                     setLoading={setLoading}
                   />
                 </div>
+                
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-7 sm:rounded-lg">
                   <table className="min-w-full divide-y divide-gray-300 drop-shadow-2xl">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Name
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Erstellt am
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Status
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Budget
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Start
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Ende
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-left  text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Advertiser
-                        </th>
-                        <th
-                          scope="col"
-                          className="py-3.5 pl-4 pr-3 text-right text-sm font-semibold text-gray-900 sm:pl-6"
-                        >
-                          Bearbeiten
-                        </th>
+                        {/* Header Column Helper Component wäre hier cool um Redundanz zu sparen */}
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Erstellt am</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Status</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Budget</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Start</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Ende</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Advertiser</th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 text-right text-sm font-semibold text-gray-900 sm:pl-6">Bearbeiten</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 ">
-                      {allCampaigns.data.map((item, i) => (
-                        <tr key={i} className="even:bg-white odd:bg-slate-200">
+                    <tbody className="divide-y divide-gray-200">
+                      {/* Optional chaining (?.) schützt vor Crash, falls data undefined ist */}
+                      {allCampaigns?.data?.map((item) => (
+                        <tr key={item.id} className="even:bg-white odd:bg-slate-200">
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            <Link
-                              href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/campaigns/${item.id}`}
-                            >
+                            {/* FIX: Env Variable entfernt */}
+                            <Link href={`/dashboard/campaigns/${item.id}`}>
                               {item.name}
                             </Link>
                           </td>
@@ -153,12 +126,9 @@ const ListedCampaignsContent = () => {
                           </td>
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <div className="flex flex-row align-middle items-center">
+                              {/* FIX: 'class' zu 'className' geändert */}
                               <span
-                                class={`flex w-3 h-3 me-3 ${getColor(
-                                  "bg",
-                                  item.status,
-                                  700
-                                )} rounded-full`}
+                                className={`flex w-3 h-3 me-3 ${getColor("bg", item.status, 700)} rounded-full`}
                               ></span>
                               {item.status}
                             </div>
@@ -169,11 +139,8 @@ const ListedCampaignsContent = () => {
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             <div className="flex flex-col">
                               {returnStartDate(item)}
-
                               <span className="font-light text-xs">
-                                {returnStartDate(item)
-                                  ? calculateDate(returnStartDate(item))
-                                  : "-"}
+                                {returnStartDate(item) ? calculateDate(returnStartDate(item)) : "-"}
                               </span>
                             </div>
                           </td>
@@ -181,9 +148,7 @@ const ListedCampaignsContent = () => {
                             <div className="flex flex-col">
                               {returnEndDate(item)}
                               <span className="font-light text-xs">
-                                {returnEndDate(item)
-                                  ? calculateDate(returnEndDate(item))
-                                  : "-"}
+                                {returnEndDate(item) ? calculateDate(returnEndDate(item)) : "-"}
                               </span>
                             </div>
                           </td>
@@ -191,21 +156,16 @@ const ListedCampaignsContent = () => {
                             {item.advertiser}
                           </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                            <a
-                              href={`${process.env.NEXT_PUBLIC_HOSTURL}/dashboard/campaigns/${item.id}`}
-                              className="text-indigo-600 hover:text-indigo-900 mr-4"
+                            
+                            {/* FIX: Button im Link entfernt. Nur Link benutzen. */}
+                            <Link
+                              href={`/dashboard/campaigns/${item.id}`}
+                              className="inline-block rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mr-4"
                             >
-                              <button
-                                type="button"
-                                className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                              >
-                                <PencilIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              </button>
-                              <span className="sr-only">, {item.name}</span>
-                            </a>
+                                <PencilIcon className="h-5 w-5" aria-hidden="true" />
+                                <span className="sr-only">, {item.name}</span>
+                            </Link>
+
                             <button
                               type="button"
                               onClick={(e) => {
@@ -213,36 +173,29 @@ const ListedCampaignsContent = () => {
                                 setIdToDelete(item.id);
                                 setDeleteModalOpen(true);
                               }}
-                              className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              className="inline-block rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                              <TrashIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
+                              <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                              <span className="sr-only">, {item.name}</span>
                             </button>
-                            <span className="sr-only">, {item.name}</span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                {/* Zeige die Pagination
-                Aber zeige sie nur dann, wenn die Ergebnisse nicht durch die Suche zustandegekommen sind
-                Hintergrund: Ich vermute, dass die Anzahl der Suchergebnisse nicht häuäfig größer als 20 ist, daher akzeptiere ich ggf. den höheren ServerLoad durch die Suche
-                Mittelfristig kann man aber auch noch eine "SearchPagination" implementieren oder eine Pagination, die unabhängig von dem Modus funktioniert */}
+                
                 {allCampaigns.mode !== "search" && (
-                  <Suspense>
                     <Pagination
                       count={count}
                       activePage={activePage}
-                      setActivePage={setActivePage}
+                      // Pagination Komponente sollte idealerweise via URL navigieren, nicht via State
+                      // Da du aber activePage aus der URL liest, reicht hier ein Router push in der Komponente
+                      // oder du übergibst eine Funktion, die router.push macht.
                     />
-                  </Suspense>
                 )}
               </div>
             )}
-            {/* Table end */}
           </div>
         </div>
       </div>
@@ -250,6 +203,7 @@ const ListedCampaignsContent = () => {
   );
 };
 
+// Wrapper Component für Suspense (sehr gut gelöst von dir!)
 const ListedCampaigns = () => {
   return (
     <Suspense fallback={<LoadingSpinner />}>

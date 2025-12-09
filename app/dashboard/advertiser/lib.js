@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { toast } from "react-toastify";
 const getAllAdvertisers = async (
   setAllAdvertisers,
@@ -8,7 +8,10 @@ const getAllAdvertisers = async (
 ) => {
   setLoading(true);
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/list?page=${activePage}`
+    `${process.env.NEXT_PUBLIC_HOSTURL}/api/advertiser/list?page=${activePage}`,
+    {
+      cache: "no-store",
+    }
   );
   const { data, count, message } = await res.json();
   if (data) {

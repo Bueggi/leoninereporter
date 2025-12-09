@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 const handler = async (req, res) => {
   try {
     const data = await prisma.advertiser.findMany({
