@@ -61,6 +61,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             advertiserID: advertiserID[0].id,
             status: status.title,
             customRiskFee: customRiskFeeRef,
+            anrede: anredeRef.current.value,
             customRiskFeeAmount:
               customRiskFeeRef == true
                 ? customRiskFeeAmountRef.current.value
