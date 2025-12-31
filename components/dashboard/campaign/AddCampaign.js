@@ -16,6 +16,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
   const contactEmailRef = useRef();
   const customRiskFeeAmountRef = useRef();
   const anredeRef = useRef();
+  const [tradeRef, setTradeRef] = useState(false);
 
   // get initial states
   // useEffect for getting the advertisers as a value to the list
@@ -62,6 +63,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
             status: status.title,
             customRiskFee: customRiskFeeRef,
             anrede: anredeRef.current.value,
+            trade: tradeRef,
             customRiskFeeAmount:
               customRiskFeeRef == true
                 ? customRiskFeeAmountRef.current.value
@@ -253,6 +255,15 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
               required
             />
           </div>
+        </div>
+        <label
+          htmlFor="advertisername"
+          className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+        >
+          TRADE
+        </label>
+        <div className="mt-2 sm:col-span-2 sm:mt-0 flex gap-4">
+          <Toggle enabled={tradeRef} setEnabled={setTradeRef} />
         </div>
 
         <div className="mt-2 sm:col-span-3 sm:mt-0">

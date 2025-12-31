@@ -179,6 +179,7 @@ export default function Campaigns({ params: { id } }) {
                             user={session.user.name}
                             userEmail={session.user.email}
                             anrede={campaign.anrede}
+                            trade={campaign.trade}
                           />
                         )}
                       </div>

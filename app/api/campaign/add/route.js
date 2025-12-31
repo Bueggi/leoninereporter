@@ -21,9 +21,10 @@ const handler = async (req, res) => {
       customRiskFeeAmount,
       contact,
       contactEmail,
+      trade
     } = await req.json();
 
-    console.log(customRiskFee, customRiskFeeAmount);
+
     const newCampaign = await prisma.campaign.create({
       data: {
         name,
@@ -34,6 +35,7 @@ const handler = async (req, res) => {
         customRiskFeeAmount: +customRiskFeeAmount,
         contact,
         contactEmail,
+        trade
       },
     });
 

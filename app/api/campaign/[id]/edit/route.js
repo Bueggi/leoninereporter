@@ -20,6 +20,7 @@ const handler = async (req, { params }) => {
       customRiskFeeAmount,
       contact,
       contactEmail,
+      trade
     } = await req.json();
 
     const { id } = params;
@@ -45,6 +46,7 @@ const handler = async (req, { params }) => {
         contact,
         contactEmail,
         customRiskFeeAmount: +customRiskFeeAmount,
+        trade
       },
       include: {
         advertiser: {

@@ -1,197 +1,320 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 datasource db {
   provider = "postgresql"
 }
 
 generator client {
-  provider        = "prisma-client"
-  output          = "../generated/prisma"
-  engineType      = "client"
+  provider = "prisma-client"
+
+  output = "../generated/prisma"
+
+  engineType = "client"
+
   previewFeatures = ["relationJoins"]
 }
 
 model User {
-  id            String     @id @default(uuid())
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  email         String     @unique
-  name          String
-  role          ROLE       @default(USER)
-  image         String
-  access_token  String?
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  email String @unique
+
+  name String
+
+  role ROLE @default(USER)
+
+  image String
+
+  access_token String?
+
   refresh_token String?
-  id_token      String?
-  expires_at    Int?
-  campaigns     Campaign[]
+
+  id_token String?
+
+  expires_at Int?
+
+  campaigns Campaign[]
 }
 
 enum ROLE {
   USER
+
   ADMIN
 }
 
 model Campaign {
-  id                  String       @id @default(uuid())
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
-  advertiser          Advertiser?  @relation(fields: [advertiserID], references: [id], onDelete: SetNull)
-  advertiserID        String?
-  bookings            Booking[]
-  customer            String?
-  customergroup       String?
-  creatorId           String?
-  creator             User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-  customRiskFee       Boolean?
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  advertiser Advertiser? @relation(fields: [advertiserID], references: [id], onDelete: SetNull)
+
+  advertiserID String?
+
+  bookings Booking[]
+
+  customer String?
+
+  customergroup String?
+
+  creatorId String?
+
+  creator User? @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+
+  customRiskFee Boolean?
+
   customRiskFeeAmount Int?
-  isServiceplan       Boolean      @default(true)
-  name                String       @unique @default("")
-  offers              OfferGroup[]
-  onlineCampaign      String?
-  ordernumber         String?
-  pdfLink             String?
-  product             String?
-  productfamily       String?
-  anrede              String?
-  status              STATUS       @default(OFFER)
-  contact             String?
-  contactEmail        String?
+
+  isServiceplan Boolean @default(true)
+
+  name String @unique @default("")
+
+  offers OfferGroup[]
+
+  onlineCampaign String?
+
+  ordernumber String?
+
+  pdfLink String?
+
+  product String?
+
+  productfamily String?
+
+  anrede String?
+
+  status STATUS @default(OFFER)
+
+  contact String?
+
+  contactEmail String?
+  trade        Boolean? @default(false)
 }
 
 model Booking {
-  id         String    @id @default(uuid())
-  dispo      String?
-  reach      Int?
-  start      DateTime?
-  end        DateTime?
-  product    PRODUCT?
-  rotation   String
-  tkp        Float?
-  targeting  String
-  output     String?
-  campaign   Campaign  @relation(fields: [campaignID], references: [id], onDelete: Cascade)
+  id String @id @default(uuid())
+
+  dispo String?
+
+  reach Int?
+
+  start DateTime?
+
+  end DateTime?
+
+  product PRODUCT?
+
+  rotation String
+
+  tkp Float?
+
+  targeting String
+
+  output String?
+
+  campaign Campaign @relation(fields: [campaignID], references: [id], onDelete: Cascade)
+
   campaignID String
 }
 
 enum PRODUCT {
   NONSKIPPABLE
+
   SKIPPABLE
+
   BUMPER
+
   SOV
+
   CTV
 }
 
 enum STATUS {
   OFFER
+
   SOLD
+
   RUNNING
+
   COMPLETED
 }
 
 model Offer {
-  id           String      @id @default(uuid())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  age          String?
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  age String?
+
   frequencyCap String?
-  plz          String?
-  platform     String?
-  placement    String?
-  reach        Int?
-  upcharge     Int?
-  upchargeTKP  Float?
-  start        DateTime?
-  end          DateTime?
-  product      PRODUCT?
-  rotation     String
-  tkp          Float
-  output       String?
-  targeting    String?
-  offergroup   OfferGroup? @relation(fields: [offerGroupID], references: [id], onDelete: Cascade)
+
+  plz String?
+
+  platform String?
+
+  placement String?
+
+  reach Int?
+
+  upcharge Int?
+
+  upchargeTKP Float?
+
+  start DateTime?
+
+  end DateTime?
+
+  product PRODUCT?
+
+  rotation String
+
+  tkp Float
+
+  output String?
+
+  targeting String?
+
+  offergroup OfferGroup? @relation(fields: [offerGroupID], references: [id], onDelete: Cascade)
+
   offerGroupID String?
 }
 
 model OfferGroup {
-  id          String    @id @default(uuid())
-  offernumber Int       @default(autoincrement())
-  campaign    Campaign? @relation(fields: [campaignID], references: [id], onDelete: Cascade)
-  campaignID  String?
-  offers      Offer[]
+  id String @id @default(uuid())
+
+  offernumber Int @default(autoincrement())
+
+  campaign Campaign? @relation(fields: [campaignID], references: [id], onDelete: Cascade)
+
+  campaignID String?
+
+  offers Offer[]
 }
 
 model Creator {
-  id             String    @id @default(uuid())
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  anbindung      Anbindung @default(OWNED)
-  bankData       String?
-  channelIDs     Channel[] @relation("CreatorChannels")
-  channelName    String
-  company        String
-  demographics   Json?
-  goal           Float
-  image          String
-  instagram      String?
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  anbindung Anbindung @default(OWNED)
+
+  bankData String?
+
+  channelIDs Channel[] @relation("CreatorChannels")
+
+  channelName String
+
+  company String
+
+  demographics Json?
+
+  goal Float
+
+  image String
+
+  instagram String?
+
   invoiceAddress String?
-  management     String?
-  paymentGoal    Int?
-  reverseCharge  Boolean?
-  share          Int
-  city           String?
-  country        String?
-  realName       String?
-  steuerID       String?
-  taxable        String?
+
+  management String?
+
+  paymentGoal Int?
+
+  reverseCharge Boolean?
+
+  share Int
+
+  city String?
+
+  country String?
+
+  realName String?
+
+  steuerID String?
+
+  taxable String?
 }
 
 model Channel {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
   channelName String
-  channelID   String
-  creator     Creator? @relation("CreatorChannels", fields: [creatorId], references: [id])
-  creatorId   String?
+
+  channelID String
+
+  creator Creator? @relation("CreatorChannels", fields: [creatorId], references: [id])
+
+  creatorId String?
 }
 
 enum Anbindung {
   OWNED
+
   TALENT
 }
 
 model Advertiser {
-  id        String     @id @default(uuid())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  name      String     @unique
-  company   String?
-  address   String?
-  plz       String?
-  city      String?
-  country   String?
-  riskFee   Int?
+  id String @id @default(uuid())
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  name String @unique
+
+  company String?
+
+  address String?
+
+  plz String?
+
+  city String?
+
+  country String?
+
+  riskFee Int?
+
   campaigns Campaign[]
 }
 
 model Report {
-  id      String        @id @default(uuid())
-  month   DateTime
+  id String @id @default(uuid())
+
+  month DateTime
+
   entries ReportEntry[]
 }
 
 model ReportEntry {
-  id             String @id @default(uuid())
-  report         Report @relation(fields: [reportID], references: [id])
-  reportID       String
-  channelId      String
-  type           String
-  revenueInEur   Float
-  sharePartner   Float
-  rateCardInEur  Float
-  riskFee        Float
+  id String @id @default(uuid())
+
+  report Report @relation(fields: [reportID], references: [id])
+
+  reportID String
+
+  channelId String
+
+  type String
+
+  revenueInEur Float
+
+  sharePartner Float
+
+  rateCardInEur Float
+
+  riskFee Float
+
   deltaInPercent Float
 }

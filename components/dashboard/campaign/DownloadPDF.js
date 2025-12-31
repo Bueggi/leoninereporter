@@ -38,6 +38,7 @@ const DownloadPDFButton = ({
   user,
   userEmail,
   anrede,
+  trade,
 }) => {
   Font.register({
     family: "Inter",
@@ -68,9 +69,10 @@ const DownloadPDFButton = ({
             user={user}
             userEmail={userEmail}
             anrede={anrede}
+            trade={trade}
           />
         }
-        fileName={`${campaignName}.pdf`}
+        fileName={`HoT_Angebot_${offer.offernumber}-${campaignName}.pdf`}
         style={tw(
           "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200"
         )}
@@ -92,6 +94,7 @@ export const MyDoc = ({
   user,
   userEmail,
   anrede,
+  trade,
 }) => {
   // wenn die Offergroup noch keine Angebote angelegt hat, wird ein leeres Dokument zurückgegeben
   if (offer.offers.length < 1)
@@ -161,7 +164,25 @@ export const MyDoc = ({
           <View style={tw("relative mb-8")}>
             {/* Kampagnenname als großer Eyecatcher */}
             <Ueberschrift>
-              <Text>Angebot Nr. {offer.offernumber}</Text>
+              <View style={tw('flex flex-row gap-4 items-center')}>
+                <Text>Angebot Nr. {offer.offernumber}</Text>
+                {trade && (
+                  <View
+                    style={tw(
+                      "flex items-center justify-center font-bold w-12 h-6 p-4 inline-flex items-center rounded-md bg-[#AB8353] px-1.5 py-0.5 text-xs font-medium text-white"
+                    )}
+                  >
+                    <Text>TRADE</Text>
+                  </View>
+                  // <View
+                  //   style={tw(
+                  //     "inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 inset-ring inset-ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:inset-ring-gray-400/20"
+                  //   )}
+                  // >
+                  //   Trade
+                  // </View>
+                )}
+              </View>
             </Ueberschrift>
 
             {/* Angebotsnummer direkt darunter, subtil */}
@@ -349,12 +370,11 @@ export const MyDoc = ({
               product={"BUMPER"}
             />
 
-            {productMetrics.CTV.reach > 0 && (
-              <ProductInformationRow
-                productMetrics={productMetrics}
-                product={"CTV"}
-              />
-            )}
+            <ProductInformationRow
+              productMetrics={productMetrics}
+              product={"CTV"}
+            />
+
             {productMetrics.SOV.reach > 0 && (
               <ProductInformationRow
                 productMetrics={productMetrics}
@@ -424,6 +444,10 @@ export const MyDoc = ({
               <Text>
                 Bei den genannten Beträgen handelt es sich um Nettobeträge, die
                 jeweils zzgl. der jeweils gültigen MwSt. gelten.
+              </Text>
+              <Text>
+                Im Rahmen unserer übergreifenden Partnerschaft rechnen wir alle Kampagnen bis zu einer Abweichung von maximal 2%
+                mit dem vollen Budget ab.
               </Text>
               <Text style={tw("mt-3")}>
                 Wir freuen uns über baldige Rückmeldung.

@@ -124,7 +124,8 @@ export const CampaignScalarFieldEnum = {
   anrede: 'anrede',
   status: 'status',
   contact: 'contact',
-  contactEmail: 'contactEmail'
+  contactEmail: 'contactEmail',
+  trade: 'trade'
 } as const
 
 export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]

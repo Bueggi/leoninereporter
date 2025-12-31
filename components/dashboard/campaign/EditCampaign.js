@@ -44,9 +44,7 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
       const advertiserID = advertisers.filter(
         (el) => el.name === state.advertiserName
       );
-      console.log("///// STATE", state);
       const updatedCampaign = { ...campaign, ...state };
-      console.log("///// UPDATED", updatedCampaign);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/${campaign.id}/edit`,
@@ -194,7 +192,20 @@ const EditCampaign = ({ campaign, setCampaign, setOpen }) => {
         type="text"
         keyName="anrede"
       />
-
+      <div className="flex flex-row gap-3">
+        <p className="block text-sm font-medium leading-6 text-gray-900">
+          TRADE
+        </p>
+        <Toggle
+          enabled={state.trade}
+          setEnabled={() => {
+            setState({
+              ...state,
+              trade: !state.trade,
+            });
+          }}
+        />
+      </div>
       <div className="col-span-3">
         <button
           type="button"
