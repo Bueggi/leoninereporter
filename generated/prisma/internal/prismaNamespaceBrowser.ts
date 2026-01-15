@@ -176,7 +176,9 @@ export type OfferScalarFieldEnum = (typeof OfferScalarFieldEnum)[keyof typeof Of
 export const OfferGroupScalarFieldEnum = {
   id: 'id',
   offernumber: 'offernumber',
-  campaignID: 'campaignID'
+  campaignID: 'campaignID',
+  individualOfferNumber: 'individualOfferNumber',
+  usesIndividualOfferNumber: 'usesIndividualOfferNumber'
 } as const
 
 export type OfferGroupScalarFieldEnum = (typeof OfferGroupScalarFieldEnum)[keyof typeof OfferGroupScalarFieldEnum]

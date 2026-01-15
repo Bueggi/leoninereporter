@@ -28,56 +28,72 @@ export type AggregateOfferGroup = {
 
 export type OfferGroupAvgAggregateOutputType = {
   offernumber: number | null
+  individualOfferNumber: number | null
 }
 
 export type OfferGroupSumAggregateOutputType = {
   offernumber: number | null
+  individualOfferNumber: number | null
 }
 
 export type OfferGroupMinAggregateOutputType = {
   id: string | null
   offernumber: number | null
   campaignID: string | null
+  individualOfferNumber: number | null
+  usesIndividualOfferNumber: boolean | null
 }
 
 export type OfferGroupMaxAggregateOutputType = {
   id: string | null
   offernumber: number | null
   campaignID: string | null
+  individualOfferNumber: number | null
+  usesIndividualOfferNumber: boolean | null
 }
 
 export type OfferGroupCountAggregateOutputType = {
   id: number
   offernumber: number
   campaignID: number
+  individualOfferNumber: number
+  usesIndividualOfferNumber: number
   _all: number
 }
 
 
 export type OfferGroupAvgAggregateInputType = {
   offernumber?: true
+  individualOfferNumber?: true
 }
 
 export type OfferGroupSumAggregateInputType = {
   offernumber?: true
+  individualOfferNumber?: true
 }
 
 export type OfferGroupMinAggregateInputType = {
   id?: true
   offernumber?: true
   campaignID?: true
+  individualOfferNumber?: true
+  usesIndividualOfferNumber?: true
 }
 
 export type OfferGroupMaxAggregateInputType = {
   id?: true
   offernumber?: true
   campaignID?: true
+  individualOfferNumber?: true
+  usesIndividualOfferNumber?: true
 }
 
 export type OfferGroupCountAggregateInputType = {
   id?: true
   offernumber?: true
   campaignID?: true
+  individualOfferNumber?: true
+  usesIndividualOfferNumber?: true
   _all?: true
 }
 
@@ -171,6 +187,8 @@ export type OfferGroupGroupByOutputType = {
   id: string
   offernumber: number
   campaignID: string | null
+  individualOfferNumber: number | null
+  usesIndividualOfferNumber: boolean | null
   _count: OfferGroupCountAggregateOutputType | null
   _avg: OfferGroupAvgAggregateOutputType | null
   _sum: OfferGroupSumAggregateOutputType | null
@@ -200,6 +218,8 @@ export type OfferGroupWhereInput = {
   id?: Prisma.StringFilter<"OfferGroup"> | string
   offernumber?: Prisma.IntFilter<"OfferGroup"> | number
   campaignID?: Prisma.StringNullableFilter<"OfferGroup"> | string | null
+  individualOfferNumber?: Prisma.IntNullableFilter<"OfferGroup"> | number | null
+  usesIndividualOfferNumber?: Prisma.BoolNullableFilter<"OfferGroup"> | boolean | null
   campaign?: Prisma.XOR<Prisma.CampaignNullableScalarRelationFilter, Prisma.CampaignWhereInput> | null
   offers?: Prisma.OfferListRelationFilter
 }
@@ -208,6 +228,8 @@ export type OfferGroupOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   offernumber?: Prisma.SortOrder
   campaignID?: Prisma.SortOrderInput | Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  usesIndividualOfferNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   campaign?: Prisma.CampaignOrderByWithRelationInput
   offers?: Prisma.OfferOrderByRelationAggregateInput
 }
@@ -219,6 +241,8 @@ export type OfferGroupWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OfferGroupWhereInput | Prisma.OfferGroupWhereInput[]
   offernumber?: Prisma.IntFilter<"OfferGroup"> | number
   campaignID?: Prisma.StringNullableFilter<"OfferGroup"> | string | null
+  individualOfferNumber?: Prisma.IntNullableFilter<"OfferGroup"> | number | null
+  usesIndividualOfferNumber?: Prisma.BoolNullableFilter<"OfferGroup"> | boolean | null
   campaign?: Prisma.XOR<Prisma.CampaignNullableScalarRelationFilter, Prisma.CampaignWhereInput> | null
   offers?: Prisma.OfferListRelationFilter
 }, "id">
@@ -227,6 +251,8 @@ export type OfferGroupOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   offernumber?: Prisma.SortOrder
   campaignID?: Prisma.SortOrderInput | Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  usesIndividualOfferNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.OfferGroupCountOrderByAggregateInput
   _avg?: Prisma.OfferGroupAvgOrderByAggregateInput
   _max?: Prisma.OfferGroupMaxOrderByAggregateInput
@@ -241,11 +267,15 @@ export type OfferGroupScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"OfferGroup"> | string
   offernumber?: Prisma.IntWithAggregatesFilter<"OfferGroup"> | number
   campaignID?: Prisma.StringNullableWithAggregatesFilter<"OfferGroup"> | string | null
+  individualOfferNumber?: Prisma.IntNullableWithAggregatesFilter<"OfferGroup"> | number | null
+  usesIndividualOfferNumber?: Prisma.BoolNullableWithAggregatesFilter<"OfferGroup"> | boolean | null
 }
 
 export type OfferGroupCreateInput = {
   id?: string
   offernumber?: number
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
   campaign?: Prisma.CampaignCreateNestedOneWithoutOffersInput
   offers?: Prisma.OfferCreateNestedManyWithoutOffergroupInput
 }
@@ -254,12 +284,16 @@ export type OfferGroupUncheckedCreateInput = {
   id?: string
   offernumber?: number
   campaignID?: string | null
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutOffergroupInput
 }
 
 export type OfferGroupUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   campaign?: Prisma.CampaignUpdateOneWithoutOffersNestedInput
   offers?: Prisma.OfferUpdateManyWithoutOffergroupNestedInput
 }
@@ -268,6 +302,8 @@ export type OfferGroupUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
   campaignID?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   offers?: Prisma.OfferUncheckedUpdateManyWithoutOffergroupNestedInput
 }
 
@@ -275,17 +311,23 @@ export type OfferGroupCreateManyInput = {
   id?: string
   offernumber?: number
   campaignID?: string | null
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
 }
 
 export type OfferGroupUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
 }
 
 export type OfferGroupUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
   campaignID?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
 }
 
 export type OfferGroupListRelationFilter = {
@@ -307,26 +349,34 @@ export type OfferGroupCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   offernumber?: Prisma.SortOrder
   campaignID?: Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrder
+  usesIndividualOfferNumber?: Prisma.SortOrder
 }
 
 export type OfferGroupAvgOrderByAggregateInput = {
   offernumber?: Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrder
 }
 
 export type OfferGroupMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   offernumber?: Prisma.SortOrder
   campaignID?: Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrder
+  usesIndividualOfferNumber?: Prisma.SortOrder
 }
 
 export type OfferGroupMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   offernumber?: Prisma.SortOrder
   campaignID?: Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrder
+  usesIndividualOfferNumber?: Prisma.SortOrder
 }
 
 export type OfferGroupSumOrderByAggregateInput = {
   offernumber?: Prisma.SortOrder
+  individualOfferNumber?: Prisma.SortOrder
 }
 
 export type OfferGroupCreateNestedManyWithoutCampaignInput = {
@@ -398,12 +448,16 @@ export type IntFieldUpdateOperationsInput = {
 export type OfferGroupCreateWithoutCampaignInput = {
   id?: string
   offernumber?: number
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
   offers?: Prisma.OfferCreateNestedManyWithoutOffergroupInput
 }
 
 export type OfferGroupUncheckedCreateWithoutCampaignInput = {
   id?: string
   offernumber?: number
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
   offers?: Prisma.OfferUncheckedCreateNestedManyWithoutOffergroupInput
 }
 
@@ -440,11 +494,15 @@ export type OfferGroupScalarWhereInput = {
   id?: Prisma.StringFilter<"OfferGroup"> | string
   offernumber?: Prisma.IntFilter<"OfferGroup"> | number
   campaignID?: Prisma.StringNullableFilter<"OfferGroup"> | string | null
+  individualOfferNumber?: Prisma.IntNullableFilter<"OfferGroup"> | number | null
+  usesIndividualOfferNumber?: Prisma.BoolNullableFilter<"OfferGroup"> | boolean | null
 }
 
 export type OfferGroupCreateWithoutOffersInput = {
   id?: string
   offernumber?: number
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
   campaign?: Prisma.CampaignCreateNestedOneWithoutOffersInput
 }
 
@@ -452,6 +510,8 @@ export type OfferGroupUncheckedCreateWithoutOffersInput = {
   id?: string
   offernumber?: number
   campaignID?: string | null
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
 }
 
 export type OfferGroupCreateOrConnectWithoutOffersInput = {
@@ -473,6 +533,8 @@ export type OfferGroupUpdateToOneWithWhereWithoutOffersInput = {
 export type OfferGroupUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   campaign?: Prisma.CampaignUpdateOneWithoutOffersNestedInput
 }
 
@@ -480,28 +542,38 @@ export type OfferGroupUncheckedUpdateWithoutOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
   campaignID?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
 }
 
 export type OfferGroupCreateManyCampaignInput = {
   id?: string
   offernumber?: number
+  individualOfferNumber?: number | null
+  usesIndividualOfferNumber?: boolean | null
 }
 
 export type OfferGroupUpdateWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   offers?: Prisma.OfferUpdateManyWithoutOffergroupNestedInput
 }
 
 export type OfferGroupUncheckedUpdateWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   offers?: Prisma.OfferUncheckedUpdateManyWithoutOffergroupNestedInput
 }
 
 export type OfferGroupUncheckedUpdateManyWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   offernumber?: Prisma.IntFieldUpdateOperationsInput | number
+  individualOfferNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  usesIndividualOfferNumber?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
 }
 
 
@@ -539,6 +611,8 @@ export type OfferGroupSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   offernumber?: boolean
   campaignID?: boolean
+  individualOfferNumber?: boolean
+  usesIndividualOfferNumber?: boolean
   campaign?: boolean | Prisma.OfferGroup$campaignArgs<ExtArgs>
   offers?: boolean | Prisma.OfferGroup$offersArgs<ExtArgs>
   _count?: boolean | Prisma.OfferGroupCountOutputTypeDefaultArgs<ExtArgs>
@@ -548,6 +622,8 @@ export type OfferGroupSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   offernumber?: boolean
   campaignID?: boolean
+  individualOfferNumber?: boolean
+  usesIndividualOfferNumber?: boolean
   campaign?: boolean | Prisma.OfferGroup$campaignArgs<ExtArgs>
 }, ExtArgs["result"]["offerGroup"]>
 
@@ -555,6 +631,8 @@ export type OfferGroupSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   offernumber?: boolean
   campaignID?: boolean
+  individualOfferNumber?: boolean
+  usesIndividualOfferNumber?: boolean
   campaign?: boolean | Prisma.OfferGroup$campaignArgs<ExtArgs>
 }, ExtArgs["result"]["offerGroup"]>
 
@@ -562,9 +640,11 @@ export type OfferGroupSelectScalar = {
   id?: boolean
   offernumber?: boolean
   campaignID?: boolean
+  individualOfferNumber?: boolean
+  usesIndividualOfferNumber?: boolean
 }
 
-export type OfferGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "offernumber" | "campaignID", ExtArgs["result"]["offerGroup"]>
+export type OfferGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "offernumber" | "campaignID" | "individualOfferNumber" | "usesIndividualOfferNumber", ExtArgs["result"]["offerGroup"]>
 export type OfferGroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.OfferGroup$campaignArgs<ExtArgs>
   offers?: boolean | Prisma.OfferGroup$offersArgs<ExtArgs>
@@ -587,6 +667,8 @@ export type $OfferGroupPayload<ExtArgs extends runtime.Types.Extensions.Internal
     id: string
     offernumber: number
     campaignID: string | null
+    individualOfferNumber: number | null
+    usesIndividualOfferNumber: boolean | null
   }, ExtArgs["result"]["offerGroup"]>
   composites: {}
 }
@@ -1015,6 +1097,8 @@ export interface OfferGroupFieldRefs {
   readonly id: Prisma.FieldRef<"OfferGroup", 'String'>
   readonly offernumber: Prisma.FieldRef<"OfferGroup", 'Int'>
   readonly campaignID: Prisma.FieldRef<"OfferGroup", 'String'>
+  readonly individualOfferNumber: Prisma.FieldRef<"OfferGroup", 'Int'>
+  readonly usesIndividualOfferNumber: Prisma.FieldRef<"OfferGroup", 'Boolean'>
 }
     
 

@@ -43,16 +43,12 @@ const DownloadPDFButton = ({
   Font.register({
     family: "Inter",
     fonts: [
-      { src: "/Inter_18pt-Regular.ttf", format: "truetype" },
-      { src: "/Inter_18pt-Light.ttf", format: "truetype", fontWeight: 300 },
       {
         src: "/Inter_18pt-Medium.ttf",
         format: "truetype",
         fontWeight: "normal",
       },
-      { src: "/Inter_18pt-SemiBold.ttf", format: "truetype", fontWeight: 600 },
       { src: "/Inter_18pt-Bold.ttf", format: "truetype", fontWeight: "bold" },
-      { src: "/Inter_18pt-Black.ttf", format: "truetype", fontWeight: "black" },
     ],
   });
 
@@ -74,7 +70,7 @@ const DownloadPDFButton = ({
         }
         fileName={`HoT_Angebot_${offer.offernumber}-${campaignName}.pdf`}
         style={tw(
-          "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200"
+          "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200"
         )}
       >
         {({ blob, url, loading, error }) =>
@@ -164,12 +160,18 @@ export const MyDoc = ({
           <View style={tw("relative mb-8")}>
             {/* Kampagnenname als großer Eyecatcher */}
             <Ueberschrift>
-              <View style={tw('flex flex-row gap-4 items-center')}>
-                <Text>Angebot Nr. {offer.offernumber}</Text>
+              <View style={tw("flex flex-row gap-4 items-center")}>
+                <Text>
+                  Angebot Nr.{" "}
+                  {offer.usesIndividualOfferNumber &&
+                  offer.individualOfferNumber !== null
+                    ? offer.individualOfferNumber
+                    : offer.offernumber}
+                </Text>
                 {trade && (
                   <View
                     style={tw(
-                      "flex items-center justify-center font-bold w-12 h-6 p-4 inline-flex items-center rounded-md bg-[#AB8353] px-1.5 py-0.5 text-xs font-medium text-white"
+                      "flex items-center justify-center w-12 h-6 p-4 inline-flex items-center rounded-md bg-[#AB8353] px-1.5 py-0.5 text-xs font-medium text-white"
                     )}
                   >
                     <Text>TRADE</Text>
@@ -326,7 +328,7 @@ export const MyDoc = ({
               >
                 <Text
                   style={tw(
-                    "flex-1 text-[8px] font-black uppercase tracking-wider"
+                    "flex-1 text-[8px] font-bold uppercase tracking-wider"
                   )}
                 >
                   Home of Talents Media
@@ -357,6 +359,17 @@ export const MyDoc = ({
 
             {/* Products mit fließenden Linien */}
 
+            {productMetrics.SOV.reach > 0 && (
+              <ProductInformationRow
+                productMetrics={productMetrics}
+                product={"SOV"}
+              />
+            )}
+            <ProductInformationRow
+              productMetrics={productMetrics}
+              product={"CTV"}
+            />
+
             <ProductInformationRow
               productMetrics={productMetrics}
               product={"NONSKIPPABLE"}
@@ -369,18 +382,6 @@ export const MyDoc = ({
               productMetrics={productMetrics}
               product={"BUMPER"}
             />
-
-            <ProductInformationRow
-              productMetrics={productMetrics}
-              product={"CTV"}
-            />
-
-            {productMetrics.SOV.reach > 0 && (
-              <ProductInformationRow
-                productMetrics={productMetrics}
-                product={"SOV"}
-              />
-            )}
 
             {/* Upcharges inline wenn vorhanden */}
             {upchargeMetrics.isUpcharge && upchargeMetrics.totalCosts > 0 && (
@@ -446,8 +447,9 @@ export const MyDoc = ({
                 jeweils zzgl. der jeweils gültigen MwSt. gelten.
               </Text>
               <Text>
-                Im Rahmen unserer übergreifenden Partnerschaft rechnen wir alle Kampagnen bis zu einer Abweichung von maximal 2%
-                mit dem vollen Budget ab.
+                Im Rahmen unserer übergreifenden Partnerschaft rechnen wir alle
+                Kampagnen bis zu einer Abweichung von maximal 2% mit dem vollen
+                Budget ab.
               </Text>
               <Text style={tw("mt-3")}>
                 Wir freuen uns über baldige Rückmeldung.

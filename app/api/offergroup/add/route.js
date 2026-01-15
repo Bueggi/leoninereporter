@@ -8,6 +8,8 @@ const handler = async (req, res) => {
     const offerGroup = await prisma.offerGroup.create({
       data: {
         campaignID,
+        usesIndividualOfferNumber: false,
+        individualOfferNumber: null
       },
     });
 

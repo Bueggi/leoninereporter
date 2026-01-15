@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import EmptyState from "@components/pComponents/EmptyState";
+import EditIndividualOfferNumber from "../../../../components/dashboard/campaign/pComponents/EditIndividualOfferNumber";
 
 import OfferDisplay from "@components/dashboard/campaign/offer/OfferDisplay";
 
@@ -20,7 +21,10 @@ import EditOffer from "@components/dashboard/campaign/offer/EditOffer";
 import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
 import DescriptionList from "@components/dashboard/campaign/DescriptionList";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import {
+  CheckCircleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/20/solid";
 import EditCampaign from "@components/dashboard/campaign/EditCampaign";
 import DownloadPDFButton from "@components/dashboard/campaign/DownloadPDF";
 
@@ -184,7 +188,6 @@ export default function Campaigns({ params: { id } }) {
                         )}
                       </div>
                     </div>
-
                     <div className="mt-12">
                       {el.offers.length > 0 &&
                         el.offers.map((el, i) => (
@@ -206,6 +209,16 @@ export default function Campaigns({ params: { id } }) {
                           }
                         />
                       )}
+                    </div>
+                    <div>
+                      <EditIndividualOfferNumber
+                        initialNumber={el.individualOfferNumber}
+                        initialUseIndividual={el.usesIndividualOfferNumber}
+                        element={el}
+                        offerGroupId={el.id}
+                        setCampaign={setcampaign}
+                        campaign={campaign}
+                      />
                     </div>
                   </div>
                 </>

@@ -84,15 +84,11 @@ model Campaign {
   product String?
 
   productfamily String?
-
-  anrede String?
-
-  status STATUS @default(OFFER)
-
-  contact String?
-
-  contactEmail String?
-  trade        Boolean? @default(false)
+  anrede        String?
+  status        STATUS   @default(OFFER)
+  contact       String?
+  contactEmail  String?
+  trade         Boolean? @default(false)
 }
 
 model Booking {
@@ -195,6 +191,9 @@ model OfferGroup {
   campaignID String?
 
   offers Offer[]
+
+  individualOfferNumber     Int?
+  usesIndividualOfferNumber Boolean?
 }
 
 model Creator {

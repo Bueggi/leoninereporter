@@ -11,12 +11,8 @@ import Head from "next/head";
 Font.register({
   family: "Inter",
   fonts: [
-    { src: "/Inter_18pt-Regular.ttf", format: "truetype" },
-    { src: "/Inter_18pt-Light.ttf", format: "truetype", fontWeight: 300 },
     { src: "/Inter_18pt-Medium.ttf", format: "truetype", fontWeight: "normal" },
-    { src: "/Inter_18pt-SemiBold.ttf", format: "truetype", fontWeight: 600 },
     { src: "/Inter_18pt-Bold.ttf", format: "truetype", fontWeight: "bold" },
-    { src: "/Inter_18pt-Black.ttf", format: "truetype", fontWeight: "black" },
   ],
 });
 
