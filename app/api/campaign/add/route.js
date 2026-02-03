@@ -21,7 +21,8 @@ const handler = async (req, res) => {
       customRiskFeeAmount,
       contact,
       contactEmail,
-      trade
+      trade,
+      anrede
     } = await req.json();
 
 
@@ -35,7 +36,8 @@ const handler = async (req, res) => {
         customRiskFeeAmount: +customRiskFeeAmount,
         contact,
         contactEmail,
-        trade
+        trade,
+        anrede
       },
     });
 

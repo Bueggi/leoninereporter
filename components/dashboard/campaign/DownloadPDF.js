@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import {
-  PDFDownloadLink,
+  pdf,
   Document,
   Page,
   View,
@@ -15,7 +16,6 @@ import ProductInformationRow from "../../pComponents/pdfgeneration/ProductInform
 import { tw } from "@lib/tw";
 
 // import helperfunctions
-// TODO hier sind noch Components drin, die definitiv eine eigene Datei wert sind
 import {
   calculateRuntime,
   abortGenerationIfPointless,
@@ -29,6 +29,19 @@ import {
   reduceInformationFromOffersToString,
 } from "@lib/dashboard/pdfGeneration/helperFunctions";
 
+// 1. Fonts global registrieren (außerhalb der Component)
+Font.register({
+  family: "Inter",
+  fonts: [
+    {
+      src: "/Inter_18pt-Medium.ttf",
+      format: "truetype",
+      fontWeight: "normal",
+    },
+    { src: "/Inter_18pt-Bold.ttf", format: "truetype", fontWeight: "bold" },
+  ],
+});
+
 const DownloadPDFButton = ({
   campaignName,
   offer,
@@ -40,48 +53,69 @@ const DownloadPDFButton = ({
   anrede,
   trade,
 }) => {
-  Font.register({
-    family: "Inter",
-    fonts: [
-      {
-        src: "/Inter_18pt-Medium.ttf",
-        format: "truetype",
-        fontWeight: "normal",
-      },
-      { src: "/Inter_18pt-Bold.ttf", format: "truetype", fontWeight: "bold" },
-    ],
-  });
+  // State für den Lade-Spinner/Text
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setIsGenerating(true);
+
+      // 2. Dateiname definieren
+      const fileName = `HoT_Angebot_${offer.offernumber}-${campaignName}.pdf`;
+
+      // 3. Das Dokument "Lazy" erstellen
+      const doc = (
+        <MyDoc
+          campaignName={campaignName}
+          offer={offer}
+          advertiser={advertiser}
+          contact={contact}
+          contactEmail={contactEmail}
+          user={user}
+          userEmail={userEmail}
+          anrede={anrede}
+          trade={trade}
+        />
+      );
+
+      // 4. Blob generieren (Hier werden erst die Daten gezogen!)
+      const blob = await pdf(doc).toBlob();
+
+      // 5. Download im Browser auslösen (Vanilla JS Weg)
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+
+      // Aufräumen
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Fehler beim Generieren des PDFs:", error);
+      alert("Es gab einen Fehler beim Erstellen des PDFs.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
-    <>
-      <PDFDownloadLink
-        document={
-          <MyDoc
-            campaignName={campaignName}
-            offer={offer}
-            advertiser={advertiser}
-            contact={contact}
-            contactEmail={contactEmail}
-            user={user}
-            userEmail={userEmail}
-            anrede={anrede}
-            trade={trade}
-          />
-        }
-        fileName={`HoT_Angebot_${offer.offernumber}-${campaignName}.pdf`}
-        style={tw(
-          "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200"
-        )}
-      >
-        {({ blob, url, loading, error }) =>
-          loading ? "Generiere PDF..." : "Download PDF"
-        }
-      </PDFDownloadLink>
-    </>
+    <button
+      onClick={handleDownload}
+      disabled={isGenerating}
+      className={tw(
+        "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      )}
+    >
+      {isGenerating ? "Generiere PDF..." : "Download PDF"}
+    </button>
   );
 };
 
 export default DownloadPDFButton;
+
+// --- DEINE URSPRÜNGLICHE DOKUMENT-STRUKTUR (Unverändert) ---
 
 export const MyDoc = ({
   offer,
@@ -176,13 +210,6 @@ export const MyDoc = ({
                   >
                     <Text>TRADE</Text>
                   </View>
-                  // <View
-                  //   style={tw(
-                  //     "inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 inset-ring inset-ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:inset-ring-gray-400/20"
-                  //   )}
-                  // >
-                  //   Trade
-                  // </View>
                 )}
               </View>
             </Ueberschrift>
@@ -386,7 +413,9 @@ export const MyDoc = ({
             {/* Upcharges inline wenn vorhanden */}
             {upchargeMetrics.isUpcharge && upchargeMetrics.totalCosts > 0 && (
               <>
-                <View style={tw("border-t border-stone-300 mt-2 mb-2")}></View>
+                <View
+                  style={tw("border-t border-stone-300 mt-2 mb-2")}
+                ></View>
                 {/* AGEUPCHARGE */}
                 {upchargeMetrics.ageUpcharge.cost > 0 && (
                   <ProductInformationRow
@@ -489,9 +518,6 @@ export const MyDoc = ({
                 </Text>
               </FliessText>
             </View>
-            {/* <Text style={tw("text-[6px] text-gray-400")}>
-              LEONINE Licensing GmbH · HRB 272 911 · USt-IdNr. DE 323 797 373
-            </Text> */}
           </View>
         </View>
       </Page>
