@@ -44,6 +44,13 @@ const campaigns = [
     initial: "A",
     current: false,
   },
+  {
+    id: 4,
+    name: "Kampagnen Reports",
+    href: "/dashboard/reporter",
+    initial: "R",
+    current: false,
+  },
 ];
 
 function classNames(...classes) {
