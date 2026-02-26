@@ -105,7 +105,7 @@ const DownloadPDFButton = ({
       onClick={handleDownload}
       disabled={isGenerating}
       className={tw(
-        "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
       )}
     >
       {isGenerating ? "Generiere PDF..." : "Download PDF"}
@@ -139,8 +139,8 @@ export const MyDoc = ({
     offer.offers.reduce(
       (accumulator, currentValue) =>
         accumulator + (currentValue.reach * currentValue.tkp) / 1000,
-      0
-    ) + upchargeMetrics.totalCosts
+      0,
+    ) + upchargeMetrics.totalCosts,
   );
 
   const totalReach = offer.offers.reduce((accumulator, currentValue) => {
@@ -157,7 +157,7 @@ export const MyDoc = ({
         {/* Logo und Meta Info in einer Linie */}
         <View
           style={tw(
-            "flex flex-row justify-between items-start bg-[#AB8353] pt-12 px-12 pb-8 mb-6"
+            "flex flex-row justify-between items-start bg-[#AB8353] pt-12 px-12 pb-8 mb-6",
           )}
         >
           <Image
@@ -205,7 +205,7 @@ export const MyDoc = ({
                 {trade && (
                   <View
                     style={tw(
-                      "flex items-center justify-center w-12 h-6 p-4 inline-flex items-center rounded-md bg-[#AB8353] px-1.5 py-0.5 text-xs font-medium text-white"
+                      "flex items-center justify-center w-12 h-6 p-4 inline-flex items-center rounded-md bg-[#AB8353] px-1.5 py-0.5 text-xs font-medium text-white",
                     )}
                   >
                     <Text>TRADE</Text>
@@ -255,37 +255,41 @@ export const MyDoc = ({
                   </View>
 
                   {/* Row 2 */}
-                  {["product", "frequencyCap", "rotation", "age"].map(
-                    (el, i) => {
-                      const title = {
-                        product: "Product",
-                        frequencyCap: "Frequency Cap",
-                        rotation: "Rotation",
-                        age: "Age-Targeting",
-                      };
-                      if (
-                        reduceInformationFromOffersToString(offer, el).length &&
-                        reduceInformationFromOffersToString(offer, el) !== null
-                      ) {
-                        return (
-                          <View
-                            style={tw("flex flex-row  items-center")}
-                            key={i}
-                          >
-                            <InfoSchrift>
-                              <Text>{title[el]}</Text>
-                            </InfoSchrift>
-                            <TableRightSide>
-                              {/* <Text>{offer.offers[0] && offer.offers[0].product}</Text> */}
-                              <Text>
-                                {reduceInformationFromOffersToString(offer, el)}
-                              </Text>
-                            </TableRightSide>
-                          </View>
-                        );
-                      }
+                  {console.log(offer, "IST GENDER ENTHALTEN!")}
+                  {[
+                    "product",
+                    "frequencyCap",
+                    "rotation",
+                    "age",
+                    "targeting",
+                    "plz",
+                    "platform",
+                  ].map((el, i) => {
+                    const title = {
+                      product: "Product",
+                      frequencyCap: "Frequency Cap",
+                      age: "Age-Targeting",
+                      targeting: "Gender",
+                    };
+                    if (
+                      reduceInformationFromOffersToString(offer, el).length &&
+                      reduceInformationFromOffersToString(offer, el) !== null
+                    ) {
+                      return (
+                        <View style={tw("flex flex-row  items-center")} key={i}>
+                          <InfoSchrift>
+                            <Text>{title[el]}</Text>
+                          </InfoSchrift>
+                          <TableRightSide>
+                            {/* <Text>{offer.offers[0] && offer.offers[0].product}</Text> */}
+                            <Text>
+                              {reduceInformationFromOffersToString(offer, el)}
+                            </Text>
+                          </TableRightSide>
+                        </View>
+                      );
                     }
-                  )}
+                  })}
 
                   {/* Row 5 */}
                 </View>
@@ -316,14 +320,15 @@ export const MyDoc = ({
 
                   {["platform", "plz", "placement"].map((el, i) => {
                     const title = {
-                      platform: "Platform",
+                      rotation: "Rotation",
+                      platform: "Plattform",
                       plz: "Geographie",
                       placement: "Placement",
                     };
 
                     const reducedResult = reduceInformationFromOffersToString(
                       offer,
-                      el
+                      el,
                     );
                     if (reducedResult.length && !!reducedResult) {
                       return (
@@ -350,33 +355,33 @@ export const MyDoc = ({
             <InfoSchrift>
               <View
                 style={tw(
-                  "flex flex-row items-baseline border-b-2 border-black pb-2 mb-4"
+                  "flex flex-row items-baseline border-b-2 border-black pb-2 mb-4",
                 )}
               >
                 <Text
                   style={tw(
-                    "flex-1 text-[8px] font-bold uppercase tracking-wider"
+                    "flex-1 text-[8px] font-bold uppercase tracking-wider",
                   )}
                 >
                   Home of Talents Media
                 </Text>
                 <Text
                   style={tw(
-                    "w-20 text-right text-[8px] uppercase tracking-wider"
+                    "w-20 text-right text-[8px] uppercase tracking-wider",
                   )}
                 >
                   TKP (net)
                 </Text>
                 <Text
                   style={tw(
-                    "w-24 text-right text-[8px] uppercase tracking-wider"
+                    "w-24 text-right text-[8px] uppercase tracking-wider",
                   )}
                 >
                   Impressions
                 </Text>
                 <Text
                   style={tw(
-                    "w-24 text-right text-[8px] uppercase tracking-wider"
+                    "w-24 text-right text-[8px] uppercase tracking-wider",
                   )}
                 >
                   Budget (net)
@@ -413,9 +418,7 @@ export const MyDoc = ({
             {/* Upcharges inline wenn vorhanden */}
             {upchargeMetrics.isUpcharge && upchargeMetrics.totalCosts > 0 && (
               <>
-                <View
-                  style={tw("border-t border-stone-300 mt-2 mb-2")}
-                ></View>
+                <View style={tw("border-t border-stone-300 mt-2 mb-2")}></View>
                 {/* AGEUPCHARGE */}
                 {upchargeMetrics.ageUpcharge.cost > 0 && (
                   <ProductInformationRow
@@ -441,7 +444,7 @@ export const MyDoc = ({
                 {upchargeMetrics.placementUpcharge.cost > 0 && (
                   <ProductInformationRow
                     productMetrics={upchargeMetrics.placementUpcharge}
-                    product={"+ Upcharge Placement"}
+                    product={`+ Upcharge Placement`}
                   />
                 )}
               </>
@@ -488,7 +491,7 @@ export const MyDoc = ({
             {/* Ersteller Info */}
             <View
               style={tw(
-                "flex flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200"
+                "flex flex-row justify-between items-end mt-8 pt-4 border-t border-gray-200",
               )}
             >
               {contact.length && contactEmail.length && (

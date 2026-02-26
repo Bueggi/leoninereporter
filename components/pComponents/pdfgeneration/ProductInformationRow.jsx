@@ -18,7 +18,7 @@ const ProductInformationRow = ({ productMetrics, product }) => {
     text = product;
     tkp = numberToEUR(productMetrics.tkp);
     reach = productMetrics.reach;
-    budget = numberToEUR(productMetrics.reach * productMetrics.tkp / 1000);
+    budget = numberToEUR((productMetrics.reach * productMetrics.tkp) / 1000);
   } else {
     text = filteredAdNameList[0].displayName;
     tkp = productMetrics[product].tkp;
@@ -26,11 +26,17 @@ const ProductInformationRow = ({ productMetrics, product }) => {
     budget = productMetrics[product].budget;
   }
 
+  // Label in Klammern anhängen wenn vorhanden (z.B. "weiblich", "CTV only")
+  const displayText =
+    productMetrics.label && productMetrics.label.length > 0
+      ? `${text} (${productMetrics.label})`
+      : text;
+
   return (
     <FliessText>
       <View style={tw("flex flex-row")}>
         <View style={tw("flex-1 flex flex-row items-center gap-3")}>
-          <Text>{text}</Text>
+          <Text>{displayText}</Text>
         </View>
         <Text style={tw("w-20 text-right")}>{tkp}</Text>
         <Text style={tw("w-24 text-right")}>

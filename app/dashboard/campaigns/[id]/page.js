@@ -28,29 +28,21 @@ import {
 import EditCampaign from "@components/dashboard/campaign/EditCampaign";
 import { useSession } from "next-auth/react";
 
-// --- ÄNDERUNG START ---
 import dynamic from "next/dynamic";
 
-// Wir importieren den Button dynamisch und schalten SSR aus.
-// Das verhindert, dass der Server Assets für das PDF laden muss.
 const DownloadPDFButton = dynamic(
   () => import("@components/dashboard/campaign/DownloadPDF"),
   {
     ssr: false,
     loading: () => (
-      // Optional: Ein Platzhalter-Button, während das Modul lädt
-      <button className="rounded bg-gray-200 px-2 py-1 text-sm font-semibold text-gray-400 cursor-wait">
+      <button className="rounded bg-white/20 px-2 py-1 text-sm font-semibold text-white cursor-wait">
         PDF Modul...
       </button>
     ),
   }
 );
-// --- ÄNDERUNG ENDE ---
 
 export default function Campaigns({ params: { id } }) {
-  // State für dieses Component:
-  // 1. Der campaign, den wir bearbeiten wollen / dessen Informationen wir einsehen wollen
-
   const [campaign, setcampaign] = useState({});
   const [loading, setLoading] = useState(true);
   const [addOfferModalOpen, setAddOfferModalOpen] = useState(false);
@@ -60,30 +52,23 @@ export default function Campaigns({ params: { id } }) {
   const [offerToEdit, setOfferToEdit] = useState();
   const [addBookingModal, setAddBookingModal] = useState(false);
   const [offerArray, setOfferArray] = useState([]);
-  // get the userSession
+
   const { status, data: session } = useSession({
     required: true,
-    onUnauthenticated() {
-      // The user is not authenticated, handle it here.
-    },
+    onUnauthenticated() {},
   });
-
-  // Beim Mount des Components wird der campaign aus der Datenbank geladen
 
   useEffect(() => {
     if (session !== "loading") getcampaign(id, setcampaign, setLoading);
   }, [id, session]);
 
-  // Solange die Kampagne geladen wird, zeige einen Loading State
   if (loading) return <LoadingSpinner />;
   if (!campaign) return notFound();
 
-  // finde die richtige Farbe fuer den Badge
   const color = publishingOptions.find((el) => el.title === campaign.status);
 
   return (
     <div>
-      {/* Das Modal, um Inhalte hinzuzufügen */}
       {addOfferModalOpen && (
         <Modal open={addOfferModalOpen} setOpen={setAddOfferModalOpen}>
           <AddOffer
@@ -103,7 +88,6 @@ export default function Campaigns({ params: { id } }) {
           />
         </Modal>
       )}
-      {/* Das Modal, das die Offers bearbeitet */}
       {editOfferModal && (
         <Modal open={editOfferModal} setOpen={setEditOfferModal}>
           <EditOffer
@@ -114,7 +98,6 @@ export default function Campaigns({ params: { id } }) {
           />
         </Modal>
       )}
-      {/* Das Modal, das die Bookings erstellt */}
       {addBookingModal && (
         <Modal open={addBookingModal} setOpen={setAddBookingModal}>
           <AddBooking
@@ -141,7 +124,7 @@ export default function Campaigns({ params: { id } }) {
       <DescriptionList campaign={campaign} />
 
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-4 items-center">
           Angebotsgruppen
           <button
             type="button"
@@ -164,48 +147,48 @@ export default function Campaigns({ params: { id } }) {
             campaign.offers.map((el, i) => {
               return (
                 <div
-                  className="relative border border-slate-400 px-4 py-2 rounded-md bg-slate-100"
+                  className="border border-slate-400 rounded-md bg-slate-100 overflow-hidden"
                   key={i}
                 >
-                  <div className=" absolute inset-x-0 top-0 h-12 bg-slate-400 mb-12">
-                    <div className="flex flex-row justify-around mt-2">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          deleteOfferGroup(el.id, campaign, setcampaign)
-                        }
-                        className="rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                      >
-                        Angebotsgruppe löschen
-                      </button>
-                      <button
-                        onClick={() => {
-                          setChosenOfferGroupID(el.id);
-                          setAddOfferModalOpen(true);
-                        }}
-                        type="button"
-                        className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                      >
-                        Neus Angebot
-                      </button>
+                  {/* Card Header – kein absolute positioning mehr, normaler flow */}
+                  <div className="flex flex-row justify-around items-center bg-slate-400 px-3 py-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        deleteOfferGroup(el.id, campaign, setcampaign)
+                      }
+                      className="rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 whitespace-nowrap"
+                    >
+                      Angebotsgruppe löschen
+                    </button>
+                    <button
+                      onClick={() => {
+                        setChosenOfferGroupID(el.id);
+                        setAddOfferModalOpen(true);
+                      }}
+                      type="button"
+                      className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 whitespace-nowrap"
+                    >
+                      Neus Angebot
+                    </button>
 
-                      {status !== "loading" && (
-                        /* Der Button wird jetzt client-side geladen */
-                        <DownloadPDFButton
-                          offer={el}
-                          campaignName={campaign.name}
-                          advertiser={campaign.advertiser}
-                          contact={campaign.contact}
-                          contactEmail={campaign.contactEmail}
-                          user={session.user.name}
-                          userEmail={session.user.email}
-                          anrede={campaign.anrede}
-                          trade={campaign.trade}
-                        />
-                      )}
-                    </div>
+                    {status !== "loading" && (
+                      <DownloadPDFButton
+                        offer={el}
+                        campaignName={campaign.name}
+                        advertiser={campaign.advertiser}
+                        contact={campaign.contact}
+                        contactEmail={campaign.contactEmail}
+                        user={session.user.name}
+                        userEmail={session.user.email}
+                        anrede={campaign.anrede}
+                        trade={campaign.trade}
+                      />
+                    )}
                   </div>
-                  <div className="mt-12">
+
+                  {/* Card Body */}
+                  <div className="px-4 py-3">
                     {el.offers.length > 0 &&
                       el.offers.map((el, i) => (
                         <OfferDisplay
@@ -227,7 +210,9 @@ export default function Campaigns({ params: { id } }) {
                       />
                     )}
                   </div>
-                  <div>
+
+                  {/* Card Footer */}
+                  <div className="px-4 pb-3">
                     <EditIndividualOfferNumber
                       initialNumber={el.individualOfferNumber}
                       initialUseIndividual={el.usesIndividualOfferNumber}
@@ -245,8 +230,9 @@ export default function Campaigns({ params: { id } }) {
           )}
         </div>
       </div>
+
       <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-4 items-center">
           Bookings
           <button
             type="button"
@@ -261,11 +247,9 @@ export default function Campaigns({ params: { id } }) {
       </div>
 
       <div>
-        {/* Wenn es keine Buchungen gibt, soll ein Empty State angezeigt werden */}
         {(!campaign.bookings || !campaign.bookings.length) && (
           <EmptyState title={"Es wurden noch keine Buchungen angelegt"} />
         )}
-        {/* Wenn es Buchungen gibt, werden diese in der Tabelle angezeigt */}
         {campaign.bookings && !!campaign.bookings.length && (
           <TableView
             data={campaign.bookings}
@@ -285,6 +269,7 @@ export default function Campaigns({ params: { id } }) {
           />
         )}
       </div>
+
       <div id="pdFID">
         {offerArray.map((el) => {
           return el;
