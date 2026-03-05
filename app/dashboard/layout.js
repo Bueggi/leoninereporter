@@ -47,7 +47,7 @@ const campaigns = [
   {
     id: 4,
     name: "Kampagnen Reports",
-    href: "/dashboard/reporter",
+    href: "/dashboard/reports",
     initial: "R",
     current: false,
   },

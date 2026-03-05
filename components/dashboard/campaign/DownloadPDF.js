@@ -53,17 +53,14 @@ const DownloadPDFButton = ({
   anrede,
   trade,
 }) => {
-  // State für den Lade-Spinner/Text
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleDownload = async () => {
     try {
       setIsGenerating(true);
 
-      // 2. Dateiname definieren
       const fileName = `HoT_Angebot_${offer.offernumber}-${campaignName}.pdf`;
 
-      // 3. Das Dokument "Lazy" erstellen
       const doc = (
         <MyDoc
           campaignName={campaignName}
@@ -78,10 +75,8 @@ const DownloadPDFButton = ({
         />
       );
 
-      // 4. Blob generieren (Hier werden erst die Daten gezogen!)
       const blob = await pdf(doc).toBlob();
 
-      // 5. Download im Browser auslösen (Vanilla JS Weg)
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -89,7 +84,6 @@ const DownloadPDFButton = ({
       document.body.appendChild(link);
       link.click();
 
-      // Aufräumen
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -101,18 +95,97 @@ const DownloadPDFButton = ({
   };
 
   return (
-    <button
-      onClick={handleDownload}
-      disabled={isGenerating}
-      className={tw(
-        "inline-flex items-center gap-x-1.5 rounded-full bg-black px-6 py-3 text-sm font-bold text-white shadow-2xl hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
-      )}
-    >
-      {isGenerating ? "Generiere PDF..." : "Download PDF"}
-    </button>
+    <>
+      <style>{`
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        .pdf-btn {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 14px 6px 8px;
+          border-radius: 10px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: white;
+          border: 1px solid rgba(255,255,255,0.15);
+          background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+          cursor: pointer;
+          overflow: hidden;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .pdf-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.07) 50%, transparent 60%);
+          background-size: 200% 100%;
+          animation: shimmer 3s infinite;
+        }
+        .pdf-btn:hover:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+          background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+        .pdf-btn:active:not(:disabled) {
+          transform: translateY(0px);
+        }
+        .pdf-btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+        .pdf-btn-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 22px;
+          height: 22px;
+          border-radius: 6px;
+          background: rgba(239, 68, 68, 0.9);
+          box-shadow: 0 1px 4px rgba(239,68,68,0.4);
+          flex-shrink: 0;
+        }
+        .pdf-btn-icon svg {
+          width: 12px;
+          height: 12px;
+        }
+        .spin {
+          animation: spin-slow 1s linear infinite;
+        }
+      `}</style>
+
+      <button
+        onClick={handleDownload}
+        disabled={isGenerating}
+        className="pdf-btn"
+      >
+        <span className="pdf-btn-icon">
+          {isGenerating ? (
+            <svg className="spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round"/>
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="white">
+              <path d="M12 16l-5-5h3V4h4v7h3l-5 5z"/>
+              <path d="M5 18h14v2H5z"/>
+            </svg>
+          )}
+        </span>
+        <span>{isGenerating ? "Generiere…" : "PDF"}</span>
+      </button>
+    </>
   );
 };
-
 export default DownloadPDFButton;
 
 // --- DEINE URSPRÜNGLICHE DOKUMENT-STRUKTUR (Unverändert) ---
@@ -262,12 +335,11 @@ export const MyDoc = ({
                     "rotation",
                     "age",
                     "targeting",
-                    "plz",
-                    "platform",
                   ].map((el, i) => {
                     const title = {
                       product: "Product",
                       frequencyCap: "Frequency Cap",
+                      rotation: "Rotation",
                       age: "Age-Targeting",
                       targeting: "Gender",
                     };
@@ -318,12 +390,13 @@ export const MyDoc = ({
                     </TableRightSide>
                   </View>
 
-                  {["platform", "plz", "placement"].map((el, i) => {
+                  {["plz", "placement",
+                    "platform",].map((el, i) => {
                     const title = {
-                      rotation: "Rotation",
                       platform: "Plattform",
                       plz: "Geographie",
                       placement: "Placement",
+
                     };
 
                     const reducedResult = reduceInformationFromOffersToString(

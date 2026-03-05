@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 import EmptyState from "@components/pComponents/EmptyState";
 import EditIndividualOfferNumber from "../../../../components/dashboard/campaign/pComponents/EditIndividualOfferNumber";
 
@@ -21,10 +21,7 @@ import EditOffer from "@components/dashboard/campaign/offer/EditOffer";
 import AddBooking from "@components/dashboard/campaign/booking/AddBooking";
 import TableView from "@components/dashboard/campaign/booking/TableView";
 import DescriptionList from "@components/dashboard/campaign/DescriptionList";
-import {
-  CheckCircleIcon,
-  InformationCircleIcon,
-} from "@heroicons/react/20/solid";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import EditCampaign from "@components/dashboard/campaign/EditCampaign";
 import { useSession } from "next-auth/react";
 
@@ -35,8 +32,9 @@ const DownloadPDFButton = dynamic(
   {
     ssr: false,
     loading: () => (
-      <button className="rounded bg-white/20 px-2 py-1 text-sm font-semibold text-white cursor-wait">
-        PDF Modul...
+      <button className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold text-white cursor-wait">
+        <DocumentArrowDownIcon className="h-3.5 w-3.5" />
+        PDF...
       </button>
     ),
   }
@@ -68,7 +66,8 @@ export default function Campaigns({ params: { id } }) {
   const color = publishingOptions.find((el) => el.title === campaign.status);
 
   return (
-    <div>
+    <div className="space-y-10">
+      {/* Modals */}
       {addOfferModalOpen && (
         <Modal open={addOfferModalOpen} setOpen={setAddOfferModalOpen}>
           <AddOffer
@@ -109,67 +108,69 @@ export default function Campaigns({ params: { id } }) {
         </Modal>
       )}
 
-      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight flex justify-between mb-12">
-        <div>{campaign.name}</div>
+      {/* Page Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">
+            Kampagne
+          </p>
+          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl sm:tracking-tight">
+            {campaign.name}
+          </h2>
+        </div>
         <button
           type="button"
           onClick={() => setEditCampaignModalOpen(true)}
-          className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="inline-flex items-center gap-x-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           <CheckCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
           Kampagne bearbeiten
         </button>
-      </h2>
+      </div>
 
       <DescriptionList campaign={campaign} />
 
-      <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
-        <div className="flex flex-row gap-4 items-center">
-          Angebotsgruppen
+      {/* Angebotsgruppen Section */}
+      <div>
+        <div className="flex items-center gap-3 mb-1">
+          <h3 className="text-lg font-bold text-gray-900">Angebotsgruppen</h3>
           <button
             type="button"
             onClick={() => addOfferGroup(campaign.id, campaign, setcampaign)}
-            className="rounded-full bg-indigo-600 p-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-full bg-indigo-600 p-1.5 text-white shadow-sm hover:bg-indigo-500 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+            <PlusIcon className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
-        <div className="text-base font-semibold leading-7 text-indigo-600">
+        <p className="text-sm text-indigo-600 font-medium mb-6">
           Jede Angebotsgruppe ist ein separates Angebot an den Kunden. Sollten
           also zwei verschiedene Angebote mit unterschiedlichen Konfigurationen
           an den Kunden rausgehen, werden mehrere Angebotsgruppen benötigt.
-        </div>
-      </div>
+        </p>
 
-      <div className="mt-8">
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-6">
           {campaign.offers && campaign.offers.length ? (
-            campaign.offers.map((el, i) => {
-              return (
-                <div
-                  className="border border-slate-400 rounded-md bg-slate-100 overflow-hidden"
-                  key={i}
-                >
-                  {/* Card Header – kein absolute positioning mehr, normaler flow */}
-                  <div className="flex flex-row justify-around items-center bg-slate-400 px-3 py-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        deleteOfferGroup(el.id, campaign, setcampaign)
-                      }
-                      className="rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 whitespace-nowrap"
-                    >
-                      Angebotsgruppe löschen
-                    </button>
+            campaign.offers.map((el, i) => (
+              <div
+                key={i}
+                className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden transition-shadow duration-200 hover:shadow-md"
+              >
+                {/* Group Header */}
+                <div className="flex items-center justify-between bg-slate-800 px-4 py-3 gap-2">
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    Gruppe {i + 1}
+                  </span>
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
                         setChosenOfferGroupID(el.id);
                         setAddOfferModalOpen(true);
                       }}
                       type="button"
-                      className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 whitespace-nowrap"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400 transition-colors duration-150"
                     >
-                      Neus Angebot
+                      <PlusIcon className="h-3.5 w-3.5" />
+                      Angebot
                     </button>
 
                     {status !== "loading" && (
@@ -185,72 +186,73 @@ export default function Campaigns({ params: { id } }) {
                         trade={campaign.trade}
                       />
                     )}
-                  </div>
 
-                  {/* Card Body */}
-                  <div className="px-4 py-3">
-                    {el.offers.length > 0 &&
-                      el.offers.map((el, i) => (
-                        <OfferDisplay
-                          el={el}
-                          i={i}
-                          key={i}
-                          setOfferToEdit={setOfferToEdit}
-                          deleteOffer={deleteOffer}
-                          setEditOfferModal={setEditOfferModal}
-                          campaign={campaign}
-                          setCampaign={setcampaign}
-                        />
-                      ))}
-                    {!el.offers.length && (
-                      <EmptyState
-                        title={
-                          "Es wurden noch keine Angebote in dieser Gruppe angelegt"
-                        }
-                      />
-                    )}
-                  </div>
-
-                  {/* Card Footer */}
-                  <div className="px-4 pb-3">
-                    <EditIndividualOfferNumber
-                      initialNumber={el.individualOfferNumber}
-                      initialUseIndividual={el.usesIndividualOfferNumber}
-                      element={el}
-                      offerGroupId={el.id}
-                      setCampaign={setcampaign}
-                      campaign={campaign}
-                    />
+                    <button
+                      type="button"
+                      onClick={() => deleteOfferGroup(el.id, campaign, setcampaign)}
+                      className="rounded-lg bg-white/10 p-1.5 text-slate-300 hover:bg-red-500 hover:text-white transition-colors duration-150"
+                      title="Angebotsgruppe löschen"
+                    >
+                      <TrashIcon className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
-              );
-            })
+
+                {/* Offers */}
+                <div className="flex-1 px-3 py-3 bg-slate-50">
+                  {el.offers.length > 0 ? (
+                    el.offers.map((offer, j) => (
+                      <OfferDisplay
+                        el={offer}
+                        i={j}
+                        key={j}
+                        setOfferToEdit={setOfferToEdit}
+                        deleteOffer={deleteOffer}
+                        setEditOfferModal={setEditOfferModal}
+                        campaign={campaign}
+                        setCampaign={setcampaign}
+                      />
+                    ))
+                  ) : (
+                    <EmptyState title="Es wurden noch keine Angebote in dieser Gruppe angelegt" />
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="border-t border-slate-100 px-4 py-3 bg-white">
+                  <EditIndividualOfferNumber
+                    initialNumber={el.individualOfferNumber}
+                    initialUseIndividual={el.usesIndividualOfferNumber}
+                    element={el}
+                    offerGroupId={el.id}
+                    setCampaign={setcampaign}
+                    campaign={campaign}
+                  />
+                </div>
+              </div>
+            ))
           ) : (
-            <EmptyState title={"Es wurden noch keine Offers angelegt"} />
+            <EmptyState title="Es wurden noch keine Offers angelegt" />
           )}
         </div>
       </div>
 
-      <div className="text-xl font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight mt-12">
-        <div className="flex flex-row gap-4 items-center">
-          Bookings
+      {/* Bookings Section */}
+      <div>
+        <div className="flex items-center gap-3 mb-6">
+          <h3 className="text-lg font-bold text-gray-900">Bookings</h3>
           <button
             type="button"
-            onClick={() => {
-              setAddBookingModal(true);
-            }}
-            className="rounded-full bg-indigo-600 p-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => setAddBookingModal(true)}
+            className="rounded-full bg-indigo-600 p-1.5 text-white shadow-sm hover:bg-indigo-500 transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+            <PlusIcon className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
-      </div>
 
-      <div>
-        {(!campaign.bookings || !campaign.bookings.length) && (
-          <EmptyState title={"Es wurden noch keine Buchungen angelegt"} />
-        )}
-        {campaign.bookings && !!campaign.bookings.length && (
+        {!campaign.bookings || !campaign.bookings.length ? (
+          <EmptyState title="Es wurden noch keine Buchungen angelegt" />
+        ) : (
           <TableView
             data={campaign.bookings}
             keys={[
@@ -271,9 +273,7 @@ export default function Campaigns({ params: { id } }) {
       </div>
 
       <div id="pdFID">
-        {offerArray.map((el) => {
-          return el;
-        })}
+        {offerArray.map((el) => el)}
       </div>
     </div>
   );
