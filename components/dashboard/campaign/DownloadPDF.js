@@ -443,7 +443,7 @@ export const MyDoc = ({
                     "w-20 text-right text-[8px] uppercase tracking-wider",
                   )}
                 >
-                  TKP (net)
+                  {offer.pricingModel === "CPCV" ? "CPCV (net)" : "TKP (net)"}
                 </Text>
                 <Text
                   style={tw(

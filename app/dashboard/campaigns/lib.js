@@ -23,9 +23,12 @@ const getInitialData = async (
     );
     const { data, count, message } = await res.json();
 
+    const advRes = await fetch(`${process.env.NEXT_PUBLIC_HOSTURL}/api/campaign/advertisers`, { cache: 'no-store' });
+    const { data: advertiserData } = await advRes.json();
+
     if (data) {
       //set all Campaigns, add the count to display the pagination component correctly and stop the loading spinner
-      setAllCampaigns({ data, mode: "page" });
+      setAllCampaigns({ data, mode: "page", advertisers: advertiserData });
       setCount(count);
       setLoading(false);
       return;

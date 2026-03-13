@@ -70,10 +70,17 @@ export default function ReportParser() {
             acc[key].totalRevenue += row["Total CPM and CPC revenue"] || 0;
             acc[key].totalClicks += row["Total clicks"] || 0;
             acc[key].completes += row["Completes"] || 0;
-            acc[key].reachByDate.push({
-              date: row["Date"],
-              reach: row["Total impressions"] || 0,
-            });
+
+            const existingDate = acc[key].reachByDate.find((d) => d.date === row["Date"]);
+            if (existingDate) {
+              existingDate.reach += row["Total impressions"] || 0;
+            } else {
+              acc[key].reachByDate.push({
+                date: row["Date"],
+                reach: row["Total impressions"] || 0,
+              });
+            }
+
             return acc;
           }, {});
         };

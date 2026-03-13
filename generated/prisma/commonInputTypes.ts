@@ -304,6 +304,13 @@ export type IntFilter<$PrismaModel = never> = {
   not?: Prisma.NestedIntFilter<$PrismaModel> | number
 }
 
+export type EnumPRICING_MODELFilter<$PrismaModel = never> = {
+  equals?: $Enums.PRICING_MODEL | Prisma.EnumPRICING_MODELFieldRefInput<$PrismaModel>
+  in?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPRICING_MODELFilter<$PrismaModel> | $Enums.PRICING_MODEL
+}
+
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -318,6 +325,16 @@ export type IntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedIntFilter<$PrismaModel>
   _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type EnumPRICING_MODELWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PRICING_MODEL | Prisma.EnumPRICING_MODELFieldRefInput<$PrismaModel>
+  in?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPRICING_MODELWithAggregatesFilter<$PrismaModel> | $Enums.PRICING_MODEL
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPRICING_MODELFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPRICING_MODELFilter<$PrismaModel>
 }
 
 export type EnumAnbindungFilter<$PrismaModel = never> = {
@@ -669,6 +686,13 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
 }
 
+export type NestedEnumPRICING_MODELFilter<$PrismaModel = never> = {
+  equals?: $Enums.PRICING_MODEL | Prisma.EnumPRICING_MODELFieldRefInput<$PrismaModel>
+  in?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPRICING_MODELFilter<$PrismaModel> | $Enums.PRICING_MODEL
+}
+
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -683,6 +707,16 @@ export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedIntFilter<$PrismaModel>
   _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type NestedEnumPRICING_MODELWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PRICING_MODEL | Prisma.EnumPRICING_MODELFieldRefInput<$PrismaModel>
+  in?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PRICING_MODEL[] | Prisma.ListEnumPRICING_MODELFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPRICING_MODELWithAggregatesFilter<$PrismaModel> | $Enums.PRICING_MODEL
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPRICING_MODELFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPRICING_MODELFilter<$PrismaModel>
 }
 
 export type NestedEnumAnbindungFilter<$PrismaModel = never> = {

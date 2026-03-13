@@ -34,6 +34,12 @@ export async function GET(req) { // 'res' gibt es im App Router nicht mehr
             tkp: true,
           },
         },
+        offers: {
+            include: {
+                offers: true
+            }
+        },
+        advertiser: true
       },
     });
 

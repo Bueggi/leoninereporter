@@ -223,6 +223,7 @@ export default function Campaigns({ params: { id } }) {
                   <EditIndividualOfferNumber
                     initialNumber={el.individualOfferNumber}
                     initialUseIndividual={el.usesIndividualOfferNumber}
+                    initialPricingModel={el.pricingModel}
                     element={el}
                     offerGroupId={el.id}
                     setCampaign={setcampaign}

@@ -1291,7 +1291,8 @@ export const OfferGroupScalarFieldEnum = {
   offernumber: 'offernumber',
   campaignID: 'campaignID',
   individualOfferNumber: 'individualOfferNumber',
-  usesIndividualOfferNumber: 'usesIndividualOfferNumber'
+  usesIndividualOfferNumber: 'usesIndividualOfferNumber',
+  pricingModel: 'pricingModel'
 } as const
 
 export type OfferGroupScalarFieldEnum = (typeof OfferGroupScalarFieldEnum)[keyof typeof OfferGroupScalarFieldEnum]
@@ -1524,6 +1525,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PRICING_MODEL'
+ */
+export type EnumPRICING_MODELFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PRICING_MODEL'>
+    
+
+
+/**
+ * Reference to a field of type 'PRICING_MODEL[]'
+ */
+export type ListEnumPRICING_MODELFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PRICING_MODEL[]'>
     
 
 

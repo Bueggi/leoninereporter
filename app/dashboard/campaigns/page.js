@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -30,12 +30,84 @@ const ListedCampaignsContent = () => {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
 
+  // State für Budget Filter
+  const [budgetFilter, setBudgetFilter] = useState("all");
+  const [advertiserFilter, setAdvertiserFilter] = useState("all");
+
   const searchParams = useSearchParams();
-  const activePage = searchParams.get("page") || 1; // State für activePage ist oft redundant, wenn es aus der URL kommt
+  const activePage = searchParams.get("page") || 1; 
 
   useEffect(() => {
     getInitialData(setLoading, activePage, setAllCampaigns, setCount);
   }, [activePage]);
+
+  // Advertiser Name Helper
+  const getAdvertiserName = (item) => {
+    return item.advertiser?.name || "Kein Advertiser";
+  };
+
+  const uniqueAdvertisers = allCampaigns?.advertisers || [];
+
+  // Budget Berechnung & Filterung
+  const calculateBudget = (item) => {
+    let totalBudget = 0;
+    // Wenn Angebote da sind, nimm diese (Priorität)
+    if (item.offers && item.offers.length > 0) {
+      item.offers.forEach(group => {
+        if (group.offers && group.offers.length > 0) {
+          group.offers.forEach(offer => {
+              const reach = offer.reach || 0;
+              const tkp = offer.tkp || 0;
+              totalBudget += (reach * tkp) / 1000;
+              // Add upcharge if it's applied on TKP basis
+              if (offer.upchargeTKP) {
+                 totalBudget += (reach * offer.upchargeTKP) / 1000;
+              }
+              // Add flat upcharge
+              if (offer.upcharge) {
+                 totalBudget += offer.upcharge;
+              }
+          });
+        }
+      });
+    } else if (item.bookings && item.bookings.length > 0) {
+      // Fallback auf Bookings
+      item.bookings.forEach(b => {
+          const reach = b.reach || 0;
+          const tkp = b.tkp || 0;
+          totalBudget += (reach * tkp) / 1000;
+      });
+    }
+    return totalBudget;
+  };
+
+  const getFilteredCampaigns = () => {
+    if (!allCampaigns?.data) return [];
+    
+    return allCampaigns.data.filter(campaign => {
+      // 1. Budget Filter
+      let passBudget = true;
+      if (budgetFilter !== "all") {
+        const budget = calculateBudget(campaign);
+        switch(budgetFilter) {
+          case "<10k": passBudget = budget < 10000; break;
+          case "10k-50k": passBudget = budget >= 10000 && budget <= 50000; break;
+          case ">50k": passBudget = budget > 50000; break;
+          default: passBudget = true; break;
+        }
+      }
+      
+      // 2. Advertiser Filter
+      let passAdvertiser = true;
+      if (advertiserFilter !== "all") {
+        passAdvertiser = getAdvertiserName(campaign) === advertiserFilter;
+      }
+      
+      return passBudget && passAdvertiser;
+    });
+  };
+
+  const filteredCampaigns = getFilteredCampaigns();
 
   return (
     <>
@@ -75,135 +147,174 @@ const ListedCampaignsContent = () => {
             <button
               type="button"
               onClick={() => setAddModalOpen(true)}
-              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="block rounded-lg bg-indigo-600 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Add campaign
             </button>
           </div>
         </div>
 
-        <div className="mt-8 flow-root">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="mt-8">
             {loading && <LoadingSpinner />}
             
             {!loading && (
-              <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                <div className="max-w-md mb-12">
-                  <Searchbar
-                    model="campaign"
-                    setAllResults={setAllCampaigns}
-                    setLoading={setLoading}
-                  />
+              <div className="min-w-full pb-12">
+                {/* Search & Filters */}
+                <div className="flex flex-col sm:flex-row gap-4 mb-8 items-end">
+                  <div className="w-full sm:max-w-md">
+                    <Searchbar
+                      model="campaign"
+                      setAllResults={setAllCampaigns}
+                      setLoading={setLoading}
+                    />
+                  </div>
+                  
+                  {/* Budget Filter */}
+                  <div className="w-full sm:w-48">
+                    <label htmlFor="budget-filter" className="block text-sm font-medium leading-6 text-gray-900">
+                      Angebots-Budget
+                    </label>
+                    <select
+                      id="budget-filter"
+                      value={budgetFilter}
+                      onChange={(e) => setBudgetFilter(e.target.value)}
+                      className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
+                      <option value="all">Alle Budgets</option>
+                      <option value="<10k">Unter 10.000 €</option>
+                      <option value="10k-50k">10.000 € - 50.000 €</option>
+                      <option value=">50k">Über 50.000 €</option>
+                    </select>
+                  </div>
+
+                  {/* Advertiser Filter */}
+                  <div className="w-full sm:w-64">
+                    <label htmlFor="advertiser-filter" className="block text-sm font-medium leading-6 text-gray-900">
+                      Advertiser
+                    </label>
+                    <select
+                      id="advertiser-filter"
+                      value={advertiserFilter}
+                      onChange={(e) => setAdvertiserFilter(e.target.value)}
+                      className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
+                      <option value="all">Alle Advertiser</option>
+                      {uniqueAdvertisers.map((adv, idx) => (
+                        <option key={idx} value={adv}>{adv}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-7 sm:rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-300 drop-shadow-2xl">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        {/* Header Column Helper Component wäre hier cool um Redundanz zu sparen */}
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Erstellt am</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Status</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Budget</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Start</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Ende</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Advertiser</th>
-                        <th scope="col" className="py-3.5 pl-4 pr-3 text-right text-sm font-semibold text-gray-900 sm:pl-6">Bearbeiten</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {/* Optional chaining (?.) schützt vor Crash, falls data undefined ist */}
-                      {allCampaigns?.data?.map((item) => (
-                        <tr key={item.id} className="even:bg-white odd:bg-slate-200">
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {/* FIX: Env Variable entfernt */}
-                            <Link href={`/dashboard/campaigns/${item.id}`}>
-                              {item.name}
-                            </Link>
-                          </td>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {moment(item.createdAt).format("LL")}
-                          </td>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            <div className="flex flex-row align-middle items-center">
-                              {/* FIX: 'class' zu 'className' geändert */}
-                              <span
-                                className={`flex w-3 h-3 me-3 ${getColor("bg", item.status, 700)} rounded-full`}
-                              ></span>
-                              {item.status}
-                            </div>
-                          </td>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {item.budget ? item.budget : "-"}
-                          </td>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            <div className="flex flex-col">
-                              {returnStartDate(item)}
-                              <span className="font-light text-xs">
-                                {returnStartDate(item) ? calculateDate(returnStartDate(item)) : "-"}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            <div className="flex flex-col">
-                              {returnEndDate(item)}
-                              <span className="font-light text-xs">
-                                {returnEndDate(item) ? calculateDate(returnEndDate(item)) : "-"}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {item.advertiser}
-                          </td>
-                          <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                            
-                            {/* FIX: Button im Link entfernt. Nur Link benutzen. */}
-                            <Link
-                              href={`/dashboard/campaigns/${item.id}`}
-                              className="inline-block rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mr-4"
-                            >
-                                <PencilIcon className="h-5 w-5" aria-hidden="true" />
-                                <span className="sr-only">, {item.name}</span>
-                            </Link>
+                {/* Modern List Layout */}
+                {filteredCampaigns.length > 0 ? (
+                  <div className="flex flex-col gap-3">
+                    {filteredCampaigns.map((item) => {
+                      const budget = calculateBudget(item);
+                      const displayBudget = budget > 0 
+                        ? new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(budget)
+                        : (item.budget ? item.budget : "-");
 
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setIdToDelete(item.id);
-                                setDeleteModalOpen(true);
-                              }}
-                              className="inline-block rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                              <TrashIcon className="h-5 w-5" aria-hidden="true" />
-                              <span className="sr-only">, {item.name}</span>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      return (
+                        <div key={item.id} className="group flex flex-col md:flex-row md:items-center justify-between rounded-xl bg-white border-2 border-slate-300 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:shadow-indigo-500/10 hover:border-indigo-400 p-4 sm:p-5 gap-4 sm:gap-6">
+                          
+                          {/* Left: Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-1.5">
+                              <Link href={`/dashboard/campaigns/${item.id}`} className="truncate block">
+                                <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-none hover:text-indigo-600 transition-colors truncate">{item.name}</h3>
+                              </Link>
+                              <span
+                                className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide uppercase ring-1 ring-inset ${getColor("text", item.status, 700)} ${getColor("bg", item.status, 50)} ${getColor("ring", item.status, 200)}`}
+                              >
+                                <span className={`mr-1.5 h-1.5 w-1.5 rounded-full ${getColor("bg", item.status, 500)}`} aria-hidden="true" />
+                                {item.status}
+                              </span>
+                            </div>
+                            <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest truncate">
+                              {getAdvertiserName(item)}
+                            </p>
+                          </div>
+
+                          {/* Middle: Dates */}
+                          <div className="flex items-center gap-6 shrink-0 md:w-64 bg-slate-50 rounded-xl px-4 py-2 border border-slate-200/80 hidden sm:flex">
+                             <div>
+                                <p className="text-[9px] uppercase tracking-widest font-bold text-slate-500 mb-0.5 inline-flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Start
+                                </p>
+                                <p className="text-sm font-bold text-slate-900">{returnStartDate(item) || "-"}</p>
+                             </div>
+                             <div>
+                                <p className="text-[9px] uppercase tracking-widest font-bold text-slate-500 mb-0.5 inline-flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ende
+                                </p>
+                                <p className="text-sm font-bold text-slate-900">{returnEndDate(item) || "-"}</p>
+                             </div>
+                          </div>
+
+                          {/* Right: Budget & Actions */}
+                          <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 md:w-64">
+                            <div className="text-left md:text-right">
+                               <p className="text-[9px] uppercase tracking-widest font-bold text-slate-500 mb-0.5">Budget</p>
+                               <p className="text-xl sm:text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-950 to-indigo-700">
+                                  {displayBudget}
+                               </p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center gap-1 pt-2 sm:pt-0">
+                               <Link
+                                  href={`/dashboard/campaigns/${item.id}`}
+                                  className="text-slate-500 p-2.5 rounded-xl hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
+                                  title="Bearbeiten"
+                                >
+                                    <PencilIcon className="h-5 w-5" aria-hidden="true" />
+                                    <span className="sr-only">Bearbeiten</span>
+                                </Link>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setIdToDelete(item.id);
+                                    setDeleteModalOpen(true);
+                                  }}
+                                  className="text-slate-500 p-2.5 rounded-xl hover:bg-red-100 hover:text-red-600 transition-colors"
+                                  title="Löschen"
+                                >
+                                  <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                                  <span className="sr-only">Löschen</span>
+                                </button>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-white rounded-[24px] border border-slate-200 border-dashed">
+                     <p className="text-sm font-medium text-slate-500">Keine Kampagnen für diesen Filter gefunden.</p>
+                  </div>
+                )}
                 
                 {allCampaigns.mode !== "search" && (
-                    <Pagination
-                      count={count}
-                      activePage={activePage}
-                      // Pagination Komponente sollte idealerweise via URL navigieren, nicht via State
-                      // Da du aber activePage aus der URL liest, reicht hier ein Router push in der Komponente
-                      // oder du übergibst eine Funktion, die router.push macht.
-                    />
+                    <div className="mt-8">
+                      <Pagination
+                        count={count}
+                        activePage={activePage}
+                      />
+                    </div>
                 )}
               </div>
             )}
-          </div>
         </div>
       </div>
     </>
   );
 };
 
-// Wrapper Component für Suspense (sehr gut gelöst von dir!)
+// Wrapper Component für Suspense
 const ListedCampaigns = () => {
   return (
     <Suspense fallback={<LoadingSpinner />}>

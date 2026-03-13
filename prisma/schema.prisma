@@ -129,6 +129,12 @@ enum PRODUCT {
   CTV
 }
 
+enum PRICING_MODEL {
+  TKP
+
+  CPCV
+}
+
 enum STATUS {
   OFFER
 
@@ -192,8 +198,10 @@ model OfferGroup {
 
   offers Offer[]
 
-  individualOfferNumber     Int?
+  individualOfferNumber     String?
   usesIndividualOfferNumber Boolean?
+  
+  pricingModel PRICING_MODEL @default(TKP)
 }
 
 model Creator {

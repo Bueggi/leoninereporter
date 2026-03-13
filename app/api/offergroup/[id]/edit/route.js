@@ -9,12 +9,12 @@ const handler = async (request, { params }) => {
     console.log(id);
     // Daten aus dem Body holen
     const body = await request.json();
-    const { usesIndividualOfferNumber, individualOfferNumber } = body;
+    const { usesIndividualOfferNumber, individualOfferNumber, pricingModel } = body;
 
     // WICHTIG: Typ-Konvertierung für Prisma
     // Das Input-Feld liefert Strings, Prisma will Int oder null
-    const numberToSave = individualOfferNumber
-      ? parseInt(individualOfferNumber, 10)
+    const numberToSave = individualOfferNumber !== null && individualOfferNumber !== ""
+      ? individualOfferNumber
       : null;
 
     // Prisma Update Query
@@ -25,6 +25,7 @@ const handler = async (request, { params }) => {
       data: {
         usesIndividualOfferNumber: Boolean(usesIndividualOfferNumber),
         individualOfferNumber: numberToSave,
+        ...(pricingModel ? { pricingModel } : {}),
       },
     });
 

@@ -28,6 +28,14 @@ export const PRODUCT = {
 export type PRODUCT = (typeof PRODUCT)[keyof typeof PRODUCT]
 
 
+export const PRICING_MODEL = {
+  TKP: 'TKP',
+  CPCV: 'CPCV'
+} as const
+
+export type PRICING_MODEL = (typeof PRICING_MODEL)[keyof typeof PRICING_MODEL]
+
+
 export const STATUS = {
   OFFER: 'OFFER',
   SOLD: 'SOLD',
