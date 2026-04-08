@@ -19,22 +19,34 @@ const OfferDisplay = ({
   i,
   setEditOfferModal,
   setOfferToEdit,
+  setOfferToEditPricingModel,
   deleteOffer,
   campaign,
   setCampaign,
+  pricingModel = "TKP",
 }) => {
   const displayName =
     adFormatNames.filter((formats) => formats.name === el.product)[0]
       ?.displayName ?? el.product;
 
-  const summe = ((+el.tkp / 1000) * +el.reach).toLocaleString("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  });
+  const summe =
+    pricingModel === "CPCV"
+      ? (el.tkp * el.reach).toLocaleString("de-DE", {
+          style: "currency",
+          currency: "EUR",
+        })
+      : ((+el.tkp / 1000) * +el.reach).toLocaleString("de-DE", {
+          style: "currency",
+          currency: "EUR",
+        });
+
+  const tkpLabel = pricingModel === "CPCV" ? "CPCV" : "TKP";
 
   const tkp = el.tkp.toLocaleString("de-DE", {
     style: "currency",
     currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 10,
   });
 
   const reach = el.reach.toLocaleString("de-DE");
@@ -62,6 +74,7 @@ const OfferDisplay = ({
             type="button"
             onClick={() => {
               setOfferToEdit(el);
+              setOfferToEditPricingModel(pricingModel);
               setEditOfferModal(true);
             }}
             className="rounded-lg bg-white/10 p-1.5 text-white hover:bg-emerald-500 transition-colors duration-150"
@@ -90,7 +103,7 @@ const OfferDisplay = ({
         </div>
         <div className="flex flex-col items-center py-2.5 px-2">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-            TKP
+            {tkpLabel}
           </span>
           <span className="mt-0.5 text-sm font-bold text-slate-800">{tkp}</span>
         </div>

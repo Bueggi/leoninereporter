@@ -47,7 +47,9 @@ export default function Campaigns({ params: { id } }) {
   const [editCampaignModalOpen, setEditCampaignModalOpen] = useState(false);
   const [editOfferModal, setEditOfferModal] = useState(false);
   const [chosenOfferGroupID, setChosenOfferGroupID] = useState();
+  const [chosenPricingModel, setChosenPricingModel] = useState("TKP");
   const [offerToEdit, setOfferToEdit] = useState();
+  const [offerToEditPricingModel, setOfferToEditPricingModel] = useState("TKP");
   const [addBookingModal, setAddBookingModal] = useState(false);
   const [offerArray, setOfferArray] = useState([]);
 
@@ -73,6 +75,7 @@ export default function Campaigns({ params: { id } }) {
           <AddOffer
             setOpen={setAddOfferModalOpen}
             offerGroupID={chosenOfferGroupID}
+            pricingModel={chosenPricingModel}
             state={campaign}
             setState={setcampaign}
           />
@@ -92,6 +95,7 @@ export default function Campaigns({ params: { id } }) {
           <EditOffer
             setOpen={setEditOfferModal}
             initialOffer={offerToEdit}
+            pricingModel={offerToEditPricingModel}
             state={campaign}
             setState={setcampaign}
           />
@@ -164,6 +168,7 @@ export default function Campaigns({ params: { id } }) {
                     <button
                       onClick={() => {
                         setChosenOfferGroupID(el.id);
+                        setChosenPricingModel(el.pricingModel || "TKP");
                         setAddOfferModalOpen(true);
                       }}
                       type="button"
@@ -206,7 +211,9 @@ export default function Campaigns({ params: { id } }) {
                         el={offer}
                         i={j}
                         key={j}
+                        pricingModel={el.pricingModel || "TKP"}
                         setOfferToEdit={setOfferToEdit}
+                        setOfferToEditPricingModel={setOfferToEditPricingModel}
                         deleteOffer={deleteOffer}
                         setEditOfferModal={setEditOfferModal}
                         campaign={campaign}

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import FormSubHeading from "@components/pComponents/FormSubHeading";
 import adFormatNames from "@lib/dashboard/AdFormatNames";
 
-export default function EditOffer({ initialOffer, state, setState, setOpen }) {
+export default function EditOffer({ initialOffer, state, setState, setOpen, pricingModel = "TKP" }) {
   // Refs für Felder, die nicht von Checkboxen abhängig sind
   const startRef = useRef();
   const endRef = useRef();
@@ -206,18 +206,18 @@ export default function EditOffer({ initialOffer, state, setState, setOpen }) {
           />
         </div>
 
-        {/* TKP */}
+        {/* TKP / CPCV */}
         <div className="mt-2">
           <label
             htmlFor="tkp"
             className="block text-sm font-medium text-gray-900"
           >
-            TKP
+            {pricingModel === "CPCV" ? "CPCV" : "TKP"}
           </label>
           <input
             required
             type="number"
-            step={0.1}
+            step="any"
             ref={tkpRef}
             name="tkp"
             defaultValue={initialOffer.tkp}

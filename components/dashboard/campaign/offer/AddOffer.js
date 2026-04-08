@@ -4,7 +4,7 @@ import FormSubHeading from "@components/pComponents/FormSubHeading";
 import adFormatNames from "@lib/dashboard/AdFormatNames";
 import { inputClass } from "@lib/dashboard/helperFunctions";
 
-export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
+export default function AddOffer({ offerGroupID, state, setState, setOpen, pricingModel = "TKP" }) {
   // Bestehende Refs
   const startRef = useRef();
   const endRef = useRef();
@@ -189,12 +189,12 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen }) {
             htmlFor="tkp"
             className="block text-sm font-medium text-gray-900"
           >
-            TKP
+            {pricingModel === "CPCV" ? "CPCV" : "TKP"}
           </label>
           <input
             required
             type="number"
-            step={0.01}
+            step="any"
             ref={tkpRef}
             name="tkp"
             className="rounded-md border py-1.5 text-gray-900 shadow-sm 

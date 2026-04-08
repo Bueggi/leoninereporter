@@ -208,10 +208,14 @@ export const MyDoc = ({
   const gueltigkeitsDatum = moment().add(14, "days").format("DD.MM.YYYY");
   const zeitraum = calculateRuntime(offer);
 
+  const isCPCV = offer.pricingModel === "CPCV";
+
   const totalBudget = numberToEUR(
     offer.offers.reduce(
       (accumulator, currentValue) =>
-        accumulator + (currentValue.reach * currentValue.tkp) / 1000,
+        isCPCV
+          ? accumulator + currentValue.reach * currentValue.tkp
+          : accumulator + (currentValue.reach * currentValue.tkp) / 1000,
       0,
     ) + upchargeMetrics.totalCosts,
   );

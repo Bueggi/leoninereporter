@@ -1,7 +1,7 @@
 import { View, Text } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
 import adformatNames from "../../../lib/dashboard/AdFormatNames";
-import { FliessText } from "@lib/dashboard/pdfGeneration/helperFunctions";
+import { FliessText, numberToEURPrecise } from "@lib/dashboard/pdfGeneration/helperFunctions";
 import { numberToEUR } from "@lib/dashboard/pdfGeneration/helperFunctions";
 
 const ProductInformationRow = ({ productMetrics, product }) => {
@@ -16,7 +16,7 @@ const ProductInformationRow = ({ productMetrics, product }) => {
 
   if (filteredAdNameList.length === 0) {
     text = product;
-    tkp = numberToEUR(productMetrics.tkp);
+    tkp = numberToEURPrecise(productMetrics.tkp);
     reach = productMetrics.reach;
     budget = numberToEUR((productMetrics.reach * productMetrics.tkp) / 1000);
   } else {
