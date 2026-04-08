@@ -147,7 +147,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen, prici
           />
         </div>
 
-        <FormSubHeading>Basisinformationen</FormSubHeading>
+        <FormSubHeading>Basisinformationen - New Commit</FormSubHeading>
         <div className="mt-2">
           <label
             htmlFor="impressions"
