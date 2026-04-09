@@ -18,7 +18,7 @@ const ProductInformationRow = ({ productMetrics, product }) => {
     text = product;
     tkp = numberToEURPrecise(productMetrics.tkp);
     reach = productMetrics.reach;
-    budget = numberToEUR((productMetrics.reach * productMetrics.tkp) / 1000);
+    budget = numberToEUR(productMetrics.cost);
   } else {
     text = filteredAdNameList[0].displayName;
     tkp = productMetrics[product].tkp;
