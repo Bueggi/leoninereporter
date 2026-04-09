@@ -5,6 +5,11 @@
  */
 const calculateUpchargeInformation = (offerGroup) => {
   const allOffers = offerGroup.offers;
+  const isCPCV = offerGroup.pricingModel === "CPCV";
+
+  // Hilfsfunktion: Cost je nach Pricing-Modell berechnen
+  const calcCost = (upchargeTKP, reach) =>
+    isCPCV ? upchargeTKP * reach : (upchargeTKP * reach) / 1000;
 
   const totalUpchargeTKP = allOffers.reduce((sum, offer) => {
     let count = 0;
@@ -36,7 +41,7 @@ const calculateUpchargeInformation = (offerGroup) => {
     (sum, offer) => {
       if (!!offer.age && offer.age !== "") {
         return {
-          cost: sum.cost + (offer.upchargeTKP * offer.reach) / 1000,
+          cost: sum.cost + calcCost(offer.upchargeTKP, offer.reach),
           reach: sum.reach + offer.reach,
           tkp: sum.tkp == 0 ? offer.upchargeTKP : (sum.tkp + offer.upchargeTKP) / 2,
         };
@@ -51,7 +56,7 @@ const calculateUpchargeInformation = (offerGroup) => {
     (sum, offer) => {
       if (!!offer.platform && offer.platform !== "") {
         return {
-          cost: sum.cost + (offer.upchargeTKP * offer.reach) / 1000,
+          cost: sum.cost + calcCost(offer.upchargeTKP, offer.reach),
           reach: sum.reach + offer.reach,
           tkp: sum.tkp == 0 ? offer.upchargeTKP : (sum.tkp + offer.upchargeTKP) / 2,
         };
@@ -66,7 +71,7 @@ const calculateUpchargeInformation = (offerGroup) => {
     (sum, offer) => {
       if (!!offer.placement && offer.placement !== "") {
         return {
-          cost: sum.cost + (offer.upchargeTKP * offer.reach) / 1000,
+          cost: sum.cost + calcCost(offer.upchargeTKP, offer.reach),
           reach: sum.reach + offer.reach,
           tkp: sum.tkp == 0 ? offer.upchargeTKP : (sum.tkp + offer.upchargeTKP) / 2,
         };
@@ -81,7 +86,7 @@ const calculateUpchargeInformation = (offerGroup) => {
     (sum, offer) => {
       if (!!offer.targeting && offer.targeting !== "") {
         return {
-          cost: sum.cost + (offer.upchargeTKP * offer.reach) / 1000,
+          cost: sum.cost + calcCost(offer.upchargeTKP, offer.reach),
           reach: sum.reach + offer.reach,
           tkp: sum.tkp == 0 ? offer.upchargeTKP : (sum.tkp + offer.upchargeTKP) / 2,
         };
@@ -112,4 +117,4 @@ const calculateUpchargeInformation = (offerGroup) => {
   };
 };
 
-export default calculateUpchargeInformation;
+export default calculateUpchargeInformation;
