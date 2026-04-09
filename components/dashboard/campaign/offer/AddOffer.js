@@ -358,11 +358,11 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen, prici
         {/* UpchargeTKP */}
         <div className="mt-2">
           <label className="block text-sm font-medium text-gray-900">
-            Upcharge TKP
+            {pricingModel === "CPCV" ? "Upcharge CPCV" : "Upcharge TKP"}
           </label>
           <input
             type="number"
-            step={0.1}
+            step="any"
             name="upchargeTKP"
             ref={upchargeTKPRef}
             className="mt-1 rounded-md border py-1.5 text-gray-900 shadow-sm 
