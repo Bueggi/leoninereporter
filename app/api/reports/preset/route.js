@@ -69,19 +69,29 @@ export async function POST(req) {
       );
     }
 
+    const cleanNumber = (val) => {
+      if (typeof val === "number") return val;
+      if (!val) return 0;
+      const cleaned = val.toString().replace(/[\s.,]/g, "");
+      return Number(cleaned) || 0;
+    };
+
+    const parsedReach = Math.round(cleanNumber(targetReach));
+    const parsedBudget = cleanNumber(targetBudget);
+
     const preset = await prisma.reportPreset.upsert({
       where: { campaignName },
       update: {
-        targetReach: +targetReach,
-        targetBudget: +targetBudget,
+        targetReach: parsedReach,
+        targetBudget: parsedBudget,
         startDate,
         endDate,
         lastQueried: new Date(),
       },
       create: {
         campaignName,
-        targetReach: +targetReach,
-        targetBudget: +targetBudget,
+        targetReach: parsedReach,
+        targetBudget: parsedBudget,
         startDate,
         endDate,
         lastQueried: new Date(),

@@ -26,23 +26,64 @@ import {
   Layers,
 } from "lucide-react";
 
+const cleanNumber = (val) => {
+  if (typeof val === "number") return val;
+  if (!val) return 0;
+  const cleaned = val.toString().replace(/[\s.,]/g, "");
+  return Number(cleaned) || 0;
+};
+
 const Report = ({ data }) => {
   const contentRef = useRef(null);
   const logoPath = "/HoTLogo_White.png";
 
   // --- 1. STATE FÜR ABFRAGE ---
   const [isGenerated, setIsGenerated] = useState(false);
-  const [reportName, setReportName] = useState("");
+  const [reportName, setReportName] = useState(data.campaign.name || "");
   const [targetReach, setTargetReach] = useState(100000);
   const [targetBudget, setTargetBudget] = useState(10000);
-  const [startDate, setStartDate] = useState("2026-02-02");
-  const [endDate, setEndDate] = useState("2026-02-28");
+  const [startDate, setStartDate] = useState(data.campaign.startDate || "2026-02-02");
+  const [endDate, setEndDate] = useState(data.campaign.endDate || "2026-02-28");
   const [showCreatives, setShowCreatives] = useState(true);
   const [showLineItems, setShowLineItems] = useState(true);
 
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef(null);
+
+  // Auto-fill and check presets from DB when CSV data changes
+  useEffect(() => {
+    if (data.campaign.name) {
+      setReportName(data.campaign.name);
+    }
+    if (data.campaign.startDate) {
+      setStartDate(data.campaign.startDate);
+    }
+    if (data.campaign.endDate) {
+      setEndDate(data.campaign.endDate);
+    }
+
+    if (data.campaign.name) {
+      const fetchExactPreset = async () => {
+        try {
+          const res = await fetch(`/api/reports/preset?query=${encodeURIComponent(data.campaign.name)}`);
+          const result = await res.json();
+          const exactMatch = (result || []).find(
+            (p) => p.campaignName.toLowerCase() === data.campaign.name.toLowerCase()
+          );
+          if (exactMatch) {
+            setStartDate(moment(exactMatch.startDate).format("YYYY-MM-DD"));
+            setEndDate(moment(exactMatch.endDate).format("YYYY-MM-DD"));
+            setTargetReach(exactMatch.targetReach);
+            setTargetBudget(exactMatch.targetBudget);
+          }
+        } catch (err) {
+          console.error("Error loading matching preset:", err);
+        }
+      };
+      fetchExactPreset();
+    }
+  }, [data.campaign.name, data.campaign.startDate, data.campaign.endDate]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -62,6 +103,17 @@ const Report = ({ data }) => {
         const result = await res.json();
         setSuggestions(result || []);
         setShowSuggestions(true);
+
+        // Check if there is an exact match typed, and autofill if so
+        const exactMatch = (result || []).find(
+          (p) => p.campaignName.toLowerCase() === val.trim().toLowerCase()
+        );
+        if (exactMatch) {
+          setStartDate(moment(exactMatch.startDate).format("YYYY-MM-DD"));
+          setEndDate(moment(exactMatch.endDate).format("YYYY-MM-DD"));
+          setTargetReach(exactMatch.targetReach);
+          setTargetBudget(exactMatch.targetBudget);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -87,8 +139,8 @@ const Report = ({ data }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           campaignName: reportName,
-          targetReach: +targetReach,
-          targetBudget: +targetBudget,
+          targetReach: cleanNumber(targetReach),
+          targetBudget: cleanNumber(targetBudget),
           startDate,
           endDate,
         }),
@@ -126,12 +178,12 @@ const Report = ({ data }) => {
   const currentReach = Number(data.campaign.impressions) || 0;
   const currentRevenue = Number(data.campaign.revenue) || 0;
 
-  const parsedTargetReach = Number(targetReach);
+  const parsedTargetReach = cleanNumber(targetReach);
   const reachProgress = (!isNaN(parsedTargetReach) && parsedTargetReach > 0)
     ? Math.min((currentReach / parsedTargetReach) * 100, 100)
     : 0;
 
-  const parsedTargetBudget = Number(targetBudget);
+  const parsedTargetBudget = cleanNumber(targetBudget);
   const budgetProgress = (!isNaN(parsedTargetBudget) && parsedTargetBudget > 0)
     ? Math.min((currentRevenue / parsedTargetBudget) * 100, 100)
     : 0;

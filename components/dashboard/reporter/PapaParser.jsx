@@ -113,6 +113,15 @@ export default function ReportParser() {
           return acc;
         }, []);
 
+        const dates = data.map((row) => row["Date"]).filter(Boolean);
+        let csvMinDate = "";
+        let csvMaxDate = "";
+        if (dates.length > 0) {
+          dates.sort();
+          csvMinDate = dates[0];
+          csvMaxDate = dates[dates.length - 1];
+        }
+
         setResults({
           campaign: {
             ...campaign,
@@ -121,6 +130,9 @@ export default function ReportParser() {
             q1Pct: (campaign.q1 / campaign.impressions) * 100,
             midPct: (campaign.mid / campaign.impressions) * 100,
             q3Pct: (campaign.q3 / campaign.impressions) * 100,
+            name: data[0]?.["Campaign"] || data[0]?.["Campaign name"] || data[0]?.["Kampagne"] || "",
+            startDate: csvMinDate,
+            endDate: csvMaxDate,
           },
           lineItems,
           creatives,
