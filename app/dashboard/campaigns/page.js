@@ -55,13 +55,22 @@ const ListedCampaignsContent = () => {
     if (item.offers && item.offers.length > 0) {
       item.offers.forEach(group => {
         if (group.offers && group.offers.length > 0) {
+          const isCPCV = group.pricingModel === "CPCV";
           group.offers.forEach(offer => {
               const reach = offer.reach || 0;
               const tkp = offer.tkp || 0;
-              totalBudget += (reach * tkp) / 1000;
-              // Add upcharge if it's applied on TKP basis
-              if (offer.upchargeTKP) {
-                 totalBudget += (reach * offer.upchargeTKP) / 1000;
+              if (isCPCV) {
+                totalBudget += reach * tkp;
+                // Add upcharge if it's applied on CPCV basis
+                if (offer.upchargeTKP) {
+                   totalBudget += reach * offer.upchargeTKP;
+                }
+              } else {
+                totalBudget += (reach * tkp) / 1000;
+                // Add upcharge if it's applied on TKP basis
+                if (offer.upchargeTKP) {
+                   totalBudget += (reach * offer.upchargeTKP) / 1000;
+                }
               }
               // Add flat upcharge
               if (offer.upcharge) {

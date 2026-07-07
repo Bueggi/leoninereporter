@@ -19,14 +19,14 @@ export default function EditOffer({ initialOffer, state, setState, setOpen, pric
   const [fieldActive, setFieldActive] = useState({
     age: !!initialOffer.age,
     targeting: !!initialOffer.targeting,
-    platform: !!initialOffer.platform,
+    device: !!initialOffer.device,
     placement: !!initialOffer.placement,
   });
 
   const [fieldValues, setFieldValues] = useState({
     age: initialOffer.age || "",
     targeting: initialOffer.targeting || "",
-    platform: initialOffer.platform || "",
+    device: initialOffer.device || "",
     placement: initialOffer.placement || "",
     plz: initialOffer.plz || "",
   });
@@ -48,7 +48,7 @@ export default function EditOffer({ initialOffer, state, setState, setOpen, pric
   };
 
   // Berechnet die Anzahl der aktiven und gefüllten Upcharge-Felder
-  const upchargeCount = ["age", "targeting", "platform", "placement"].reduce(
+  const upchargeCount = ["age", "targeting", "device", "placement"].reduce(
     (count, key) => {
       if (fieldActive[key] && fieldValues[key].trim() !== "") {
         return count + 1;
@@ -88,7 +88,7 @@ export default function EditOffer({ initialOffer, state, setState, setOpen, pric
             frequencyCap: frequencyCapRef.current.value,
             age: fieldActive.age ? fieldValues.age : null,
             targeting: fieldActive.targeting ? fieldValues.targeting : null,
-            platform: fieldActive.platform ? fieldValues.platform : null,
+            device: fieldActive.device ? fieldValues.device : null,
             placement: fieldActive.placement ? fieldValues.placement : null,
             plz: fieldValues.plz,
             upchargeCount,
@@ -311,27 +311,27 @@ export default function EditOffer({ initialOffer, state, setState, setOpen, pric
           />
         </div>
 
-        {/* Plattform */}
+        {/* Device */}
         <div className="mt-2">
           <label className="block text-sm font-medium text-gray-900">
-            Plattform
+            Device
           </label>
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
-              checked={fieldActive.platform}
-              onChange={handleCheckboxChange("platform")}
+              checked={fieldActive.device}
+              onChange={handleCheckboxChange("device")}
               className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
             />
             <span className="text-sm text-gray-700">Aktivieren</span>
           </label>
           <input
             type="text"
-            name="platform"
-            value={fieldValues.platform}
-            onChange={handleInputChange("platform")}
-            disabled={!fieldActive.platform}
-            className={inputClass(fieldActive.platform)}
+            name="device"
+            value={fieldValues.device}
+            onChange={handleInputChange("device")}
+            disabled={!fieldActive.device}
+            className={inputClass(fieldActive.device)}
           />
         </div>
 

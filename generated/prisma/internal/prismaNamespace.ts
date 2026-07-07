@@ -393,7 +393,10 @@ export const ModelName = {
   Channel: 'Channel',
   Advertiser: 'Advertiser',
   Report: 'Report',
-  ReportEntry: 'ReportEntry'
+  ReportEntry: 'ReportEntry',
+  InboundRequest: 'InboundRequest',
+  ReportPreset: 'ReportPreset',
+  WeeklyCheck: 'WeeklyCheck'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "campaign" | "booking" | "offer" | "offerGroup" | "creator" | "channel" | "advertiser" | "report" | "reportEntry"
+    modelProps: "user" | "campaign" | "booking" | "offer" | "offerGroup" | "creator" | "channel" | "advertiser" | "report" | "reportEntry" | "inboundRequest" | "reportPreset" | "weeklyCheck"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1156,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    InboundRequest: {
+      payload: Prisma.$InboundRequestPayload<ExtArgs>
+      fields: Prisma.InboundRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InboundRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InboundRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.InboundRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InboundRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>
+        }
+        findMany: {
+          args: Prisma.InboundRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>[]
+        }
+        create: {
+          args: Prisma.InboundRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>
+        }
+        createMany: {
+          args: Prisma.InboundRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InboundRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.InboundRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>
+        }
+        update: {
+          args: Prisma.InboundRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.InboundRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InboundRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InboundRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.InboundRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboundRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.InboundRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInboundRequest>
+        }
+        groupBy: {
+          args: Prisma.InboundRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InboundRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InboundRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InboundRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReportPreset: {
+      payload: Prisma.$ReportPresetPayload<ExtArgs>
+      fields: Prisma.ReportPresetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReportPresetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReportPresetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>
+        }
+        findFirst: {
+          args: Prisma.ReportPresetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReportPresetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>
+        }
+        findMany: {
+          args: Prisma.ReportPresetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>[]
+        }
+        create: {
+          args: Prisma.ReportPresetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>
+        }
+        createMany: {
+          args: Prisma.ReportPresetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReportPresetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>[]
+        }
+        delete: {
+          args: Prisma.ReportPresetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>
+        }
+        update: {
+          args: Prisma.ReportPresetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReportPresetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReportPresetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReportPresetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReportPresetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReportPresetPayload>
+        }
+        aggregate: {
+          args: Prisma.ReportPresetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReportPreset>
+        }
+        groupBy: {
+          args: Prisma.ReportPresetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReportPresetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReportPresetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReportPresetCountAggregateOutputType> | number
+        }
+      }
+    }
+    WeeklyCheck: {
+      payload: Prisma.$WeeklyCheckPayload<ExtArgs>
+      fields: Prisma.WeeklyCheckFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WeeklyCheckFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WeeklyCheckFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
+        }
+        findFirst: {
+          args: Prisma.WeeklyCheckFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WeeklyCheckFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
+        }
+        findMany: {
+          args: Prisma.WeeklyCheckFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>[]
+        }
+        create: {
+          args: Prisma.WeeklyCheckCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
+        }
+        createMany: {
+          args: Prisma.WeeklyCheckCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WeeklyCheckCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>[]
+        }
+        delete: {
+          args: Prisma.WeeklyCheckDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
+        }
+        update: {
+          args: Prisma.WeeklyCheckUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
+        }
+        deleteMany: {
+          args: Prisma.WeeklyCheckDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WeeklyCheckUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WeeklyCheckUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>[]
+        }
+        upsert: {
+          args: Prisma.WeeklyCheckUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
+        }
+        aggregate: {
+          args: Prisma.WeeklyCheckAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWeeklyCheck>
+        }
+        groupBy: {
+          args: Prisma.WeeklyCheckGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WeeklyCheckGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WeeklyCheckCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WeeklyCheckCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1238,7 +1463,8 @@ export const CampaignScalarFieldEnum = {
   status: 'status',
   contact: 'contact',
   contactEmail: 'contactEmail',
-  trade: 'trade'
+  trade: 'trade',
+  inboundNotes: 'inboundNotes'
 } as const
 
 export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
@@ -1268,7 +1494,7 @@ export const OfferScalarFieldEnum = {
   age: 'age',
   frequencyCap: 'frequencyCap',
   plz: 'plz',
-  platform: 'platform',
+  device: 'device',
   placement: 'placement',
   reach: 'reach',
   upcharge: 'upcharge',
@@ -1374,6 +1600,52 @@ export const ReportEntryScalarFieldEnum = {
 } as const
 
 export type ReportEntryScalarFieldEnum = (typeof ReportEntryScalarFieldEnum)[keyof typeof ReportEntryScalarFieldEnum]
+
+
+export const InboundRequestScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status',
+  advertiser: 'advertiser',
+  product: 'product',
+  goalType: 'goalType',
+  budget: 'budget',
+  reach: 'reach',
+  dateStart: 'dateStart',
+  dateEnd: 'dateEnd',
+  inboundNotes: 'inboundNotes',
+  firstname: 'firstname',
+  lastname: 'lastname',
+  company: 'company',
+  email: 'email',
+  phone: 'phone'
+} as const
+
+export type InboundRequestScalarFieldEnum = (typeof InboundRequestScalarFieldEnum)[keyof typeof InboundRequestScalarFieldEnum]
+
+
+export const ReportPresetScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  campaignName: 'campaignName',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  targetReach: 'targetReach',
+  targetBudget: 'targetBudget',
+  lastQueried: 'lastQueried'
+} as const
+
+export type ReportPresetScalarFieldEnum = (typeof ReportPresetScalarFieldEnum)[keyof typeof ReportPresetScalarFieldEnum]
+
+
+export const WeeklyCheckScalarFieldEnum = {
+  id: 'id',
+  checkedAt: 'checkedAt'
+} as const
+
+export type WeeklyCheckScalarFieldEnum = (typeof WeeklyCheckScalarFieldEnum)[keyof typeof WeeklyCheckScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1569,6 +1841,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
+
+/**
+ * Reference to a field of type 'INBOUND_STATUS'
+ */
+export type EnumINBOUND_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'INBOUND_STATUS'>
+    
+
+
+/**
+ * Reference to a field of type 'INBOUND_STATUS[]'
+ */
+export type ListEnumINBOUND_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'INBOUND_STATUS[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1658,6 +1944,9 @@ export type GlobalOmitConfig = {
   advertiser?: Prisma.AdvertiserOmit
   report?: Prisma.ReportOmit
   reportEntry?: Prisma.ReportEntryOmit
+  inboundRequest?: Prisma.InboundRequestOmit
+  reportPreset?: Prisma.ReportPresetOmit
+  weeklyCheck?: Prisma.WeeklyCheckOmit
 }
 
 /* Types for Logging */

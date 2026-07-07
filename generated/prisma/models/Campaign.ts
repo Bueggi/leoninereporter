@@ -56,6 +56,7 @@ export type CampaignMinAggregateOutputType = {
   contact: string | null
   contactEmail: string | null
   trade: boolean | null
+  inboundNotes: string | null
 }
 
 export type CampaignMaxAggregateOutputType = {
@@ -80,6 +81,7 @@ export type CampaignMaxAggregateOutputType = {
   contact: string | null
   contactEmail: string | null
   trade: boolean | null
+  inboundNotes: string | null
 }
 
 export type CampaignCountAggregateOutputType = {
@@ -104,6 +106,7 @@ export type CampaignCountAggregateOutputType = {
   contact: number
   contactEmail: number
   trade: number
+  inboundNotes: number
   _all: number
 }
 
@@ -138,6 +141,7 @@ export type CampaignMinAggregateInputType = {
   contact?: true
   contactEmail?: true
   trade?: true
+  inboundNotes?: true
 }
 
 export type CampaignMaxAggregateInputType = {
@@ -162,6 +166,7 @@ export type CampaignMaxAggregateInputType = {
   contact?: true
   contactEmail?: true
   trade?: true
+  inboundNotes?: true
 }
 
 export type CampaignCountAggregateInputType = {
@@ -186,6 +191,7 @@ export type CampaignCountAggregateInputType = {
   contact?: true
   contactEmail?: true
   trade?: true
+  inboundNotes?: true
   _all?: true
 }
 
@@ -297,6 +303,7 @@ export type CampaignGroupByOutputType = {
   contact: string | null
   contactEmail: string | null
   trade: boolean | null
+  inboundNotes: string | null
   _count: CampaignCountAggregateOutputType | null
   _avg: CampaignAvgAggregateOutputType | null
   _sum: CampaignSumAggregateOutputType | null
@@ -344,6 +351,7 @@ export type CampaignWhereInput = {
   contact?: Prisma.StringNullableFilter<"Campaign"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"Campaign"> | string | null
   trade?: Prisma.BoolNullableFilter<"Campaign"> | boolean | null
+  inboundNotes?: Prisma.StringNullableFilter<"Campaign"> | string | null
   advertiser?: Prisma.XOR<Prisma.AdvertiserNullableScalarRelationFilter, Prisma.AdvertiserWhereInput> | null
   bookings?: Prisma.BookingListRelationFilter
   creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -372,6 +380,7 @@ export type CampaignOrderByWithRelationInput = {
   contact?: Prisma.SortOrderInput | Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   trade?: Prisma.SortOrderInput | Prisma.SortOrder
+  inboundNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   advertiser?: Prisma.AdvertiserOrderByWithRelationInput
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   creator?: Prisma.UserOrderByWithRelationInput
@@ -403,6 +412,7 @@ export type CampaignWhereUniqueInput = Prisma.AtLeast<{
   contact?: Prisma.StringNullableFilter<"Campaign"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"Campaign"> | string | null
   trade?: Prisma.BoolNullableFilter<"Campaign"> | boolean | null
+  inboundNotes?: Prisma.StringNullableFilter<"Campaign"> | string | null
   advertiser?: Prisma.XOR<Prisma.AdvertiserNullableScalarRelationFilter, Prisma.AdvertiserWhereInput> | null
   bookings?: Prisma.BookingListRelationFilter
   creator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -431,6 +441,7 @@ export type CampaignOrderByWithAggregationInput = {
   contact?: Prisma.SortOrderInput | Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   trade?: Prisma.SortOrderInput | Prisma.SortOrder
+  inboundNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CampaignCountOrderByAggregateInput
   _avg?: Prisma.CampaignAvgOrderByAggregateInput
   _max?: Prisma.CampaignMaxOrderByAggregateInput
@@ -463,6 +474,7 @@ export type CampaignScalarWhereWithAggregatesInput = {
   contact?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   contactEmail?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   trade?: Prisma.BoolNullableWithAggregatesFilter<"Campaign"> | boolean | null
+  inboundNotes?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
 }
 
 export type CampaignCreateInput = {
@@ -485,6 +497,7 @@ export type CampaignCreateInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   advertiser?: Prisma.AdvertiserCreateNestedOneWithoutCampaignsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutCampaignInput
   creator?: Prisma.UserCreateNestedOneWithoutCampaignsInput
@@ -513,6 +526,7 @@ export type CampaignUncheckedCreateInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCampaignInput
   offers?: Prisma.OfferGroupUncheckedCreateNestedManyWithoutCampaignInput
 }
@@ -537,6 +551,7 @@ export type CampaignUpdateInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advertiser?: Prisma.AdvertiserUpdateOneWithoutCampaignsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutCampaignNestedInput
   creator?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
@@ -565,6 +580,7 @@ export type CampaignUncheckedUpdateInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCampaignNestedInput
   offers?: Prisma.OfferGroupUncheckedUpdateManyWithoutCampaignNestedInput
 }
@@ -591,6 +607,7 @@ export type CampaignCreateManyInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
 }
 
 export type CampaignUpdateManyMutationInput = {
@@ -613,6 +630,7 @@ export type CampaignUpdateManyMutationInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignUncheckedUpdateManyInput = {
@@ -637,6 +655,7 @@ export type CampaignUncheckedUpdateManyInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignListRelationFilter = {
@@ -671,6 +690,7 @@ export type CampaignCountOrderByAggregateInput = {
   contact?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   trade?: Prisma.SortOrder
+  inboundNotes?: Prisma.SortOrder
 }
 
 export type CampaignAvgOrderByAggregateInput = {
@@ -699,6 +719,7 @@ export type CampaignMaxOrderByAggregateInput = {
   contact?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   trade?: Prisma.SortOrder
+  inboundNotes?: Prisma.SortOrder
 }
 
 export type CampaignMinOrderByAggregateInput = {
@@ -723,6 +744,7 @@ export type CampaignMinOrderByAggregateInput = {
   contact?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   trade?: Prisma.SortOrder
+  inboundNotes?: Prisma.SortOrder
 }
 
 export type CampaignSumOrderByAggregateInput = {
@@ -885,6 +907,7 @@ export type CampaignCreateWithoutCreatorInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   advertiser?: Prisma.AdvertiserCreateNestedOneWithoutCampaignsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutCampaignInput
   offers?: Prisma.OfferGroupCreateNestedManyWithoutCampaignInput
@@ -911,6 +934,7 @@ export type CampaignUncheckedCreateWithoutCreatorInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCampaignInput
   offers?: Prisma.OfferGroupUncheckedCreateNestedManyWithoutCampaignInput
 }
@@ -966,6 +990,7 @@ export type CampaignScalarWhereInput = {
   contact?: Prisma.StringNullableFilter<"Campaign"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"Campaign"> | string | null
   trade?: Prisma.BoolNullableFilter<"Campaign"> | boolean | null
+  inboundNotes?: Prisma.StringNullableFilter<"Campaign"> | string | null
 }
 
 export type CampaignCreateWithoutBookingsInput = {
@@ -988,6 +1013,7 @@ export type CampaignCreateWithoutBookingsInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   advertiser?: Prisma.AdvertiserCreateNestedOneWithoutCampaignsInput
   creator?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   offers?: Prisma.OfferGroupCreateNestedManyWithoutCampaignInput
@@ -1015,6 +1041,7 @@ export type CampaignUncheckedCreateWithoutBookingsInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   offers?: Prisma.OfferGroupUncheckedCreateNestedManyWithoutCampaignInput
 }
 
@@ -1054,6 +1081,7 @@ export type CampaignUpdateWithoutBookingsInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advertiser?: Prisma.AdvertiserUpdateOneWithoutCampaignsNestedInput
   creator?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   offers?: Prisma.OfferGroupUpdateManyWithoutCampaignNestedInput
@@ -1081,6 +1109,7 @@ export type CampaignUncheckedUpdateWithoutBookingsInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offers?: Prisma.OfferGroupUncheckedUpdateManyWithoutCampaignNestedInput
 }
 
@@ -1104,6 +1133,7 @@ export type CampaignCreateWithoutOffersInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   advertiser?: Prisma.AdvertiserCreateNestedOneWithoutCampaignsInput
   bookings?: Prisma.BookingCreateNestedManyWithoutCampaignInput
   creator?: Prisma.UserCreateNestedOneWithoutCampaignsInput
@@ -1131,6 +1161,7 @@ export type CampaignUncheckedCreateWithoutOffersInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCampaignInput
 }
 
@@ -1170,6 +1201,7 @@ export type CampaignUpdateWithoutOffersInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advertiser?: Prisma.AdvertiserUpdateOneWithoutCampaignsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutCampaignNestedInput
   creator?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
@@ -1197,6 +1229,7 @@ export type CampaignUncheckedUpdateWithoutOffersInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCampaignNestedInput
 }
 
@@ -1220,6 +1253,7 @@ export type CampaignCreateWithoutAdvertiserInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   bookings?: Prisma.BookingCreateNestedManyWithoutCampaignInput
   creator?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   offers?: Prisma.OfferGroupCreateNestedManyWithoutCampaignInput
@@ -1246,6 +1280,7 @@ export type CampaignUncheckedCreateWithoutAdvertiserInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCampaignInput
   offers?: Prisma.OfferGroupUncheckedCreateNestedManyWithoutCampaignInput
 }
@@ -1297,6 +1332,7 @@ export type CampaignCreateManyCreatorInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
 }
 
 export type CampaignUpdateWithoutCreatorInput = {
@@ -1319,6 +1355,7 @@ export type CampaignUpdateWithoutCreatorInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   advertiser?: Prisma.AdvertiserUpdateOneWithoutCampaignsNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutCampaignNestedInput
   offers?: Prisma.OfferGroupUpdateManyWithoutCampaignNestedInput
@@ -1345,6 +1382,7 @@ export type CampaignUncheckedUpdateWithoutCreatorInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCampaignNestedInput
   offers?: Prisma.OfferGroupUncheckedUpdateManyWithoutCampaignNestedInput
 }
@@ -1370,6 +1408,7 @@ export type CampaignUncheckedUpdateManyWithoutCreatorInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignCreateManyAdvertiserInput = {
@@ -1393,6 +1432,7 @@ export type CampaignCreateManyAdvertiserInput = {
   contact?: string | null
   contactEmail?: string | null
   trade?: boolean | null
+  inboundNotes?: string | null
 }
 
 export type CampaignUpdateWithoutAdvertiserInput = {
@@ -1415,6 +1455,7 @@ export type CampaignUpdateWithoutAdvertiserInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUpdateManyWithoutCampaignNestedInput
   creator?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   offers?: Prisma.OfferGroupUpdateManyWithoutCampaignNestedInput
@@ -1441,6 +1482,7 @@ export type CampaignUncheckedUpdateWithoutAdvertiserInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCampaignNestedInput
   offers?: Prisma.OfferGroupUncheckedUpdateManyWithoutCampaignNestedInput
 }
@@ -1466,6 +1508,7 @@ export type CampaignUncheckedUpdateManyWithoutAdvertiserInput = {
   contact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   trade?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  inboundNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1530,6 +1573,7 @@ export type CampaignSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   contact?: boolean
   contactEmail?: boolean
   trade?: boolean
+  inboundNotes?: boolean
   advertiser?: boolean | Prisma.Campaign$advertiserArgs<ExtArgs>
   bookings?: boolean | Prisma.Campaign$bookingsArgs<ExtArgs>
   creator?: boolean | Prisma.Campaign$creatorArgs<ExtArgs>
@@ -1559,6 +1603,7 @@ export type CampaignSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   contact?: boolean
   contactEmail?: boolean
   trade?: boolean
+  inboundNotes?: boolean
   advertiser?: boolean | Prisma.Campaign$advertiserArgs<ExtArgs>
   creator?: boolean | Prisma.Campaign$creatorArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
@@ -1585,6 +1630,7 @@ export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   contact?: boolean
   contactEmail?: boolean
   trade?: boolean
+  inboundNotes?: boolean
   advertiser?: boolean | Prisma.Campaign$advertiserArgs<ExtArgs>
   creator?: boolean | Prisma.Campaign$creatorArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
@@ -1611,9 +1657,10 @@ export type CampaignSelectScalar = {
   contact?: boolean
   contactEmail?: boolean
   trade?: boolean
+  inboundNotes?: boolean
 }
 
-export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "advertiserID" | "customer" | "customergroup" | "creatorId" | "customRiskFee" | "customRiskFeeAmount" | "isServiceplan" | "name" | "onlineCampaign" | "ordernumber" | "pdfLink" | "product" | "productfamily" | "anrede" | "status" | "contact" | "contactEmail" | "trade", ExtArgs["result"]["campaign"]>
+export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "advertiserID" | "customer" | "customergroup" | "creatorId" | "customRiskFee" | "customRiskFeeAmount" | "isServiceplan" | "name" | "onlineCampaign" | "ordernumber" | "pdfLink" | "product" | "productfamily" | "anrede" | "status" | "contact" | "contactEmail" | "trade" | "inboundNotes", ExtArgs["result"]["campaign"]>
 export type CampaignInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   advertiser?: boolean | Prisma.Campaign$advertiserArgs<ExtArgs>
   bookings?: boolean | Prisma.Campaign$bookingsArgs<ExtArgs>
@@ -1660,6 +1707,7 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     contact: string | null
     contactEmail: string | null
     trade: boolean | null
+    inboundNotes: string | null
   }, ExtArgs["result"]["campaign"]>
   composites: {}
 }
@@ -2108,6 +2156,7 @@ export interface CampaignFieldRefs {
   readonly contact: Prisma.FieldRef<"Campaign", 'String'>
   readonly contactEmail: Prisma.FieldRef<"Campaign", 'String'>
   readonly trade: Prisma.FieldRef<"Campaign", 'Boolean'>
+  readonly inboundNotes: Prisma.FieldRef<"Campaign", 'String'>
 }
     
 

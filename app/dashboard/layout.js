@@ -51,6 +51,13 @@ const campaigns = [
     initial: "R",
     current: false,
   },
+  {
+    id: 5,
+    name: "Inbound Anfragen",
+    href: "/dashboard/inbounds",
+    initial: "✉",
+    current: false,
+  },
 ];
 
 function classNames(...classes) {

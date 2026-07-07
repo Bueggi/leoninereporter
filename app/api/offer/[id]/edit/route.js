@@ -12,7 +12,7 @@ const handler = async (req, { params }) => {
       rotation,
       tkp,
       product,
-      platform,
+      device,
       age,
       targeting,
       plz,
@@ -46,7 +46,7 @@ const handler = async (req, { params }) => {
         targeting,
         age,
         plz,
-        platform,
+        device,
         frequencyCap,
         upcharge: +upcharge,
         upchargeTKP: +upchargeTKP

@@ -11,6 +11,7 @@ import {
 import moment from "moment";
 import calculateUpchargeInformation from "./pdfgeneration/calculateUpchargeInformation";
 import ProductInformationRow from "../../pComponents/pdfgeneration/ProductInformationRow";
+import adFormatNames from "@lib/dashboard/AdFormatNames";
 
 // import tw main
 import { tw } from "@lib/tw";
@@ -24,6 +25,7 @@ import {
   FliessText,
   TableRightSide,
   numberToEUR,
+  numberToEURPrecise,
   Zeitraum,
   calculateProductMetrics,
   reduceInformationFromOffersToString,
@@ -54,12 +56,18 @@ const DownloadPDFButton = ({
   trade,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingWithFlights, setIsGeneratingWithFlights] = useState(false);
 
-  const handleDownload = async () => {
+  const handleDownload = async (showFlights = false) => {
     try {
-      setIsGenerating(true);
+      if (showFlights) {
+        setIsGeneratingWithFlights(true);
+      } else {
+        setIsGenerating(true);
+      }
 
-      const fileName = `HoT_Angebot_${offer.offernumber}-${campaignName}.pdf`;
+      const suffix = showFlights ? "_mit_flights" : "";
+      const fileName = `HoT_Angebot_${offer.offernumber}-${campaignName}${suffix}.pdf`;
 
       const doc = (
         <MyDoc
@@ -72,6 +80,7 @@ const DownloadPDFButton = ({
           userEmail={userEmail}
           anrede={anrede}
           trade={trade}
+          showFlights={showFlights}
         />
       );
 
@@ -91,6 +100,7 @@ const DownloadPDFButton = ({
       alert("Es gab einen Fehler beim Erstellen des PDFs.");
     } finally {
       setIsGenerating(false);
+      setIsGeneratingWithFlights(false);
     }
   };
 
@@ -162,27 +172,61 @@ const DownloadPDFButton = ({
         .spin {
           animation: spin-slow 1s linear infinite;
         }
+
+        .pdf-btn-flights {
+          background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        }
+        .pdf-btn-flights:hover:not(:disabled) {
+          background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        }
+        .pdf-btn-flights .pdf-btn-icon {
+          background: rgba(99, 102, 241, 0.9);
+          box-shadow: 0 1px 4px rgba(99, 102, 241, 0.4);
+        }
       `}</style>
 
-      <button
-        onClick={handleDownload}
-        disabled={isGenerating}
-        className="pdf-btn"
-      >
-        <span className="pdf-btn-icon">
-          {isGenerating ? (
-            <svg className="spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round"/>
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="white">
-              <path d="M12 16l-5-5h3V4h4v7h3l-5 5z"/>
-              <path d="M5 18h14v2H5z"/>
-            </svg>
-          )}
-        </span>
-        <span>{isGenerating ? "Generiere…" : "PDF"}</span>
-      </button>
+      <div style={{ display: "flex", gap: "6px" }}>
+        <button
+          onClick={() => handleDownload(false)}
+          disabled={isGenerating || isGeneratingWithFlights}
+          className="pdf-btn"
+          title="Angebot als PDF herunterladen"
+        >
+          <span className="pdf-btn-icon">
+            {isGenerating ? (
+              <svg className="spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="white">
+                <path d="M12 16l-5-5h3V4h4v7h3l-5 5z"/>
+                <path d="M5 18h14v2H5z"/>
+              </svg>
+            )}
+          </span>
+          <span>{isGenerating ? "Generiere…" : "PDF"}</span>
+        </button>
+
+        <button
+          onClick={() => handleDownload(true)}
+          disabled={isGenerating || isGeneratingWithFlights}
+          className="pdf-btn pdf-btn-flights"
+          title="Angebot inkl. Flight-Details herunterladen"
+        >
+          <span className="pdf-btn-icon">
+            {isGeneratingWithFlights ? (
+              <svg className="spin" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" strokeLinecap="round"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="white">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+            )}
+          </span>
+          <span>{isGeneratingWithFlights ? "Generiere…" : "PDF + Flights"}</span>
+        </button>
+      </div>
     </>
   );
 };
@@ -198,6 +242,7 @@ export const MyDoc = ({
   userEmail,
   anrede,
   trade,
+  showFlights = false,
 }) => {
   // wenn die Offergroup noch keine Angebote angelegt hat, wird ein leeres Dokument zurückgegeben
   if (offer.offers.length < 1)
@@ -395,9 +440,9 @@ export const MyDoc = ({
                   </View>
 
                   {["plz", "placement",
-                    "platform",].map((el, i) => {
+                    "device",].map((el, i) => {
                     const title = {
-                      platform: "Plattform",
+                      device: "Device",
                       plz: "Geographie",
                       placement: "Placement",
 
@@ -511,10 +556,10 @@ export const MyDoc = ({
                   />
                 )}
 
-                {upchargeMetrics.platformUpcharge.cost > 0 && (
+                {upchargeMetrics.deviceUpcharge.cost > 0 && (
                   <ProductInformationRow
-                    productMetrics={upchargeMetrics.platformUpcharge}
-                    product={"+ Upcharge Platform"}
+                    productMetrics={upchargeMetrics.deviceUpcharge}
+                    product={"+ Upcharge Device"}
                   />
                 )}
 
@@ -601,6 +646,122 @@ export const MyDoc = ({
           </View>
         </View>
       </Page>
+      {showFlights && (
+        <Page size="A4" style={tw("bg-white text-black")}>
+          <View
+            style={tw(
+              "flex flex-row justify-between items-start bg-[#AB8353] pt-12 px-12 pb-8 mb-6",
+            )}
+          >
+            <Image
+              src={"/HoT_Background.png"}
+              alt=""
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "115%",
+                height: "225%",
+                zIndex: -1,
+              }}
+            ></Image>
+            <View>
+              <FliessText>
+                <Text style={tw("text-white")}>LEONINE Licensing GmbH</Text>
+              </FliessText>
+              <FliessText>
+                <Text style={tw("text-white")}>
+                  Taunusstr. 21 · 80807 München
+                </Text>
+              </FliessText>
+            </View>
+            <Image
+              src="/HoTLogo_White.png"
+              alt=""
+              style={tw("w-24 h-auto opacity-90")}
+            />
+          </View>
+
+          <View style={tw("px-12")}>
+            <Ueberschrift>
+              <Text style={tw("mb-4")}>Flight-Details / Kampagnen-Konfiguration</Text>
+            </Ueberschrift>
+
+            {offer.offers.map((flight, idx) => {
+              const displayName = adFormatNames.find((f) => f.name === flight.product)?.displayName ?? flight.product;
+              const isCPCV = offer.pricingModel === "CPCV";
+              const priceLabel = isCPCV ? "CPCV" : "TKP";
+              const price = numberToEURPrecise(flight.tkp);
+              const reach = new Intl.NumberFormat("de-DE").format(flight.reach);
+              const budget = numberToEUR(
+                isCPCV
+                  ? flight.reach * flight.tkp
+                  : (flight.reach * flight.tkp) / 1000
+              );
+              const run = `${moment(flight.start).format("DD.MM.YYYY")} – ${moment(flight.end).format("DD.MM.YYYY")}`;
+
+              return (
+                <View
+                  key={idx}
+                  wrap={false}
+                  style={tw("mb-4 p-4 border border-stone-200 rounded-lg bg-stone-50")}
+                >
+                  <View style={tw("flex flex-row justify-between items-center border-b border-stone-300 pb-2 mb-2")}>
+                    <Text style={tw("font-[Inter] text-xs font-bold text-[#AB8353] uppercase tracking-wider")}>
+                      Flight #{idx + 1}: {displayName}
+                    </Text>
+                    <Text style={tw("font-[Inter] text-xs font-bold text-black")}>
+                      {budget}
+                    </Text>
+                  </View>
+
+                  <View style={tw("flex flex-row justify-between")}>
+                    <View style={tw("flex-1 pr-4")}>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Zeitraum:</Text>
+                        <Text style={tw("text-[9px] text-gray-800")}>{run}</Text>
+                      </View>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Rotation:</Text>
+                        <Text style={tw("text-[9px] text-gray-800")}>{flight.rotation || "-"}</Text>
+                      </View>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Device:</Text>
+                        <Text style={tw("text-[9px] text-gray-800")}>{flight.device || "-"}</Text>
+                      </View>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Placement:</Text>
+                        <Text style={tw("text-[9px] text-gray-800")}>{flight.placement || "-"}</Text>
+                      </View>
+                    </View>
+
+                    <View style={tw("flex-grow flex-1 pl-4 border-l border-stone-200")}>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Frequency Cap:</Text>
+                        <Text style={tw("text-[9px] text-gray-800")}>{flight.frequencyCap || "-"}</Text>
+                      </View>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Alter / Geschlecht / Geographie:</Text>
+                        <Text style={tw("text-[9px] text-gray-800")}>
+                          {[flight.age, flight.targeting, flight.plz].filter(Boolean).join(" / ") || "-"}
+                        </Text>
+                      </View>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>Reichweite:</Text>
+                        <Text style={tw("text-[9px] text-gray-800 font-bold")}>{reach}</Text>
+                      </View>
+                      <View style={tw("flex flex-row justify-between mb-1")}>
+                        <Text style={tw("text-[9px] text-gray-500 font-bold")}>{priceLabel}:</Text>
+                        <Text style={tw("text-[9px] text-gray-800 font-bold")}>{price}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </Page>
+      )}
     </Document>
   );
 };

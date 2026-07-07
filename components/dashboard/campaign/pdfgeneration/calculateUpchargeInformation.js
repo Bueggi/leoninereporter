@@ -14,7 +14,7 @@ const calculateUpchargeInformation = (offerGroup) => {
   const totalUpchargeTKP = allOffers.reduce((sum, offer) => {
     let count = 0;
     if (!!offer.age && offer.age !== "") count++;
-    if (!!offer.platform && offer.platform !== "") count++;
+    if (!!offer.device && offer.device !== "") count++;
     if (!!offer.placement && offer.placement !== "") count++;
     if (!!offer.targeting && offer.targeting !== "") count++;
     return sum + count * offer.upchargeTKP;
@@ -23,7 +23,7 @@ const calculateUpchargeInformation = (offerGroup) => {
   const totalReach = allOffers.reduce((sum, offer) => {
     let count = 0;
     if (!!offer.age && offer.age !== "") count++;
-    if (!!offer.platform && offer.platform !== "") count++;
+    if (!!offer.device && offer.device !== "") count++;
     if (!!offer.placement && offer.placement !== "") count++;
     if (!!offer.targeting && offer.targeting !== "") count++;
     return count == 0 ? sum : sum + offer.reach;
@@ -52,9 +52,9 @@ const calculateUpchargeInformation = (offerGroup) => {
   );
   ageUpcharge.label = collectUniqueValues("age");
 
-  const platformUpcharge = allOffers.reduce(
+  const deviceUpcharge = allOffers.reduce(
     (sum, offer) => {
-      if (!!offer.platform && offer.platform !== "") {
+      if (!!offer.device && offer.device !== "") {
         return {
           cost: sum.cost + calcCost(offer.upchargeTKP, offer.reach),
           reach: sum.reach + offer.reach,
@@ -65,7 +65,7 @@ const calculateUpchargeInformation = (offerGroup) => {
     },
     { cost: 0, tkp: 0, reach: 0 }
   );
-  platformUpcharge.label = collectUniqueValues("platform");
+  deviceUpcharge.label = collectUniqueValues("device");
 
   const placementUpcharge = allOffers.reduce(
     (sum, offer) => {
@@ -99,7 +99,7 @@ const calculateUpchargeInformation = (offerGroup) => {
 
   const totalCosts =
     ageUpcharge.cost +
-    platformUpcharge.cost +
+    deviceUpcharge.cost +
     placementUpcharge.cost +
     genderUpcharge.cost;
 
@@ -110,7 +110,7 @@ const calculateUpchargeInformation = (offerGroup) => {
     totalReach,
     totalCosts,
     ageUpcharge,
-    platformUpcharge,
+    deviceUpcharge,
     placementUpcharge,
     genderUpcharge,
     isUpcharge,

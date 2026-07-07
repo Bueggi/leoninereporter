@@ -89,6 +89,7 @@ model Campaign {
   contact       String?
   contactEmail  String?
   trade         Boolean? @default(false)
+  inboundNotes  String?
 }
 
 model Booking {
@@ -143,6 +144,8 @@ enum STATUS {
   RUNNING
 
   COMPLETED
+
+  INBOUND
 }
 
 model Offer {
@@ -158,7 +161,7 @@ model Offer {
 
   plz String?
 
-  platform String?
+  device String?
 
   placement String?
 
@@ -325,3 +328,55 @@ model ReportEntry {
 
   deltaInPercent Float
 }
+
+// -------------------------------------------------------------
+// Inbound Requests (Leads aus dem Kontaktformular)
+// -------------------------------------------------------------
+
+enum INBOUND_STATUS {
+  NEW
+  CONTACTED
+  CONVERTED
+  REJECTED
+}
+
+model InboundRequest {
+  id            String    @id @default(uuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  status        INBOUND_STATUS @default(NEW)
+  
+  advertiser    String
+  product       String
+  goalType      String?   // "budget" or "reach"
+  budget        String?
+  reach         String?
+  dateStart     String?
+  dateEnd       String?
+  inboundNotes  String?
+  
+  firstname     String
+  lastname      String
+  company       String
+  email         String
+  phone         String?
+}
+
+model ReportPreset {
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  campaignName String   @unique
+  startDate    String
+  endDate      String
+  targetReach  Int
+  targetBudget Float
+  lastQueried  DateTime @default(now())
+}
+
+model WeeklyCheck {
+  id        String   @id @default(uuid())
+  checkedAt DateTime @default(now())
+}
+

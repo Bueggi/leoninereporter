@@ -47,7 +47,7 @@ export type OfferMinAggregateOutputType = {
   age: string | null
   frequencyCap: string | null
   plz: string | null
-  platform: string | null
+  device: string | null
   placement: string | null
   reach: number | null
   upcharge: number | null
@@ -69,7 +69,7 @@ export type OfferMaxAggregateOutputType = {
   age: string | null
   frequencyCap: string | null
   plz: string | null
-  platform: string | null
+  device: string | null
   placement: string | null
   reach: number | null
   upcharge: number | null
@@ -91,7 +91,7 @@ export type OfferCountAggregateOutputType = {
   age: number
   frequencyCap: number
   plz: number
-  platform: number
+  device: number
   placement: number
   reach: number
   upcharge: number
@@ -129,7 +129,7 @@ export type OfferMinAggregateInputType = {
   age?: true
   frequencyCap?: true
   plz?: true
-  platform?: true
+  device?: true
   placement?: true
   reach?: true
   upcharge?: true
@@ -151,7 +151,7 @@ export type OfferMaxAggregateInputType = {
   age?: true
   frequencyCap?: true
   plz?: true
-  platform?: true
+  device?: true
   placement?: true
   reach?: true
   upcharge?: true
@@ -173,7 +173,7 @@ export type OfferCountAggregateInputType = {
   age?: true
   frequencyCap?: true
   plz?: true
-  platform?: true
+  device?: true
   placement?: true
   reach?: true
   upcharge?: true
@@ -282,7 +282,7 @@ export type OfferGroupByOutputType = {
   age: string | null
   frequencyCap: string | null
   plz: string | null
-  platform: string | null
+  device: string | null
   placement: string | null
   reach: number | null
   upcharge: number | null
@@ -327,7 +327,7 @@ export type OfferWhereInput = {
   age?: Prisma.StringNullableFilter<"Offer"> | string | null
   frequencyCap?: Prisma.StringNullableFilter<"Offer"> | string | null
   plz?: Prisma.StringNullableFilter<"Offer"> | string | null
-  platform?: Prisma.StringNullableFilter<"Offer"> | string | null
+  device?: Prisma.StringNullableFilter<"Offer"> | string | null
   placement?: Prisma.StringNullableFilter<"Offer"> | string | null
   reach?: Prisma.IntNullableFilter<"Offer"> | number | null
   upcharge?: Prisma.IntNullableFilter<"Offer"> | number | null
@@ -350,7 +350,7 @@ export type OfferOrderByWithRelationInput = {
   age?: Prisma.SortOrderInput | Prisma.SortOrder
   frequencyCap?: Prisma.SortOrderInput | Prisma.SortOrder
   plz?: Prisma.SortOrderInput | Prisma.SortOrder
-  platform?: Prisma.SortOrderInput | Prisma.SortOrder
+  device?: Prisma.SortOrderInput | Prisma.SortOrder
   placement?: Prisma.SortOrderInput | Prisma.SortOrder
   reach?: Prisma.SortOrderInput | Prisma.SortOrder
   upcharge?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -376,7 +376,7 @@ export type OfferWhereUniqueInput = Prisma.AtLeast<{
   age?: Prisma.StringNullableFilter<"Offer"> | string | null
   frequencyCap?: Prisma.StringNullableFilter<"Offer"> | string | null
   plz?: Prisma.StringNullableFilter<"Offer"> | string | null
-  platform?: Prisma.StringNullableFilter<"Offer"> | string | null
+  device?: Prisma.StringNullableFilter<"Offer"> | string | null
   placement?: Prisma.StringNullableFilter<"Offer"> | string | null
   reach?: Prisma.IntNullableFilter<"Offer"> | number | null
   upcharge?: Prisma.IntNullableFilter<"Offer"> | number | null
@@ -399,7 +399,7 @@ export type OfferOrderByWithAggregationInput = {
   age?: Prisma.SortOrderInput | Prisma.SortOrder
   frequencyCap?: Prisma.SortOrderInput | Prisma.SortOrder
   plz?: Prisma.SortOrderInput | Prisma.SortOrder
-  platform?: Prisma.SortOrderInput | Prisma.SortOrder
+  device?: Prisma.SortOrderInput | Prisma.SortOrder
   placement?: Prisma.SortOrderInput | Prisma.SortOrder
   reach?: Prisma.SortOrderInput | Prisma.SortOrder
   upcharge?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -429,7 +429,7 @@ export type OfferScalarWhereWithAggregatesInput = {
   age?: Prisma.StringNullableWithAggregatesFilter<"Offer"> | string | null
   frequencyCap?: Prisma.StringNullableWithAggregatesFilter<"Offer"> | string | null
   plz?: Prisma.StringNullableWithAggregatesFilter<"Offer"> | string | null
-  platform?: Prisma.StringNullableWithAggregatesFilter<"Offer"> | string | null
+  device?: Prisma.StringNullableWithAggregatesFilter<"Offer"> | string | null
   placement?: Prisma.StringNullableWithAggregatesFilter<"Offer"> | string | null
   reach?: Prisma.IntNullableWithAggregatesFilter<"Offer"> | number | null
   upcharge?: Prisma.IntNullableWithAggregatesFilter<"Offer"> | number | null
@@ -451,7 +451,7 @@ export type OfferCreateInput = {
   age?: string | null
   frequencyCap?: string | null
   plz?: string | null
-  platform?: string | null
+  device?: string | null
   placement?: string | null
   reach?: number | null
   upcharge?: number | null
@@ -473,7 +473,7 @@ export type OfferUncheckedCreateInput = {
   age?: string | null
   frequencyCap?: string | null
   plz?: string | null
-  platform?: string | null
+  device?: string | null
   placement?: string | null
   reach?: number | null
   upcharge?: number | null
@@ -495,7 +495,7 @@ export type OfferUpdateInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -517,7 +517,7 @@ export type OfferUncheckedUpdateInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -539,7 +539,7 @@ export type OfferCreateManyInput = {
   age?: string | null
   frequencyCap?: string | null
   plz?: string | null
-  platform?: string | null
+  device?: string | null
   placement?: string | null
   reach?: number | null
   upcharge?: number | null
@@ -561,7 +561,7 @@ export type OfferUpdateManyMutationInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -582,7 +582,7 @@ export type OfferUncheckedUpdateManyInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -604,7 +604,7 @@ export type OfferCountOrderByAggregateInput = {
   age?: Prisma.SortOrder
   frequencyCap?: Prisma.SortOrder
   plz?: Prisma.SortOrder
-  platform?: Prisma.SortOrder
+  device?: Prisma.SortOrder
   placement?: Prisma.SortOrder
   reach?: Prisma.SortOrder
   upcharge?: Prisma.SortOrder
@@ -633,7 +633,7 @@ export type OfferMaxOrderByAggregateInput = {
   age?: Prisma.SortOrder
   frequencyCap?: Prisma.SortOrder
   plz?: Prisma.SortOrder
-  platform?: Prisma.SortOrder
+  device?: Prisma.SortOrder
   placement?: Prisma.SortOrder
   reach?: Prisma.SortOrder
   upcharge?: Prisma.SortOrder
@@ -655,7 +655,7 @@ export type OfferMinOrderByAggregateInput = {
   age?: Prisma.SortOrder
   frequencyCap?: Prisma.SortOrder
   plz?: Prisma.SortOrder
-  platform?: Prisma.SortOrder
+  device?: Prisma.SortOrder
   placement?: Prisma.SortOrder
   reach?: Prisma.SortOrder
   upcharge?: Prisma.SortOrder
@@ -744,7 +744,7 @@ export type OfferCreateWithoutOffergroupInput = {
   age?: string | null
   frequencyCap?: string | null
   plz?: string | null
-  platform?: string | null
+  device?: string | null
   placement?: string | null
   reach?: number | null
   upcharge?: number | null
@@ -765,7 +765,7 @@ export type OfferUncheckedCreateWithoutOffergroupInput = {
   age?: string | null
   frequencyCap?: string | null
   plz?: string | null
-  platform?: string | null
+  device?: string | null
   placement?: string | null
   reach?: number | null
   upcharge?: number | null
@@ -815,7 +815,7 @@ export type OfferScalarWhereInput = {
   age?: Prisma.StringNullableFilter<"Offer"> | string | null
   frequencyCap?: Prisma.StringNullableFilter<"Offer"> | string | null
   plz?: Prisma.StringNullableFilter<"Offer"> | string | null
-  platform?: Prisma.StringNullableFilter<"Offer"> | string | null
+  device?: Prisma.StringNullableFilter<"Offer"> | string | null
   placement?: Prisma.StringNullableFilter<"Offer"> | string | null
   reach?: Prisma.IntNullableFilter<"Offer"> | number | null
   upcharge?: Prisma.IntNullableFilter<"Offer"> | number | null
@@ -837,7 +837,7 @@ export type OfferCreateManyOffergroupInput = {
   age?: string | null
   frequencyCap?: string | null
   plz?: string | null
-  platform?: string | null
+  device?: string | null
   placement?: string | null
   reach?: number | null
   upcharge?: number | null
@@ -858,7 +858,7 @@ export type OfferUpdateWithoutOffergroupInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -879,7 +879,7 @@ export type OfferUncheckedUpdateWithoutOffergroupInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -900,7 +900,7 @@ export type OfferUncheckedUpdateManyWithoutOffergroupInput = {
   age?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   frequencyCap?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plz?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  device?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reach?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   upcharge?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -923,7 +923,7 @@ export type OfferSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   age?: boolean
   frequencyCap?: boolean
   plz?: boolean
-  platform?: boolean
+  device?: boolean
   placement?: boolean
   reach?: boolean
   upcharge?: boolean
@@ -946,7 +946,7 @@ export type OfferSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   age?: boolean
   frequencyCap?: boolean
   plz?: boolean
-  platform?: boolean
+  device?: boolean
   placement?: boolean
   reach?: boolean
   upcharge?: boolean
@@ -969,7 +969,7 @@ export type OfferSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   age?: boolean
   frequencyCap?: boolean
   plz?: boolean
-  platform?: boolean
+  device?: boolean
   placement?: boolean
   reach?: boolean
   upcharge?: boolean
@@ -992,7 +992,7 @@ export type OfferSelectScalar = {
   age?: boolean
   frequencyCap?: boolean
   plz?: boolean
-  platform?: boolean
+  device?: boolean
   placement?: boolean
   reach?: boolean
   upcharge?: boolean
@@ -1007,7 +1007,7 @@ export type OfferSelectScalar = {
   offerGroupID?: boolean
 }
 
-export type OfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "age" | "frequencyCap" | "plz" | "platform" | "placement" | "reach" | "upcharge" | "upchargeTKP" | "start" | "end" | "product" | "rotation" | "tkp" | "output" | "targeting" | "offerGroupID", ExtArgs["result"]["offer"]>
+export type OfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "age" | "frequencyCap" | "plz" | "device" | "placement" | "reach" | "upcharge" | "upchargeTKP" | "start" | "end" | "product" | "rotation" | "tkp" | "output" | "targeting" | "offerGroupID", ExtArgs["result"]["offer"]>
 export type OfferInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   offergroup?: boolean | Prisma.Offer$offergroupArgs<ExtArgs>
 }
@@ -1030,7 +1030,7 @@ export type $OfferPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     age: string | null
     frequencyCap: string | null
     plz: string | null
-    platform: string | null
+    device: string | null
     placement: string | null
     reach: number | null
     upcharge: number | null
@@ -1473,7 +1473,7 @@ export interface OfferFieldRefs {
   readonly age: Prisma.FieldRef<"Offer", 'String'>
   readonly frequencyCap: Prisma.FieldRef<"Offer", 'String'>
   readonly plz: Prisma.FieldRef<"Offer", 'String'>
-  readonly platform: Prisma.FieldRef<"Offer", 'String'>
+  readonly device: Prisma.FieldRef<"Offer", 'String'>
   readonly placement: Prisma.FieldRef<"Offer", 'String'>
   readonly reach: Prisma.FieldRef<"Offer", 'Int'>
   readonly upcharge: Prisma.FieldRef<"Offer", 'Int'>

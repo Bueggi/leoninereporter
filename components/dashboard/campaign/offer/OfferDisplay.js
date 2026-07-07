@@ -121,7 +121,7 @@ const OfferDisplay = ({
           <MetricChip label="Zeitraum" value={zeitraum} />
         </div>
         <MetricChip label="Rotation" value={el.rotation} />
-        <MetricChip label="Plattform" value={el.platform} />
+        <MetricChip label="Device" value={el.device} />
         <MetricChip label="Placement" value={el.placement} />
         <MetricChip label="Frequency Cap" value={el.frequencyCap} />
         <MetricChip label="Alter" value={el.age} />

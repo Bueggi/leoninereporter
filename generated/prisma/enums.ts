@@ -40,7 +40,8 @@ export const STATUS = {
   OFFER: 'OFFER',
   SOLD: 'SOLD',
   RUNNING: 'RUNNING',
-  COMPLETED: 'COMPLETED'
+  COMPLETED: 'COMPLETED',
+  INBOUND: 'INBOUND'
 } as const
 
 export type STATUS = (typeof STATUS)[keyof typeof STATUS]
@@ -52,3 +53,13 @@ export const Anbindung = {
 } as const
 
 export type Anbindung = (typeof Anbindung)[keyof typeof Anbindung]
+
+
+export const INBOUND_STATUS = {
+  NEW: 'NEW',
+  CONTACTED: 'CONTACTED',
+  CONVERTED: 'CONVERTED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type INBOUND_STATUS = (typeof INBOUND_STATUS)[keyof typeof INBOUND_STATUS]

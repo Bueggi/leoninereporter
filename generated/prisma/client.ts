@@ -89,3 +89,18 @@ export type Report = Prisma.ReportModel
  * 
  */
 export type ReportEntry = Prisma.ReportEntryModel
+/**
+ * Model InboundRequest
+ * 
+ */
+export type InboundRequest = Prisma.InboundRequestModel
+/**
+ * Model ReportPreset
+ * 
+ */
+export type ReportPreset = Prisma.ReportPresetModel
+/**
+ * Model WeeklyCheck
+ * 
+ */
+export type WeeklyCheck = Prisma.WeeklyCheckModel

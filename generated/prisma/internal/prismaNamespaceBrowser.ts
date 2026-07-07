@@ -60,7 +60,10 @@ export const ModelName = {
   Channel: 'Channel',
   Advertiser: 'Advertiser',
   Report: 'Report',
-  ReportEntry: 'ReportEntry'
+  ReportEntry: 'ReportEntry',
+  InboundRequest: 'InboundRequest',
+  ReportPreset: 'ReportPreset',
+  WeeklyCheck: 'WeeklyCheck'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -125,7 +128,8 @@ export const CampaignScalarFieldEnum = {
   status: 'status',
   contact: 'contact',
   contactEmail: 'contactEmail',
-  trade: 'trade'
+  trade: 'trade',
+  inboundNotes: 'inboundNotes'
 } as const
 
 export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
@@ -155,7 +159,7 @@ export const OfferScalarFieldEnum = {
   age: 'age',
   frequencyCap: 'frequencyCap',
   plz: 'plz',
-  platform: 'platform',
+  device: 'device',
   placement: 'placement',
   reach: 'reach',
   upcharge: 'upcharge',
@@ -261,6 +265,52 @@ export const ReportEntryScalarFieldEnum = {
 } as const
 
 export type ReportEntryScalarFieldEnum = (typeof ReportEntryScalarFieldEnum)[keyof typeof ReportEntryScalarFieldEnum]
+
+
+export const InboundRequestScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status',
+  advertiser: 'advertiser',
+  product: 'product',
+  goalType: 'goalType',
+  budget: 'budget',
+  reach: 'reach',
+  dateStart: 'dateStart',
+  dateEnd: 'dateEnd',
+  inboundNotes: 'inboundNotes',
+  firstname: 'firstname',
+  lastname: 'lastname',
+  company: 'company',
+  email: 'email',
+  phone: 'phone'
+} as const
+
+export type InboundRequestScalarFieldEnum = (typeof InboundRequestScalarFieldEnum)[keyof typeof InboundRequestScalarFieldEnum]
+
+
+export const ReportPresetScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  campaignName: 'campaignName',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  targetReach: 'targetReach',
+  targetBudget: 'targetBudget',
+  lastQueried: 'lastQueried'
+} as const
+
+export type ReportPresetScalarFieldEnum = (typeof ReportPresetScalarFieldEnum)[keyof typeof ReportPresetScalarFieldEnum]
+
+
+export const WeeklyCheckScalarFieldEnum = {
+  id: 'id',
+  checkedAt: 'checkedAt'
+} as const
+
+export type WeeklyCheckScalarFieldEnum = (typeof WeeklyCheckScalarFieldEnum)[keyof typeof WeeklyCheckScalarFieldEnum]
 
 
 export const SortOrder = {

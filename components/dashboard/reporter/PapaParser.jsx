@@ -96,6 +96,23 @@ export default function ReportParser() {
           (item) => (item.avgVTR = (item.completes / item.totalReach) * 100),
         );
 
+        const campaignDaily = data.reduce((acc, row) => {
+          const date = row["Date"];
+          if (!date) return acc;
+          const existing = acc.find((d) => d.date === date);
+          if (existing) {
+            existing.reach += row["Total impressions"] || 0;
+            existing.revenue += row["Total CPM and CPC revenue"] || 0;
+          } else {
+            acc.push({
+              date,
+              reach: row["Total impressions"] || 0,
+              revenue: row["Total CPM and CPC revenue"] || 0,
+            });
+          }
+          return acc;
+        }, []);
+
         setResults({
           campaign: {
             ...campaign,
@@ -107,6 +124,7 @@ export default function ReportParser() {
           },
           lineItems,
           creatives,
+          daily: campaignDaily,
         });
       },
     });
