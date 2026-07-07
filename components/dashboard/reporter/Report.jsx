@@ -40,7 +40,6 @@ const Report = ({ data }) => {
   const [showCreatives, setShowCreatives] = useState(true);
   const [showLineItems, setShowLineItems] = useState(true);
 
-  const [weeklyChecks, setWeeklyChecks] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef(null);
@@ -78,36 +77,7 @@ const Report = ({ data }) => {
     setEndDate(moment(preset.endDate).format("YYYY-MM-DD"));
     setTargetReach(preset.targetReach);
     setTargetBudget(preset.targetBudget);
-    setWeeklyChecks(
-      preset.weeklyChecks.map((wc) => ({
-        weekOffset: wc.weekOffset,
-        targetReach: wc.targetReach,
-        targetBudget: wc.targetBudget,
-      }))
-    );
     setShowSuggestions(false);
-  };
-
-  const handleAddWeeklyCheck = () => {
-    const nextOffset = weeklyChecks.length;
-    setWeeklyChecks([
-      ...weeklyChecks,
-      { weekOffset: nextOffset, targetReach: 25000, targetBudget: 2500 },
-    ]);
-  };
-
-  const handleUpdateWeeklyCheck = (index, field, val) => {
-    const updated = [...weeklyChecks];
-    updated[index][field] = +val;
-    setWeeklyChecks(updated);
-  };
-
-  const handleRemoveWeeklyCheck = (index) => {
-    const updated = weeklyChecks.filter((_, i) => i !== index).map((check, i) => ({
-      ...check,
-      weekOffset: i,
-    }));
-    setWeeklyChecks(updated);
   };
 
   const handleGenerateReport = async () => {
@@ -121,7 +91,6 @@ const Report = ({ data }) => {
           targetBudget: +targetBudget,
           startDate,
           endDate,
-          weeklyChecks,
         }),
       });
     } catch (err) {
@@ -299,70 +268,7 @@ const Report = ({ data }) => {
               />
             </div>
 
-            {/* Editable Weekly Checks Table */}
-            <div className="space-y-2 pt-4 border-t border-zinc-800">
-              <div className="flex justify-between items-center">
-                <label className="text-[10px] text-zinc-300 uppercase tracking-widest font-semibold">
-                  Wöchentliche Kontrollpunkte
-                </label>
-                <button
-                  type="button"
-                  onClick={handleAddWeeklyCheck}
-                  className="text-[9px] bg-[#a3895d] text-black px-2 py-1 rounded hover:bg-[#8e764d]"
-                >
-                  + Woche hinzufügen
-                </button>
-              </div>
 
-              {weeklyChecks.length > 0 ? (
-                <div className="max-h-40 overflow-y-auto border border-zinc-800 rounded bg-black">
-                  <table className="w-full text-left text-[10px]">
-                    <thead className="bg-[#121212] border-b border-zinc-800 text-zinc-400">
-                      <tr>
-                        <th className="p-2">Woche</th>
-                        <th className="p-2 text-right">Ziel Imp.</th>
-                        <th className="p-2 text-right">Ziel Budget (€)</th>
-                        <th className="p-2 text-center">Aktion</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-900">
-                      {weeklyChecks.map((check, index) => (
-                        <tr key={index}>
-                          <td className="p-2 font-bold text-[#a3895d]">Woche {check.weekOffset + 1}</td>
-                          <td className="p-2 text-right">
-                            <input
-                              type="number"
-                              value={check.targetReach}
-                              onChange={(e) => handleUpdateWeeklyCheck(index, "targetReach", e.target.value)}
-                              className="w-20 bg-zinc-950 border border-zinc-800 rounded p-1 text-right text-[#a3895d]"
-                            />
-                          </td>
-                          <td className="p-2 text-right">
-                            <input
-                              type="number"
-                              value={check.targetBudget}
-                              onChange={(e) => handleUpdateWeeklyCheck(index, "targetBudget", e.target.value)}
-                              className="w-20 bg-zinc-950 border border-zinc-800 rounded p-1 text-right text-[#a3895d]"
-                            />
-                          </td>
-                          <td className="p-2 text-center">
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveWeeklyCheck(index)}
-                              className="text-red-500 hover:text-red-400 text-[10px]"
-                            >
-                              Löschen
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-[10px] text-zinc-500 italic">Keine wöchentlichen Kontrollpunkte definiert.</p>
-              )}
-            </div>
 
             {/* Toggles */}
             <div className="flex items-center gap-8 pt-2">
@@ -721,97 +627,7 @@ const Report = ({ data }) => {
         </div>
 
       {/* Page 2: Weekly Performance Checks */}
-      {weeklyChecks && weeklyChecks.length > 0 && (
-        <div className="a4-container flex flex-col justify-between">
-          <header className="flex justify-between items-end border-b border-zinc-800 pb-4 h-[60px] shrink-0">
-            <div className="flex items-center gap-4">
-              <img src={logoPath} alt="Logo" className="h-8 w-auto" />
-              <div className="h-8 w-px bg-zinc-800" />
-              <h1 className="text-xl font-semibold text-[#a3895d] uppercase tracking-tight ">
-                WÖCHENTLICHE KONTROLLPUNKTE
-              </h1>
-            </div>
-            <div className="text-right text-[9px] text-zinc-400 font-mono uppercase flex flex-col gap-1">
-              <div className="flex items-center justify-end gap-4">
-                <span>Start: <span className="text-zinc-200">{startDate}</span></span>
-                <span>Ende: <span className="text-zinc-200">{endDate}</span></span>
-              </div>
-              <div>
-                <span>Reporting: <span className="text-[#a3895d]">{reportingDate}</span></span>
-              </div>
-            </div>
-          </header>
 
-          <div className="flex-grow py-6 overflow-hidden flex flex-col justify-center">
-            <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-6 flex flex-col h-[340px]">
-              <div className="flex items-center gap-2 mb-4 shrink-0">
-                <Clock size={16} className="text-[#a3895d]" />
-                <span className="text-[10px] text-zinc-300 uppercase tracking-widest font-semibold">IST VS. SOLL VERGLEICH</span>
-              </div>
-
-              <div className="flex-grow overflow-auto">
-                <table className="w-full text-left text-xs text-zinc-350">
-                  <thead className="text-[10px] text-zinc-450 uppercase tracking-widest border-b border-zinc-800">
-                    <tr>
-                      <th className="py-2">Woche</th>
-                      <th className="py-2">Zeitraum</th>
-                      <th className="py-2 text-right">Ziel Impressions</th>
-                      <th className="py-2 text-right">Ist Impressions</th>
-                      <th className="py-2 text-right">Delta Imp.</th>
-                      <th className="py-2 text-right">Ziel Budget</th>
-                      <th className="py-2 text-right">Ist Budget</th>
-                      <th className="py-2 text-right">Delta Budget</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-900 font-mono">
-                    {weeklyChecks.map((check, idx) => {
-                      const weekStart = moment(startDate).add(check.weekOffset * 7, "days");
-                      const weekEnd = moment(startDate).add(check.weekOffset * 7 + 6, "days");
-                      const isEndPastCampaign = weekEnd.isAfter(moment(endDate));
-                      const finalEnd = isEndPastCampaign ? moment(endDate) : weekEnd;
-
-                      // Calculate actuals
-                      const actual = (data.daily || []).reduce(
-                        (sum, day) => {
-                          const d = moment(day.date);
-                          if (d.isSameOrAfter(weekStart, "day") && d.isSameOrBefore(finalEnd, "day")) {
-                            sum.reach += day.reach || 0;
-                            sum.revenue += day.revenue || 0;
-                          }
-                          return sum;
-                        },
-                        { reach: 0, revenue: 0 }
-                      );
-
-                      const deltaReach = actual.reach - check.targetReach;
-                      const deltaRevenue = actual.revenue - check.targetBudget;
-
-                      return (
-                        <tr key={idx} className="hover:bg-zinc-950">
-                          <td className="py-2 font-bold text-[#a3895d]">Woche {check.weekOffset + 1}</td>
-                          <td className="py-2 text-zinc-400 text-[10px]">
-                            {weekStart.format("DD.MM.")} – {finalEnd.format("DD.MM.")}
-                          </td>
-                          <td className="py-2 text-right">{Number(check.targetReach).toLocaleString()}</td>
-                          <td className="py-2 text-right text-zinc-200">{Number(actual.reach).toLocaleString()}</td>
-                          <td className={`py-2 text-right font-bold ${deltaReach >= 0 ? "text-green-500" : "text-red-500"}`}>
-                            {deltaReach >= 0 ? "+" : ""}{deltaReach.toLocaleString()}
-                          </td>
-                          <td className="py-2 text-right">€ {Number(check.targetBudget).toLocaleString()}</td>
-                          <td className="py-2 text-right text-zinc-200">€ {actual.revenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</td>
-                          <td className={`py-2 text-right font-bold ${deltaRevenue >= 0 ? "text-green-500" : "text-red-500"}`}>
-                            {deltaRevenue >= 0 ? "+" : ""}€ {deltaRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Creative Pages - 2 per Page */}
       {creativeChunks.map((chunk, pageIndex) => (

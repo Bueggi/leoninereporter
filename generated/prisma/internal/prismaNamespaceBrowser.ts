@@ -62,8 +62,7 @@ export const ModelName = {
   Report: 'Report',
   ReportEntry: 'ReportEntry',
   InboundRequest: 'InboundRequest',
-  ReportPreset: 'ReportPreset',
-  WeeklyCheck: 'WeeklyCheck'
+  ReportPreset: 'ReportPreset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -303,14 +302,6 @@ export const ReportPresetScalarFieldEnum = {
 } as const
 
 export type ReportPresetScalarFieldEnum = (typeof ReportPresetScalarFieldEnum)[keyof typeof ReportPresetScalarFieldEnum]
-
-
-export const WeeklyCheckScalarFieldEnum = {
-  id: 'id',
-  checkedAt: 'checkedAt'
-} as const
-
-export type WeeklyCheckScalarFieldEnum = (typeof WeeklyCheckScalarFieldEnum)[keyof typeof WeeklyCheckScalarFieldEnum]
 
 
 export const SortOrder = {

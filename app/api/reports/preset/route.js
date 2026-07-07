@@ -1,8 +1,33 @@
 import { NextResponse } from "next/server";
 import prisma from "@lib/prisma";
 
+// Automated cleanup function to delete report presets that haven't been reported/updated in 60 days
+async function performCleanup() {
+  try {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - 60);
+
+    const deleted = await prisma.reportPreset.deleteMany({
+      where: {
+        lastQueried: {
+          lt: cutoffDate,
+        },
+      },
+    });
+
+    if (deleted.count > 0) {
+      console.log(`[Cleanup] Deleted ${deleted.count} report presets older than 60 days.`);
+    }
+  } catch (error) {
+    console.error("[Cleanup] Error during automated preset cleanup:", error);
+  }
+}
+
 export async function GET(req) {
   try {
+    // Run cleanup asynchronously in the background
+    performCleanup().catch(err => console.error(err));
+
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query") || "";
 
@@ -15,13 +40,6 @@ export async function GET(req) {
         campaignName: {
           contains: query,
           mode: "insensitive",
-        },
-      },
-      include: {
-        weeklyChecks: {
-          orderBy: {
-            weekOffset: "asc",
-          },
         },
       },
       take: 10,
@@ -39,7 +57,10 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { campaignName, targetReach, targetBudget, startDate, endDate, weeklyChecks } = await req.json();
+    // Run cleanup asynchronously in the background
+    performCleanup().catch(err => console.error(err));
+
+    const { campaignName, targetReach, targetBudget, startDate, endDate } = await req.json();
 
     if (!campaignName) {
       return NextResponse.json(
@@ -48,47 +69,23 @@ export async function POST(req) {
       );
     }
 
-    // Use a transaction to upsert preset and replace weekly checks
-    const preset = await prisma.$transaction(async (tx) => {
-      // 1. Upsert ReportPreset
-      const dbPreset = await tx.reportPreset.upsert({
-        where: { campaignName },
-        update: {
-          targetReach: +targetReach,
-          targetBudget: +targetBudget,
-          startDate: new Date(startDate),
-          endDate: new Date(endDate),
-        },
-        create: {
-          campaignName,
-          targetReach: +targetReach,
-          targetBudget: +targetBudget,
-          startDate: new Date(startDate),
-          endDate: new Date(endDate),
-        },
-      });
-
-      // 2. Delete existing weekly checks for this preset
-      await tx.weeklyCheck.deleteMany({
-        where: { presetId: dbPreset.id },
-      });
-
-      // 3. Create new weekly checks
-      if (weeklyChecks && weeklyChecks.length > 0) {
-        await tx.weeklyCheck.createMany({
-          data: weeklyChecks.map((check) => ({
-            presetId: dbPreset.id,
-            weekOffset: +check.weekOffset,
-            targetReach: +check.targetReach,
-            targetBudget: +check.targetBudget,
-          })),
-        });
-      }
-
-      return tx.reportPreset.findUnique({
-        where: { id: dbPreset.id },
-        include: { weeklyChecks: true },
-      });
+    const preset = await prisma.reportPreset.upsert({
+      where: { campaignName },
+      update: {
+        targetReach: +targetReach,
+        targetBudget: +targetBudget,
+        startDate,
+        endDate,
+        lastQueried: new Date(),
+      },
+      create: {
+        campaignName,
+        targetReach: +targetReach,
+        targetBudget: +targetBudget,
+        startDate,
+        endDate,
+        lastQueried: new Date(),
+      },
     });
 
     return NextResponse.json({ success: true, preset });

@@ -395,8 +395,7 @@ export const ModelName = {
   Report: 'Report',
   ReportEntry: 'ReportEntry',
   InboundRequest: 'InboundRequest',
-  ReportPreset: 'ReportPreset',
-  WeeklyCheck: 'WeeklyCheck'
+  ReportPreset: 'ReportPreset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "campaign" | "booking" | "offer" | "offerGroup" | "creator" | "channel" | "advertiser" | "report" | "reportEntry" | "inboundRequest" | "reportPreset" | "weeklyCheck"
+    modelProps: "user" | "campaign" | "booking" | "offer" | "offerGroup" | "creator" | "channel" | "advertiser" | "report" | "reportEntry" | "inboundRequest" | "reportPreset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1304,80 +1303,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    WeeklyCheck: {
-      payload: Prisma.$WeeklyCheckPayload<ExtArgs>
-      fields: Prisma.WeeklyCheckFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.WeeklyCheckFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.WeeklyCheckFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
-        }
-        findFirst: {
-          args: Prisma.WeeklyCheckFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.WeeklyCheckFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
-        }
-        findMany: {
-          args: Prisma.WeeklyCheckFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>[]
-        }
-        create: {
-          args: Prisma.WeeklyCheckCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
-        }
-        createMany: {
-          args: Prisma.WeeklyCheckCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.WeeklyCheckCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>[]
-        }
-        delete: {
-          args: Prisma.WeeklyCheckDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
-        }
-        update: {
-          args: Prisma.WeeklyCheckUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
-        }
-        deleteMany: {
-          args: Prisma.WeeklyCheckDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.WeeklyCheckUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.WeeklyCheckUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>[]
-        }
-        upsert: {
-          args: Prisma.WeeklyCheckUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeeklyCheckPayload>
-        }
-        aggregate: {
-          args: Prisma.WeeklyCheckAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateWeeklyCheck>
-        }
-        groupBy: {
-          args: Prisma.WeeklyCheckGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.WeeklyCheckGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.WeeklyCheckCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.WeeklyCheckCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -1638,14 +1563,6 @@ export const ReportPresetScalarFieldEnum = {
 } as const
 
 export type ReportPresetScalarFieldEnum = (typeof ReportPresetScalarFieldEnum)[keyof typeof ReportPresetScalarFieldEnum]
-
-
-export const WeeklyCheckScalarFieldEnum = {
-  id: 'id',
-  checkedAt: 'checkedAt'
-} as const
-
-export type WeeklyCheckScalarFieldEnum = (typeof WeeklyCheckScalarFieldEnum)[keyof typeof WeeklyCheckScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1946,7 +1863,6 @@ export type GlobalOmitConfig = {
   reportEntry?: Prisma.ReportEntryOmit
   inboundRequest?: Prisma.InboundRequestOmit
   reportPreset?: Prisma.ReportPresetOmit
-  weeklyCheck?: Prisma.WeeklyCheckOmit
 }
 
 /* Types for Logging */

@@ -77,8 +77,3 @@ export type InboundRequest = Prisma.InboundRequestModel
  * 
  */
 export type ReportPreset = Prisma.ReportPresetModel
-/**
- * Model WeeklyCheck
- * 
- */
-export type WeeklyCheck = Prisma.WeeklyCheckModel

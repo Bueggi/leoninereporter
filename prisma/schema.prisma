@@ -375,8 +375,3 @@ model ReportPreset {
   lastQueried  DateTime @default(now())
 }
 
-model WeeklyCheck {
-  id        String   @id @default(uuid())
-  checkedAt DateTime @default(now())
-}
-
