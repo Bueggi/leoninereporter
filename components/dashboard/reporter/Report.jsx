@@ -123,16 +123,18 @@ const Report = ({ data }) => {
   };
 
   // --- 3. BERECHNUNGEN (Basierend auf Inputs) ---
-  const currentReach = data.campaign.impressions;
-  const currentRevenue = data.campaign.revenue;
-  const reachProgress = Math.min(
-    (currentReach / (Number(targetReach) || 1)) * 100,
-    100,
-  );
-  const budgetProgress = Math.min(
-    (currentRevenue / (Number(targetBudget) || 1)) * 100,
-    100,
-  );
+  const currentReach = Number(data.campaign.impressions) || 0;
+  const currentRevenue = Number(data.campaign.revenue) || 0;
+
+  const parsedTargetReach = Number(targetReach);
+  const reachProgress = (!isNaN(parsedTargetReach) && parsedTargetReach > 0)
+    ? Math.min((currentReach / parsedTargetReach) * 100, 100)
+    : 0;
+
+  const parsedTargetBudget = Number(targetBudget);
+  const budgetProgress = (!isNaN(parsedTargetBudget) && parsedTargetBudget > 0)
+    ? Math.min((currentRevenue / parsedTargetBudget) * 100, 100)
+    : 0;
 
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -251,7 +253,10 @@ const Report = ({ data }) => {
               <input
                 type="number"
                 value={targetReach}
-                onChange={(e) => setTargetReach(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setTargetReach(val === "" ? "" : Number(val));
+                }}
                 className="w-full bg-black border border-zinc-800 rounded p-2 text-[#a3895d] outline-none"
               />
             </div>
@@ -263,7 +268,10 @@ const Report = ({ data }) => {
               <input
                 type="number"
                 value={targetBudget}
-                onChange={(e) => setTargetBudget(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setTargetBudget(val === "" ? "" : Number(val));
+                }}
                 className="w-full bg-black border border-zinc-800 rounded p-2 text-[#a3895d] outline-none"
               />
             </div>
@@ -426,7 +434,7 @@ const Report = ({ data }) => {
                     {/* Start/End Labels */}
                     <div className="absolute w-full -bottom-2 px-8 flex justify-between text-[9px] font-mono text-zinc-400 uppercase">
                       <span className="ml-2">0</span>
-                      <span>{Number(targetReach).toLocaleString()}</span>
+                      <span>{(Number(targetReach) || 0).toLocaleString()}</span>
                     </div>
                     </div>
                   </div>
