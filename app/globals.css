@@ -158,4 +158,27 @@
     @apply bg-background text-foreground;
     }
 }
+
+@keyframes highlight-pulse {
+  0% {
+    transform: scale(0.96);
+    background-color: rgb(224, 231, 255); /* indigo-100 */
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    background-color: rgb(199, 210, 254); /* indigo-200 */
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    background-color: initial;
+    box-shadow: initial;
+  }
+}
+
+.animate-duplicate {
+  animation: highlight-pulse 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
       

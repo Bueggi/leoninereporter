@@ -78,7 +78,7 @@ export default function Modal({ setOpen, allCampaigns, setAllCampaigns }) {
 
       setAllCampaigns({
         mode: allCampaigns.mode,
-        data: [...allCampaigns.data, data],
+        data: [data, ...allCampaigns.data],
       });
       setOpen(false);
     } catch (error) {

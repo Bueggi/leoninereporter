@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@components/pComponents/LoadingSpinner";
-import { PlusIcon, TrashIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon, DocumentArrowDownIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import EmptyState from "@components/pComponents/EmptyState";
 import EditIndividualOfferNumber from "../../../../components/dashboard/campaign/pComponents/EditIndividualOfferNumber";
 
@@ -14,6 +14,8 @@ import {
   getcampaign,
   addOfferGroup,
   deleteOffer,
+  duplicateOfferGroup,
+  duplicateOffer,
 } from "./lib";
 import Modal from "@components/pComponents/Modal";
 import AddOffer from "@components/dashboard/campaign/offer/AddOffer";
@@ -52,6 +54,7 @@ export default function Campaigns({ params: { id } }) {
   const [offerToEditPricingModel, setOfferToEditPricingModel] = useState("TKP");
   const [addBookingModal, setAddBookingModal] = useState(false);
   const [offerArray, setOfferArray] = useState([]);
+  const [duplicatedItemId, setDuplicatedItemId] = useState(null);
 
   const { status, data: session } = useSession({
     required: true,
@@ -157,7 +160,9 @@ export default function Campaigns({ params: { id } }) {
             campaign.offers.map((el, i) => (
               <div
                 key={i}
-                className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden transition-shadow duration-200 hover:shadow-md"
+                className={`flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden transition-shadow duration-200 hover:shadow-md ${
+                  el.id === duplicatedItemId ? "animate-duplicate" : ""
+                }`}
               >
                 {/* Group Header */}
                 <div className="flex items-center justify-between bg-slate-800 px-4 py-3 gap-2">
@@ -194,6 +199,15 @@ export default function Campaigns({ params: { id } }) {
 
                     <button
                       type="button"
+                      onClick={() => duplicateOfferGroup(el.id, campaign, setcampaign, setDuplicatedItemId)}
+                      className="rounded-lg bg-white/10 p-1.5 text-slate-300 hover:bg-indigo-500 hover:text-white transition-colors duration-150"
+                      title="Angebotsgruppe duplizieren"
+                    >
+                      <DocumentDuplicateIcon className="h-3.5 w-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => deleteOfferGroup(el.id, campaign, setcampaign)}
                       className="rounded-lg bg-white/10 p-1.5 text-slate-300 hover:bg-red-500 hover:text-white transition-colors duration-150"
                       title="Angebotsgruppe löschen"
@@ -218,6 +232,9 @@ export default function Campaigns({ params: { id } }) {
                         setEditOfferModal={setEditOfferModal}
                         campaign={campaign}
                         setCampaign={setcampaign}
+                        duplicateOffer={duplicateOffer}
+                        duplicatedItemId={duplicatedItemId}
+                        setDuplicatedItemId={setDuplicatedItemId}
                       />
                     ))
                   ) : (

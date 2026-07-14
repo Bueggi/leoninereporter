@@ -1,5 +1,5 @@
 import moment from "moment";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import adFormatNames from "@lib/dashboard/AdFormatNames";
 
 const MetricChip = ({ label, value }) => {
@@ -24,6 +24,9 @@ const OfferDisplay = ({
   campaign,
   setCampaign,
   pricingModel = "TKP",
+  duplicateOffer,
+  duplicatedItemId,
+  setDuplicatedItemId,
 }) => {
   const displayName =
     adFormatNames.filter((formats) => formats.name === el.product)[0]
@@ -54,7 +57,9 @@ const OfferDisplay = ({
 
   return (
     <div
-      className="group relative my-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300"
+      className={`group relative my-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300 ${
+        el.id === duplicatedItemId ? "animate-duplicate" : ""
+      }`}
       key={i}
     >
       {/* Header */}
@@ -81,6 +86,14 @@ const OfferDisplay = ({
             title="Bearbeiten"
           >
             <PencilIcon className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => duplicateOffer(el.id, campaign, setCampaign, setDuplicatedItemId)}
+            className="rounded-lg bg-white/10 p-1.5 text-white hover:bg-indigo-500 transition-colors duration-150"
+            title="Duplizieren"
+          >
+            <DocumentDuplicateIcon className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"

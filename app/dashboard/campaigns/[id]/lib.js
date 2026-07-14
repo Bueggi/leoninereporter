@@ -117,6 +117,82 @@ const deleteOffer = async (id, state, setState) => {
   }
 };
 
+const duplicateOfferGroup = async (id, state, setState, setDuplicatedItemId) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTURL}/api/offergroup/${id}/duplicate`,
+      {
+        method: "POST",
+      }
+    );
+
+    const { data, message } = await res.json();
+    if (!res.ok) return toast.error(message || "Fehler beim Duplizieren");
+
+    // Insert new group right after the original group in local state
+    const index = state.offers.findIndex((group) => group.id === id);
+    const newOffers = [...state.offers];
+    newOffers.splice(index + 1, 0, data);
+
+    setState({
+      ...state,
+      offers: newOffers,
+    });
+
+    // Trigger animation
+    setDuplicatedItemId(data.id);
+    setTimeout(() => {
+      setDuplicatedItemId(null);
+    }, 2000);
+
+    return toast.success("Die Angebotsgruppe wurde erfolgreich dupliziert");
+  } catch (error) {
+    toast.error(error.message || error);
+  }
+};
+
+const duplicateOffer = async (id, state, setState, setDuplicatedItemId) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_HOSTURL}/api/offer/${id}/duplicate`,
+      {
+        method: "POST",
+      }
+    );
+
+    const { data, message } = await res.json();
+    if (!res.ok) return toast.error(message || "Fehler beim Duplizieren");
+
+    const newState = {
+      ...state,
+      offers: state.offers.map((offerGroup) => {
+        if (offerGroup.id !== data.offerGroupID) {
+          return offerGroup;
+        }
+        const index = offerGroup.offers.findIndex((off) => off.id === id);
+        const newOffers = [...offerGroup.offers];
+        newOffers.splice(index + 1, 0, data);
+        return {
+          ...offerGroup,
+          offers: newOffers,
+        };
+      }),
+    };
+
+    setState(newState);
+
+    // Trigger animation
+    setDuplicatedItemId(data.id);
+    setTimeout(() => {
+      setDuplicatedItemId(null);
+    }, 2000);
+
+    return toast.success("Das Angebot wurde erfolgreich dupliziert");
+  } catch (error) {
+    return toast.error(error.message || error);
+  }
+};
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -127,4 +203,5 @@ const  returnSession = async () => {
   return session
 }
 
-export { deleteOfferGroup, getcampaign, addOfferGroup, deleteOffer, returnSession };
+export { deleteOfferGroup, getcampaign, addOfferGroup, deleteOffer, duplicateOfferGroup, duplicateOffer, returnSession };
+

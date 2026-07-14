@@ -255,19 +255,27 @@ export const MyDoc = ({
 
   const isCPCV = offer.pricingModel === "CPCV";
 
-  const totalBudget = numberToEUR(
-    offer.offers.reduce(
-      (accumulator, currentValue) =>
-        isCPCV
-          ? accumulator + currentValue.reach * currentValue.tkp
-          : accumulator + (currentValue.reach * currentValue.tkp) / 1000,
-      0,
-    ) + upchargeMetrics.totalCosts,
-  );
-
   const totalReach = offer.offers.reduce((accumulator, currentValue) => {
     return accumulator + currentValue.reach;
   }, 0);
+
+  const totalBudgetNumeric = offer.offers.reduce(
+    (accumulator, currentValue) =>
+      isCPCV
+        ? accumulator + currentValue.reach * currentValue.tkp
+        : accumulator + (currentValue.reach * currentValue.tkp) / 1000,
+    0,
+  ) + upchargeMetrics.totalCosts;
+
+  const totalBudget = numberToEUR(totalBudgetNumeric);
+
+  const averageTKPNumeric = totalReach > 0
+    ? (isCPCV 
+        ? totalBudgetNumeric / totalReach 
+        : (totalBudgetNumeric * 1000) / totalReach)
+    : 0;
+
+  const averageTKP = numberToEURPrecise(averageTKPNumeric);
 
   // Produktspezifische Berechnungen
   const productMetrics = calculateProductMetrics(offer);
@@ -578,6 +586,7 @@ export const MyDoc = ({
                 style={tw("flex flex-row pt-4 mt-2 border-t-2 border-black")}
               >
                 <Text style={tw("flex-1 uppercase")}>Total</Text>
+                <Text style={tw("w-20 text-right")}>{averageTKP}</Text>
                 <Text style={tw("w-24 text-right")}>
                   {new Intl.NumberFormat("de-DE").format(totalReach)}
                 </Text>
