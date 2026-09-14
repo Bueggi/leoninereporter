@@ -653,48 +653,20 @@ export default function ReportParser() {
     });
   };
 
-  // Berechne den Vorwochen-Zeitraum dynamisch anhand des neuesten Datums in den CSV-Daten
+  // Berechne den Vorwochen-Zeitraum stets bezogen auf das aktuelle Datum (Vorwoche von heute: 07.09.2026 – 13.09.2026, KW 37)
   const vorwocheRange = useMemo(() => {
-    const allDates = [];
-    if (rawCampaignsData) {
-      Object.values(rawCampaignsData).forEach((c) => {
-        (c.daily || []).forEach((d) => {
-          if (d.date) {
-            const iso = normalizeDateStr(d.date);
-            if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) allDates.push(iso);
-          }
-        });
-        (c.rawRows || []).forEach((r) => {
-          const iso = getRowDate(r);
-          if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) allDates.push(iso);
-        });
-      });
-    }
-
-    let maxMoment;
-    if (allDates.length > 0) {
-      const sortedUniqueDates = Array.from(new Set(allDates)).sort();
-      const maxDateStr = sortedUniqueDates[sortedUniqueDates.length - 1];
-      maxMoment = moment(maxDateStr);
-    } else {
-      maxMoment = moment();
-    }
-
-    let startMoment, endMoment;
-    if (maxMoment.isoWeekday() === 7) {
-      endMoment = maxMoment.clone();
-      startMoment = maxMoment.clone().startOf("isoWeek");
-    } else {
-      endMoment = maxMoment.clone().subtract(1, "week").endOf("isoWeek");
-      startMoment = maxMoment.clone().subtract(1, "week").startOf("isoWeek");
-    }
+    const today = moment();
+    
+    // Die abgeschlossene Vorwoche ist die vorausgehende Kalenderwoche (Mo–So)
+    const startMoment = today.clone().subtract(1, "week").startOf("isoWeek");
+    const endMoment = today.clone().subtract(1, "week").endOf("isoWeek");
 
     const start = startMoment.format("YYYY-MM-DD");
     const end = endMoment.format("YYYY-MM-DD");
     const label = `${startMoment.format("DD.MM.YYYY")} – ${endMoment.format("DD.MM.YYYY")} (KW ${endMoment.isoWeek()})`;
 
-    return { start, end, label, maxDateStr: maxMoment.format("YYYY-MM-DD") };
-  }, [rawCampaignsData]);
+    return { start, end, label, maxDateStr: today.format("YYYY-MM-DD") };
+  }, []);
 
   // Kategorisiere Kampagnen: Vorwoche Reichweite vs. Keine Vorwoche Reichweite & Bereit vs. Unkonfiguriert
   const categorizedCampaigns = useMemo(() => {
