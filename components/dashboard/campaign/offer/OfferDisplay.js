@@ -49,7 +49,7 @@ const OfferDisplay = ({
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 2,
-    maximumFractionDigits: 10,
+    maximumFractionDigits: 2,
   });
 
   const reach = el.reach.toLocaleString("de-DE");

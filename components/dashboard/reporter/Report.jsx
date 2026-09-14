@@ -10,8 +10,8 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
 } from "recharts";
+import { exportCampaignToExcel, exportCampaignToCSV } from "./exportUtils";
 import {
   TrendingUp,
   Rocket,
@@ -24,6 +24,10 @@ import {
   Clock,
   Target,
   Layers,
+  FileSpreadsheet,
+  FileText,
+  Printer,
+  ArrowLeft,
 } from "lucide-react";
 
 const cleanNumber = (val) => {
@@ -33,19 +37,42 @@ const cleanNumber = (val) => {
   return Number(cleaned) || 0;
 };
 
-const Report = ({ data }) => {
+const Report = ({
+  data,
+  preset: initialPreset,
+  initialGenerated = false,
+  onBack,
+  showCreativesProp = true,
+  showLineItemsProp = true,
+}) => {
   const contentRef = useRef(null);
   const logoPath = "/HoTLogo_White.png";
 
   // --- 1. STATE FÜR ABFRAGE ---
-  const [isGenerated, setIsGenerated] = useState(false);
-  const [reportName, setReportName] = useState(data.campaign.name || "");
-  const [targetReach, setTargetReach] = useState(100000);
-  const [targetBudget, setTargetBudget] = useState(10000);
-  const [startDate, setStartDate] = useState(data.campaign.startDate || "2026-02-02");
-  const [endDate, setEndDate] = useState(data.campaign.endDate || "2026-02-28");
-  const [showCreatives, setShowCreatives] = useState(true);
-  const [showLineItems, setShowLineItems] = useState(true);
+  const [isGenerated, setIsGenerated] = useState(
+    initialGenerated || !!initialPreset
+  );
+  const [reportName, setReportName] = useState(
+    initialPreset?.campaignName || data?.campaign?.name || ""
+  );
+  const [targetReach, setTargetReach] = useState(
+    initialPreset?.targetReach ?? data?.campaign?.targetReach ?? 100000
+  );
+  const [targetBudget, setTargetBudget] = useState(
+    initialPreset?.targetBudget ?? data?.campaign?.targetBudget ?? 10000
+  );
+  const [startDate, setStartDate] = useState(
+    initialPreset?.startDate
+      ? moment(initialPreset.startDate).format("YYYY-MM-DD")
+      : data?.campaign?.startDate || "2026-08-01"
+  );
+  const [endDate, setEndDate] = useState(
+    initialPreset?.endDate
+      ? moment(initialPreset.endDate).format("YYYY-MM-DD")
+      : data?.campaign?.endDate || "2026-08-30"
+  );
+  const [showCreatives, setShowCreatives] = useState(showCreativesProp);
+  const [showLineItems, setShowLineItems] = useState(showLineItemsProp);
 
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -53,17 +80,27 @@ const Report = ({ data }) => {
 
   // Auto-fill and check presets from DB when CSV data changes
   useEffect(() => {
-    if (data.campaign.name) {
+    if (initialPreset) {
+      setReportName(initialPreset.campaignName);
+      if (initialPreset.startDate) setStartDate(moment(initialPreset.startDate).format("YYYY-MM-DD"));
+      if (initialPreset.endDate) setEndDate(moment(initialPreset.endDate).format("YYYY-MM-DD"));
+      if (initialPreset.targetReach !== undefined) setTargetReach(initialPreset.targetReach);
+      if (initialPreset.targetBudget !== undefined) setTargetBudget(initialPreset.targetBudget);
+      setIsGenerated(true);
+      return;
+    }
+
+    if (data?.campaign?.name) {
       setReportName(data.campaign.name);
     }
-    if (data.campaign.startDate) {
+    if (data?.campaign?.startDate) {
       setStartDate(data.campaign.startDate);
     }
-    if (data.campaign.endDate) {
+    if (data?.campaign?.endDate) {
       setEndDate(data.campaign.endDate);
     }
 
-    if (data.campaign.name) {
+    if (data?.campaign?.name) {
       const fetchExactPreset = async () => {
         try {
           const res = await fetch(`/api/reports/preset?query=${encodeURIComponent(data.campaign.name)}`);
@@ -83,7 +120,7 @@ const Report = ({ data }) => {
       };
       fetchExactPreset();
     }
-  }, [data.campaign.name, data.campaign.startDate, data.campaign.endDate]);
+  }, [data?.campaign?.name, data?.campaign?.startDate, data?.campaign?.endDate, initialPreset]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -396,19 +433,92 @@ const Report = ({ data }) => {
       </style>
 
       {/* Control Bar */}
-      <div className="max-w-[297mm] mx-auto mb-6 flex justify-between items-center no-print">
-        <button
-          onClick={() => setIsGenerated(false)}
-          className="text-[10px] text-zinc-300 uppercase  hover:text-[#a3895d]"
-        >
-          ← Zurück zum Setup
-        </button>
-        <button
-          onClick={() => handlePrint()}
-          className="bg-[#a3895d] text-white text-[10px]  uppercase px-8 py-3 rounded-lg shadow-lg hover:bg-[#8e764d] transition-colors"
-        >
-          PDF Export starten
-        </button>
+      <div className="max-w-[297mm] mx-auto mb-6 flex flex-wrap justify-between items-center gap-4 no-print bg-[#121212] border border-zinc-800 p-4 rounded-xl shadow-xl">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => (onBack ? onBack() : setIsGenerated(false))}
+            className="flex items-center gap-1.5 text-xs text-zinc-300 uppercase tracking-wider hover:text-[#a3895d] transition-colors py-2 px-3 rounded bg-zinc-900 border border-zinc-800 hover:border-[#a3895d]"
+          >
+            <ArrowLeft size={14} />
+            {onBack ? "Zurück zur Kampagnen-Übersicht" : "Zurück zum Setup"}
+          </button>
+
+          {/* Breakdown Toggles */}
+          <div className="flex items-center gap-4 pl-4 border-l border-zinc-800">
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300 hover:text-[#a3895d]">
+              <input
+                type="checkbox"
+                checked={showCreatives}
+                onChange={(e) => setShowCreatives(e.target.checked)}
+                className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+              />
+              <span>Creatives ({data.creatives ? Object.keys(data.creatives).length : 0})</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-300 hover:text-[#a3895d]">
+              <input
+                type="checkbox"
+                checked={showLineItems}
+                onChange={(e) => setShowLineItems(e.target.checked)}
+                className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+              />
+              <span>Line Items ({data.lineItems ? Object.keys(data.lineItems).length : 0})</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() =>
+              exportCampaignToExcel({
+                campaignData: data,
+                preset: {
+                  campaignName: reportName,
+                  startDate,
+                  endDate,
+                  targetReach,
+                  targetBudget,
+                },
+                showCreatives,
+                showLineItems,
+              })
+            }
+            className="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs uppercase tracking-wider font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+            title="Als formatierte Excel-Arbeitsmappe (.xlsx) herunterladen"
+          >
+            <FileSpreadsheet size={15} />
+            Excel (.xlsx)
+          </button>
+
+          <button
+            onClick={() =>
+              exportCampaignToCSV({
+                campaignData: data,
+                preset: {
+                  campaignName: reportName,
+                  startDate,
+                  endDate,
+                  targetReach,
+                  targetBudget,
+                },
+                showCreatives,
+                showLineItems,
+              })
+            }
+            className="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 text-white text-xs uppercase tracking-wider font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+            title="Als CSV-Datei herunterladen"
+          >
+            <FileText size={15} />
+            CSV
+          </button>
+
+          <button
+            onClick={() => handlePrint()}
+            className="flex items-center gap-1.5 bg-[#a3895d] hover:bg-[#8e764d] text-black text-xs uppercase tracking-wider font-bold px-6 py-2 rounded-lg shadow-lg transition-colors"
+          >
+            <Printer size={15} />
+            PDF Export / Drucken
+          </button>
+        </div>
       </div>
 
       <div ref={contentRef}>

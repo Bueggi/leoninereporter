@@ -40,7 +40,7 @@ const handler = async (req, { params }) => {
         end,
         reach: +reach,
         rotation,
-        tkp: +tkp,
+        tkp: Math.round(+tkp * 100) / 100,
         product,
         placement,
         targeting,
@@ -49,7 +49,7 @@ const handler = async (req, { params }) => {
         device,
         frequencyCap,
         upcharge: +upcharge,
-        upchargeTKP: +upchargeTKP
+        upchargeTKP: Math.round(+upchargeTKP * 100) / 100
       },
     });
 

@@ -44,7 +44,7 @@ const handler = async (req, res) => {
         end: moment(end).format(),
         product,
         rotation,
-        tkp: +tkp,
+        tkp: Math.round(+tkp * 100) / 100,
         output,
         targeting,
         offerGroupID,
@@ -54,7 +54,7 @@ const handler = async (req, res) => {
         placement,
         frequencyCap,
         upcharge: +upcharge,
-        upchargeTKP: +upchargeTKP,
+        upchargeTKP: Math.round(+upchargeTKP * 100) / 100,
       },
     });
 

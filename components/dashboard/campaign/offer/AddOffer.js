@@ -73,7 +73,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen, prici
             end: endRef.current.value,
             reach: reachRef.current.value,
             product: productRef.current.value,
-            tkp: tkpRef.current.value,
+            tkp: tkpRef.current.value ? Math.round(parseFloat(tkpRef.current.value) * 100) / 100 : 0,
             rotation: rotationRef.current.value,
             frequencyCap: frequencyCapRef.current.value,
             age: fieldActive.age ? fieldValues.age : null,
@@ -83,7 +83,7 @@ export default function AddOffer({ offerGroupID, state, setState, setOpen, prici
             plz: fieldValues.geographie,
             upchargeCount,
             offerGroupID,
-            upchargeTKP: upchargeTKPRef.current.value, // UpchargeTKP hinzufügen
+            upchargeTKP: upchargeTKPRef.current.value ? Math.round(parseFloat(upchargeTKPRef.current.value) * 100) / 100 : 0,
           }),
         }
       );

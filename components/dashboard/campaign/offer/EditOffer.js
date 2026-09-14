@@ -83,7 +83,7 @@ export default function EditOffer({ initialOffer, state, setState, setOpen, pric
             end: moment(endRef.current.value).format(),
             reach: reachRef.current.value,
             product: productRef.current.value,
-            tkp: tkpRef.current.value,
+            tkp: tkpRef.current.value ? Math.round(parseFloat(tkpRef.current.value) * 100) / 100 : 0,
             rotation: rotationRef.current.value,
             frequencyCap: frequencyCapRef.current.value,
             age: fieldActive.age ? fieldValues.age : null,
@@ -92,7 +92,7 @@ export default function EditOffer({ initialOffer, state, setState, setOpen, pric
             placement: fieldActive.placement ? fieldValues.placement : null,
             plz: fieldValues.plz,
             upchargeCount,
-            upchargeTKP: upchargeTKPRef.current.value,
+            upchargeTKP: upchargeTKPRef.current.value ? Math.round(parseFloat(upchargeTKPRef.current.value) * 100) / 100 : 0,
           }),
         }
       );

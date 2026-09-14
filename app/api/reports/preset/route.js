@@ -30,9 +30,13 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query") || "";
+    const all = searchParams.get("all") === "true";
 
-    if (!query) {
-      return NextResponse.json([]);
+    if (!query || all) {
+      const presets = await prisma.reportPreset.findMany({
+        orderBy: { campaignName: "asc" },
+      });
+      return NextResponse.json(presets);
     }
 
     const presets = await prisma.reportPreset.findMany({
@@ -42,7 +46,7 @@ export async function GET(req) {
           mode: "insensitive",
         },
       },
-      take: 10,
+      take: 20,
     });
 
     return NextResponse.json(presets);
