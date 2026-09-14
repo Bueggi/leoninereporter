@@ -11,7 +11,7 @@ import {
   PieChart,
   Pie,
 } from "recharts";
-import { exportCampaignToExcel, exportCampaignToCSV } from "./exportUtils";
+import { exportCampaignToExcel, exportCampaignToCSV, calculateBudgetMetrics } from "./exportUtils";
 import {
   TrendingUp,
   Rocket,
@@ -78,6 +78,14 @@ const Report = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef(null);
 
+  useEffect(() => {
+    setShowCreatives(showCreativesProp);
+  }, [showCreativesProp]);
+
+  useEffect(() => {
+    setShowLineItems(showLineItemsProp);
+  }, [showLineItemsProp]);
+
   // Auto-fill and check presets from DB when CSV data changes
   useEffect(() => {
     if (initialPreset) {
@@ -86,6 +94,8 @@ const Report = ({
       if (initialPreset.endDate) setEndDate(moment(initialPreset.endDate).format("YYYY-MM-DD"));
       if (initialPreset.targetReach !== undefined) setTargetReach(initialPreset.targetReach);
       if (initialPreset.targetBudget !== undefined) setTargetBudget(initialPreset.targetBudget);
+      if (initialPreset.showCreatives !== undefined) setShowCreatives(initialPreset.showCreatives);
+      if (initialPreset.showLineItems !== undefined) setShowLineItems(initialPreset.showLineItems);
       setIsGenerated(true);
       return;
     }
@@ -113,6 +123,8 @@ const Report = ({
             setEndDate(moment(exactMatch.endDate).format("YYYY-MM-DD"));
             setTargetReach(exactMatch.targetReach);
             setTargetBudget(exactMatch.targetBudget);
+            if (exactMatch.showCreatives !== undefined) setShowCreatives(exactMatch.showCreatives);
+            if (exactMatch.showLineItems !== undefined) setShowLineItems(exactMatch.showLineItems);
           }
         } catch (err) {
           console.error("Error loading matching preset:", err);
@@ -150,6 +162,8 @@ const Report = ({
           setEndDate(moment(exactMatch.endDate).format("YYYY-MM-DD"));
           setTargetReach(exactMatch.targetReach);
           setTargetBudget(exactMatch.targetBudget);
+          if (exactMatch.showCreatives !== undefined) setShowCreatives(exactMatch.showCreatives);
+          if (exactMatch.showLineItems !== undefined) setShowLineItems(exactMatch.showLineItems);
         }
       } catch (err) {
         console.error(err);
@@ -166,6 +180,8 @@ const Report = ({
     setEndDate(moment(preset.endDate).format("YYYY-MM-DD"));
     setTargetReach(preset.targetReach);
     setTargetBudget(preset.targetBudget);
+    if (preset.showCreatives !== undefined) setShowCreatives(preset.showCreatives);
+    if (preset.showLineItems !== undefined) setShowLineItems(preset.showLineItems);
     setShowSuggestions(false);
   };
 
@@ -180,6 +196,8 @@ const Report = ({
           targetBudget: cleanNumber(targetBudget),
           startDate,
           endDate,
+          showCreatives,
+          showLineItems,
         }),
       });
     } catch (err) {
@@ -225,18 +243,15 @@ const Report = ({
     ? Math.min((currentRevenue / parsedTargetBudget) * 100, 100)
     : 0;
 
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const today = new Date();
-  const totalDays =
-    Math.ceil(Math.max(0, (end - start) / (1000 * 60 * 60 * 24))) || 0;
-  const daysSinceStart = startDate
-    ? Math.min(
-        totalDays,
-        Math.max(0, Math.ceil((today - start) / (1000 * 60 * 60 * 24)-1)),
-      )
-    : 0;
-  const remainingDays = Math.max(0, totalDays - daysSinceStart);
+  const budgetMetrics = calculateBudgetMetrics(
+    data?.campaign,
+    targetBudget,
+    startDate,
+    endDate
+  );
+  const totalDays = budgetMetrics.totalDays;
+  const daysSinceStart = budgetMetrics.daysSinceStart;
+  const remainingDays = budgetMetrics.remainingDays;
 
   const lineItemKey = data.lineItems && Object.keys(data.lineItems).length > 0 ? Object.keys(data.lineItems)[0] : null;
   const chartData = lineItemKey ? data.lineItems[lineItemKey].reachByDate.map((item) => ({
@@ -248,8 +263,6 @@ const Report = ({
   })) : [];
 
   const totalClicks = data.creatives ? Object.values(data.creatives).reduce((acc, c) => acc + c.totalClicks, 0) : 0;
-
-
 
   const chunkArray = (arr, size) => {
     return arr.reduce(
@@ -263,12 +276,11 @@ const Report = ({
   const lineItemChunks = showLineItems && data.lineItems ? chunkArray(Object.entries(data.lineItems), 2) : [];
   
   // Budget Calculations
-  const bookedBudget = Number(targetBudget) || 0;
-  const pacingMultiplier = totalDays > 0 ? daysSinceStart / totalDays : 0;
-  const shouldSpend = bookedBudget * pacingMultiplier; // Soll
-  const actualSpend = currentRevenue; // Ist
-  const deltaSpend = actualSpend - shouldSpend; // Ist vs Soll
-  const deltaPercent = shouldSpend > 0 ? (deltaSpend / shouldSpend) * 100 : 0;
+  const bookedBudget = budgetMetrics.bookedBudget;
+  const shouldSpend = budgetMetrics.shouldSpend; // Soll
+  const actualSpend = budgetMetrics.actualSpend; // Ist
+  const deltaSpend = budgetMetrics.deltaSpend; // Ist vs Soll
+  const deltaPercent = budgetMetrics.deltaPercent;
 
   // --- 4. SETUP VIEW (FORMULAR) ---
   if (!isGenerated) {

@@ -45,6 +45,8 @@ export type ReportPresetMinAggregateOutputType = {
   endDate: string | null
   targetReach: number | null
   targetBudget: number | null
+  showCreatives: boolean | null
+  showLineItems: boolean | null
   lastQueried: Date | null
 }
 
@@ -57,6 +59,8 @@ export type ReportPresetMaxAggregateOutputType = {
   endDate: string | null
   targetReach: number | null
   targetBudget: number | null
+  showCreatives: boolean | null
+  showLineItems: boolean | null
   lastQueried: Date | null
 }
 
@@ -69,6 +73,8 @@ export type ReportPresetCountAggregateOutputType = {
   endDate: number
   targetReach: number
   targetBudget: number
+  showCreatives: number
+  showLineItems: number
   lastQueried: number
   _all: number
 }
@@ -93,6 +99,8 @@ export type ReportPresetMinAggregateInputType = {
   endDate?: true
   targetReach?: true
   targetBudget?: true
+  showCreatives?: true
+  showLineItems?: true
   lastQueried?: true
 }
 
@@ -105,6 +113,8 @@ export type ReportPresetMaxAggregateInputType = {
   endDate?: true
   targetReach?: true
   targetBudget?: true
+  showCreatives?: true
+  showLineItems?: true
   lastQueried?: true
 }
 
@@ -117,6 +127,8 @@ export type ReportPresetCountAggregateInputType = {
   endDate?: true
   targetReach?: true
   targetBudget?: true
+  showCreatives?: true
+  showLineItems?: true
   lastQueried?: true
   _all?: true
 }
@@ -216,6 +228,8 @@ export type ReportPresetGroupByOutputType = {
   endDate: string
   targetReach: number
   targetBudget: number
+  showCreatives: boolean
+  showLineItems: boolean
   lastQueried: Date
   _count: ReportPresetCountAggregateOutputType | null
   _avg: ReportPresetAvgAggregateOutputType | null
@@ -251,6 +265,8 @@ export type ReportPresetWhereInput = {
   endDate?: Prisma.StringFilter<"ReportPreset"> | string
   targetReach?: Prisma.IntFilter<"ReportPreset"> | number
   targetBudget?: Prisma.FloatFilter<"ReportPreset"> | number
+  showCreatives?: Prisma.BoolFilter<"ReportPreset"> | boolean
+  showLineItems?: Prisma.BoolFilter<"ReportPreset"> | boolean
   lastQueried?: Prisma.DateTimeFilter<"ReportPreset"> | Date | string
 }
 
@@ -263,6 +279,8 @@ export type ReportPresetOrderByWithRelationInput = {
   endDate?: Prisma.SortOrder
   targetReach?: Prisma.SortOrder
   targetBudget?: Prisma.SortOrder
+  showCreatives?: Prisma.SortOrder
+  showLineItems?: Prisma.SortOrder
   lastQueried?: Prisma.SortOrder
 }
 
@@ -278,6 +296,8 @@ export type ReportPresetWhereUniqueInput = Prisma.AtLeast<{
   endDate?: Prisma.StringFilter<"ReportPreset"> | string
   targetReach?: Prisma.IntFilter<"ReportPreset"> | number
   targetBudget?: Prisma.FloatFilter<"ReportPreset"> | number
+  showCreatives?: Prisma.BoolFilter<"ReportPreset"> | boolean
+  showLineItems?: Prisma.BoolFilter<"ReportPreset"> | boolean
   lastQueried?: Prisma.DateTimeFilter<"ReportPreset"> | Date | string
 }, "id" | "campaignName">
 
@@ -290,6 +310,8 @@ export type ReportPresetOrderByWithAggregationInput = {
   endDate?: Prisma.SortOrder
   targetReach?: Prisma.SortOrder
   targetBudget?: Prisma.SortOrder
+  showCreatives?: Prisma.SortOrder
+  showLineItems?: Prisma.SortOrder
   lastQueried?: Prisma.SortOrder
   _count?: Prisma.ReportPresetCountOrderByAggregateInput
   _avg?: Prisma.ReportPresetAvgOrderByAggregateInput
@@ -310,6 +332,8 @@ export type ReportPresetScalarWhereWithAggregatesInput = {
   endDate?: Prisma.StringWithAggregatesFilter<"ReportPreset"> | string
   targetReach?: Prisma.IntWithAggregatesFilter<"ReportPreset"> | number
   targetBudget?: Prisma.FloatWithAggregatesFilter<"ReportPreset"> | number
+  showCreatives?: Prisma.BoolWithAggregatesFilter<"ReportPreset"> | boolean
+  showLineItems?: Prisma.BoolWithAggregatesFilter<"ReportPreset"> | boolean
   lastQueried?: Prisma.DateTimeWithAggregatesFilter<"ReportPreset"> | Date | string
 }
 
@@ -322,6 +346,8 @@ export type ReportPresetCreateInput = {
   endDate: string
   targetReach: number
   targetBudget: number
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: Date | string
 }
 
@@ -334,6 +360,8 @@ export type ReportPresetUncheckedCreateInput = {
   endDate: string
   targetReach: number
   targetBudget: number
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: Date | string
 }
 
@@ -346,6 +374,8 @@ export type ReportPresetUpdateInput = {
   endDate?: Prisma.StringFieldUpdateOperationsInput | string
   targetReach?: Prisma.IntFieldUpdateOperationsInput | number
   targetBudget?: Prisma.FloatFieldUpdateOperationsInput | number
+  showCreatives?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showLineItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastQueried?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -358,6 +388,8 @@ export type ReportPresetUncheckedUpdateInput = {
   endDate?: Prisma.StringFieldUpdateOperationsInput | string
   targetReach?: Prisma.IntFieldUpdateOperationsInput | number
   targetBudget?: Prisma.FloatFieldUpdateOperationsInput | number
+  showCreatives?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showLineItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastQueried?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -370,6 +402,8 @@ export type ReportPresetCreateManyInput = {
   endDate: string
   targetReach: number
   targetBudget: number
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: Date | string
 }
 
@@ -382,6 +416,8 @@ export type ReportPresetUpdateManyMutationInput = {
   endDate?: Prisma.StringFieldUpdateOperationsInput | string
   targetReach?: Prisma.IntFieldUpdateOperationsInput | number
   targetBudget?: Prisma.FloatFieldUpdateOperationsInput | number
+  showCreatives?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showLineItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastQueried?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -394,6 +430,8 @@ export type ReportPresetUncheckedUpdateManyInput = {
   endDate?: Prisma.StringFieldUpdateOperationsInput | string
   targetReach?: Prisma.IntFieldUpdateOperationsInput | number
   targetBudget?: Prisma.FloatFieldUpdateOperationsInput | number
+  showCreatives?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  showLineItems?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastQueried?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -406,6 +444,8 @@ export type ReportPresetCountOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   targetReach?: Prisma.SortOrder
   targetBudget?: Prisma.SortOrder
+  showCreatives?: Prisma.SortOrder
+  showLineItems?: Prisma.SortOrder
   lastQueried?: Prisma.SortOrder
 }
 
@@ -423,6 +463,8 @@ export type ReportPresetMaxOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   targetReach?: Prisma.SortOrder
   targetBudget?: Prisma.SortOrder
+  showCreatives?: Prisma.SortOrder
+  showLineItems?: Prisma.SortOrder
   lastQueried?: Prisma.SortOrder
 }
 
@@ -435,6 +477,8 @@ export type ReportPresetMinOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   targetReach?: Prisma.SortOrder
   targetBudget?: Prisma.SortOrder
+  showCreatives?: Prisma.SortOrder
+  showLineItems?: Prisma.SortOrder
   lastQueried?: Prisma.SortOrder
 }
 
@@ -454,6 +498,8 @@ export type ReportPresetSelect<ExtArgs extends runtime.Types.Extensions.Internal
   endDate?: boolean
   targetReach?: boolean
   targetBudget?: boolean
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: boolean
 }, ExtArgs["result"]["reportPreset"]>
 
@@ -466,6 +512,8 @@ export type ReportPresetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   endDate?: boolean
   targetReach?: boolean
   targetBudget?: boolean
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: boolean
 }, ExtArgs["result"]["reportPreset"]>
 
@@ -478,6 +526,8 @@ export type ReportPresetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   endDate?: boolean
   targetReach?: boolean
   targetBudget?: boolean
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: boolean
 }, ExtArgs["result"]["reportPreset"]>
 
@@ -490,10 +540,12 @@ export type ReportPresetSelectScalar = {
   endDate?: boolean
   targetReach?: boolean
   targetBudget?: boolean
+  showCreatives?: boolean
+  showLineItems?: boolean
   lastQueried?: boolean
 }
 
-export type ReportPresetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "campaignName" | "startDate" | "endDate" | "targetReach" | "targetBudget" | "lastQueried", ExtArgs["result"]["reportPreset"]>
+export type ReportPresetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "campaignName" | "startDate" | "endDate" | "targetReach" | "targetBudget" | "showCreatives" | "showLineItems" | "lastQueried", ExtArgs["result"]["reportPreset"]>
 
 export type $ReportPresetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ReportPreset"
@@ -507,6 +559,8 @@ export type $ReportPresetPayload<ExtArgs extends runtime.Types.Extensions.Intern
     endDate: string
     targetReach: number
     targetBudget: number
+    showCreatives: boolean
+    showLineItems: boolean
     lastQueried: Date
   }, ExtArgs["result"]["reportPreset"]>
   composites: {}
@@ -939,6 +993,8 @@ export interface ReportPresetFieldRefs {
   readonly endDate: Prisma.FieldRef<"ReportPreset", 'String'>
   readonly targetReach: Prisma.FieldRef<"ReportPreset", 'Int'>
   readonly targetBudget: Prisma.FieldRef<"ReportPreset", 'Float'>
+  readonly showCreatives: Prisma.FieldRef<"ReportPreset", 'Boolean'>
+  readonly showLineItems: Prisma.FieldRef<"ReportPreset", 'Boolean'>
   readonly lastQueried: Prisma.FieldRef<"ReportPreset", 'DateTime'>
 }
     

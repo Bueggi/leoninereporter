@@ -298,6 +298,8 @@ export const ReportPresetScalarFieldEnum = {
   endDate: 'endDate',
   targetReach: 'targetReach',
   targetBudget: 'targetBudget',
+  showCreatives: 'showCreatives',
+  showLineItems: 'showLineItems',
   lastQueried: 'lastQueried'
 } as const
 

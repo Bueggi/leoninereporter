@@ -364,14 +364,16 @@ model InboundRequest {
 }
 
 model ReportPreset {
-  id           String   @id @default(uuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  campaignName String   @unique
-  startDate    String
-  endDate      String
-  targetReach  Int
-  targetBudget Float
-  lastQueried  DateTime @default(now())
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  campaignName  String   @unique
+  startDate     String
+  endDate       String
+  targetReach   Int
+  targetBudget  Float
+  showCreatives Boolean  @default(true)
+  showLineItems Boolean  @default(true)
+  lastQueried   DateTime @default(now())
 }
 

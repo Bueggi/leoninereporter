@@ -40,6 +40,91 @@ import {
   LayoutGrid,
 } from "lucide-react";
 
+const normalizeDateStr = (dateVal) => {
+  if (!dateVal) return "";
+  if (dateVal instanceof Date) {
+    const m = moment(dateVal);
+    return m.isValid() ? m.format("YYYY-MM-DD") : "";
+  }
+  const str = String(dateVal).trim();
+  if (!str) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+
+  // German format: DD.MM.YYYY or DD.MM.YY (e.g. 30.08.2026, 30.08.26, 7.9.2026)
+  const deMatch = str.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/);
+  if (deMatch) {
+    const day = deMatch[1].padStart(2, "0");
+    const month = deMatch[2].padStart(2, "0");
+    let year = deMatch[3];
+    if (year.length === 2) {
+      year = "20" + year;
+    }
+    const isoCandidate = `${year}-${month}-${day}`;
+    if (moment(isoCandidate, "YYYY-MM-DD", true).isValid()) {
+      return isoCandidate;
+    }
+  }
+
+  // Slash format: DD/MM/YYYY or MM/DD/YYYY
+  const slashMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (slashMatch) {
+    let year = slashMatch[3];
+    if (year.length === 2) year = "20" + year;
+    const p1 = slashMatch[1].padStart(2, "0");
+    const p2 = slashMatch[2].padStart(2, "0");
+    const isoCandidate = `${year}-${p2}-${p1}`;
+    if (moment(isoCandidate, "YYYY-MM-DD", true).isValid()) {
+      return isoCandidate;
+    }
+  }
+
+  const formats = [
+    "DD.MM.YYYY",
+    "DD.MM.YY",
+    "YYYY-MM-DD",
+    "DD/MM/YYYY",
+    "MM/DD/YYYY",
+    "YYYY/MM/DD",
+  ];
+  for (const fmt of formats) {
+    const m = moment(str, fmt, true);
+    if (m.isValid()) return m.format("YYYY-MM-DD");
+  }
+
+  const mFallback = moment(str);
+  if (mFallback.isValid()) return mFallback.format("YYYY-MM-DD");
+
+  return str;
+};
+
+const getRowDate = (r) => {
+  if (!r) return "";
+  const raw =
+    r["Date"] ??
+    r["date"] ??
+    r["Datum"] ??
+    r["Day"] ??
+    r["Tag"] ??
+    r["Date / Time"] ??
+    r["Date/Time"] ??
+    "";
+  return normalizeDateStr(raw);
+};
+
+const getRowCampaignName = (r) => {
+  if (!r) return "Unbekannte Kampagne";
+  const raw =
+    r["Order"] ??
+    r["Campaign"] ??
+    r["Campaign name"] ??
+    r["Campaign Name"] ??
+    r["Kampagne"] ??
+    r["Kampagnenname"] ??
+    r["order_name"] ??
+    "Unbekannte Kampagne";
+  return String(raw).trim();
+};
+
 export default function ReportParser() {
   // Main mode switcher: "single" (Einzelreporting) vs "bulk" (Massenreporting)
   const [reportingMode, setReportingMode] = useState("single");
@@ -62,10 +147,11 @@ export default function ReportParser() {
       complete: (output) => {
         const todayStr = new Date().toISOString().split("T")[0];
 
-        // Behalte nur Daten, die VOR heute liegen
+        // Behalte nur Daten, die VOR oder BIS heute liegen
         const data = output.data.filter((row) => {
-          if (!row.Date) return false;
-          return row.Date < todayStr;
+          const rDate = getRowDate(row);
+          if (!rDate) return false;
+          return rDate <= todayStr;
         });
 
         if (data.length === 0) {
@@ -234,6 +320,63 @@ export default function ReportParser() {
 
   const [showCreatives, setShowCreatives] = useState(true);
   const [showLineItems, setShowLineItems] = useState(true);
+  const [useIndividualExportOptions, setUseIndividualExportOptions] = useState(true);
+  const [campaignOptionsMap, setCampaignOptionsMap] = useState({});
+
+  const getCampaignOptions = (campaignName) => {
+    if (!useIndividualExportOptions) {
+      return {
+        showCreatives,
+        showLineItems,
+      };
+    }
+    return (
+      campaignOptionsMap[campaignName] || {
+        showCreatives,
+        showLineItems,
+      }
+    );
+  };
+
+  const toggleCampaignOption = async (campaignName, key) => {
+    const currentOpts = campaignOptionsMap[campaignName] || {
+      showCreatives,
+      showLineItems,
+    };
+    const updatedOpts = {
+      ...currentOpts,
+      [key]: !currentOpts[key],
+    };
+
+    setCampaignOptionsMap((prev) => ({
+      ...prev,
+      [campaignName]: updatedOpts,
+    }));
+
+    const existingPreset = (presets || []).find(
+      (p) => p.campaignName.toLowerCase() === campaignName.toLowerCase()
+    );
+
+    if (existingPreset) {
+      try {
+        await fetch("/api/reports/preset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            campaignName: existingPreset.campaignName,
+            targetReach: existingPreset.targetReach,
+            targetBudget: existingPreset.targetBudget,
+            startDate: existingPreset.startDate,
+            endDate: existingPreset.endDate,
+            showCreatives: updatedOpts.showCreatives,
+            showLineItems: updatedOpts.showLineItems,
+          }),
+        });
+      } catch (err) {
+        console.error("Fehler beim Speichern der Export-Optionen:", err);
+      }
+    }
+  };
 
   const [bulkViewMode, setBulkViewMode] = useState("hub"); // "hub" | "single_report" | "bulk_report"
   const [currentSingleCampaign, setCurrentSingleCampaign] = useState(null);
@@ -255,7 +398,19 @@ export default function ReportParser() {
       const res = await fetch("/api/reports/preset?all=true");
       if (res.ok) {
         const data = await res.json();
-        setPresets(Array.isArray(data) ? data : []);
+        const loadedPresets = Array.isArray(data) ? data : [];
+        setPresets(loadedPresets);
+
+        const loadedOptionsMap = {};
+        loadedPresets.forEach((p) => {
+          if (p.campaignName) {
+            loadedOptionsMap[p.campaignName] = {
+              showCreatives: p.showCreatives !== undefined ? p.showCreatives : true,
+              showLineItems: p.showLineItems !== undefined ? p.showLineItems : true,
+            };
+          }
+        });
+        setCampaignOptionsMap((prev) => ({ ...loadedOptionsMap, ...prev }));
       }
     } catch (err) {
       console.error("Fehler beim Laden der Presets:", err);
@@ -278,7 +433,7 @@ export default function ReportParser() {
       dynamicTyping: true,
       skipEmptyLines: true,
       complete: (output) => {
-        const rows = output.data.filter((r) => r.Date);
+        const rows = output.data.filter((r) => getRowDate(r));
 
         if (rows.length === 0) {
           alert("Keine gültigen Daten in der CSV-Datei gefunden.");
@@ -288,13 +443,7 @@ export default function ReportParser() {
         const campaignsMap = {};
 
         rows.forEach((row) => {
-          const campaignName = (
-            row["Order"] ||
-            row["Campaign"] ||
-            row["Campaign name"] ||
-            row["Kampagne"] ||
-            "Unbekannte Kampagne"
-          ).trim();
+          const campaignName = getRowCampaignName(row);
 
           if (!campaignsMap[campaignName]) {
             campaignsMap[campaignName] = {
@@ -372,7 +521,7 @@ export default function ReportParser() {
             acc[cName].totalClicks += clicks;
             acc[cName].completes += completes;
 
-            const date = row["Date"];
+            const date = getRowDate(row);
             if (date) {
               const existingDate = acc[cName].reachByDate.find((d) => d.date === date);
               if (existingDate) {
@@ -418,7 +567,7 @@ export default function ReportParser() {
             acc[lName].totalClicks += clicks;
             acc[lName].completes += completes;
 
-            const date = row["Date"];
+            const date = getRowDate(row);
             if (date) {
               const existingDate = acc[lName].reachByDate.find((d) => d.date === date);
               if (existingDate) {
@@ -441,7 +590,7 @@ export default function ReportParser() {
 
           const dailyMap = {};
           cRows.forEach((row) => {
-            const date = row["Date"];
+            const date = getRowDate(row);
             if (!date) return;
             if (!dailyMap[date]) {
               dailyMap[date] = { date, reach: 0, revenue: 0 };
@@ -457,7 +606,10 @@ export default function ReportParser() {
           });
           const daily = Object.values(dailyMap).sort((a, b) => (a.date > b.date ? 1 : -1));
 
-          const dates = cRows.map((r) => r.Date).filter(Boolean).sort();
+          const dates = cRows
+            .map((r) => getRowDate(r))
+            .filter(Boolean)
+            .sort();
           const minDate = dates[0] || moment().format("YYYY-MM-01");
           const maxDate = dates[dates.length - 1] || moment().format("YYYY-MM-DD");
 
@@ -497,35 +649,36 @@ export default function ReportParser() {
 
         setRawCampaignsData(parsedCampaigns);
         setUnconfiguredForms(initialUnconfiguredForms);
-
-        const initialSelected = new Set();
-        Object.keys(parsedCampaigns).forEach((cName) => {
-          const matched = (presets || []).some(
-            (p) => p.campaignName.toLowerCase() === cName.toLowerCase()
-          );
-          if (matched) initialSelected.add(cName);
-        });
-        setSelectedCampaigns(initialSelected);
       },
     });
   };
 
   // Berechne den Vorwochen-Zeitraum dynamisch anhand des neuesten Datums in den CSV-Daten
   const vorwocheRange = useMemo(() => {
-    if (!rawCampaignsData) return { start: "", end: "", label: "" };
-
     const allDates = [];
-    Object.values(rawCampaignsData).forEach((c) => {
-      (c.daily || []).forEach((d) => {
-        if (d.date) allDates.push(d.date);
+    if (rawCampaignsData) {
+      Object.values(rawCampaignsData).forEach((c) => {
+        (c.daily || []).forEach((d) => {
+          if (d.date) {
+            const iso = normalizeDateStr(d.date);
+            if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) allDates.push(iso);
+          }
+        });
+        (c.rawRows || []).forEach((r) => {
+          const iso = getRowDate(r);
+          if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) allDates.push(iso);
+        });
       });
-    });
+    }
 
-    if (allDates.length === 0) return { start: "", end: "", label: "" };
-
-    allDates.sort();
-    const maxDateStr = allDates[allDates.length - 1];
-    const maxMoment = moment(maxDateStr);
+    let maxMoment;
+    if (allDates.length > 0) {
+      const sortedUniqueDates = Array.from(new Set(allDates)).sort();
+      const maxDateStr = sortedUniqueDates[sortedUniqueDates.length - 1];
+      maxMoment = moment(maxDateStr);
+    } else {
+      maxMoment = moment();
+    }
 
     let startMoment, endMoment;
     if (maxMoment.isoWeekday() === 7) {
@@ -536,16 +689,11 @@ export default function ReportParser() {
       startMoment = maxMoment.clone().subtract(1, "week").startOf("isoWeek");
     }
 
-    if (startMoment.format("YYYY-MM-DD") > maxDateStr) {
-      startMoment = moment(allDates[0]);
-      endMoment = maxMoment;
-    }
-
     const start = startMoment.format("YYYY-MM-DD");
     const end = endMoment.format("YYYY-MM-DD");
     const label = `${startMoment.format("DD.MM.YYYY")} – ${endMoment.format("DD.MM.YYYY")} (KW ${endMoment.isoWeek()})`;
 
-    return { start, end, label, maxDateStr };
+    return { start, end, label, maxDateStr: maxMoment.format("YYYY-MM-DD") };
   }, [rawCampaignsData]);
 
   // Kategorisiere Kampagnen: Vorwoche Reichweite vs. Keine Vorwoche Reichweite & Bereit vs. Unkonfiguriert
@@ -572,9 +720,10 @@ export default function ReportParser() {
       );
 
       const vorwocheReach = (campaignData.daily || [])
-        .filter(
-          (d) => d.date >= vorwocheRange.start && d.date <= vorwocheRange.end
-        )
+        .filter((d) => {
+          const iso = normalizeDateStr(d.date);
+          return iso >= vorwocheRange.start && iso <= vorwocheRange.end;
+        })
         .reduce((sum, d) => sum + (d.reach || 0), 0);
 
       const item = {
@@ -642,22 +791,24 @@ export default function ReportParser() {
   }, [currentGroup, bulkStatusFilter, bulkSearchQuery]);
 
   useEffect(() => {
+    if (!rawCampaignsData) {
+      setSelectedCampaigns(new Set());
+      return;
+    }
     const activeConfigured = categorizedCampaigns.activeVorwoche.configured;
     if (activeConfigured.length > 0) {
-      setSelectedCampaigns((prev) => {
-        if (prev.size === 0) {
-          return new Set(activeConfigured.map((c) => c.name));
-        }
-        return prev;
-      });
+      setSelectedCampaigns(new Set(activeConfigured.map((c) => c.name)));
+    } else if (categorizedCampaigns.configuredList.length > 0) {
+      setSelectedCampaigns(new Set(categorizedCampaigns.configuredList.map((c) => c.name)));
     }
-  }, [categorizedCampaigns]);
+  }, [categorizedCampaigns, rawCampaignsData, presets]);
 
   const handleSaveUnconfigured = async (campaignName) => {
     const formData = unconfiguredForms[campaignName];
     if (!formData) return;
 
     setSavingMap((prev) => ({ ...prev, [campaignName]: true }));
+    const opts = getCampaignOptions(campaignName);
 
     try {
       const res = await fetch("/api/reports/preset", {
@@ -669,6 +820,8 @@ export default function ReportParser() {
           targetBudget: Number(formData.targetBudget) || 0,
           startDate: formData.startDate,
           endDate: formData.endDate,
+          showCreatives: opts.showCreatives,
+          showLineItems: opts.showLineItems,
         }),
       });
 
@@ -701,6 +854,8 @@ export default function ReportParser() {
     e.preventDefault();
     if (!editingPreset) return;
 
+    const opts = getCampaignOptions(editFormData.campaignName);
+
     try {
       const res = await fetch("/api/reports/preset", {
         method: "POST",
@@ -711,6 +866,8 @@ export default function ReportParser() {
           targetBudget: Number(editFormData.targetBudget) || 0,
           startDate: editFormData.startDate,
           endDate: editFormData.endDate,
+          showCreatives: opts.showCreatives,
+          showLineItems: opts.showLineItems,
         }),
       });
 
@@ -769,15 +926,18 @@ export default function ReportParser() {
       campaignsWithPresets: campaignsToExport,
       showCreatives,
       showLineItems,
+      campaignOptionsMap,
+      useIndividualExportOptions,
     });
 
     campaignsToExport.forEach((item, index) => {
+      const opts = getCampaignOptions(item.name);
       setTimeout(() => {
         exportCampaignToExcel({
           campaignData: item.campaignData,
           preset: item.preset,
-          showCreatives,
-          showLineItems,
+          showCreatives: opts.showCreatives,
+          showLineItems: opts.showLineItems,
         });
       }, (index + 1) * 250);
     });
@@ -794,12 +954,13 @@ export default function ReportParser() {
     }
 
     campaignsToExport.forEach((item, index) => {
+      const opts = getCampaignOptions(item.name);
       setTimeout(() => {
         exportCampaignToCSV({
           campaignData: item.campaignData,
           preset: item.preset,
-          showCreatives,
-          showLineItems,
+          showCreatives: opts.showCreatives,
+          showLineItems: opts.showLineItems,
         });
       }, index * 250);
     });
@@ -809,13 +970,14 @@ export default function ReportParser() {
   // RENDER BULK SUB-VIEWS (Single Report / Bulk PDF Print)
   // -------------------------------------------------------------
   if (bulkViewMode === "single_report" && currentSingleCampaign) {
+    const opts = getCampaignOptions(currentSingleCampaign.preset?.campaignName || currentSingleCampaign.campaignData?.campaign?.name);
     return (
       <Report
         data={currentSingleCampaign.campaignData}
         preset={currentSingleCampaign.preset}
         initialGenerated={true}
-        showCreativesProp={showCreatives}
-        showLineItemsProp={showLineItems}
+        showCreativesProp={opts.showCreatives}
+        showLineItemsProp={opts.showLineItems}
         onBack={() => setBulkViewMode("hub")}
       />
     );
@@ -846,18 +1008,21 @@ export default function ReportParser() {
         </div>
 
         <div className="space-y-12">
-          {selectedList.map((item) => (
-            <div key={item.name} className="border-b-4 border-zinc-800 pb-12">
-              <Report
-                data={item.campaignData}
-                preset={item.preset}
-                initialGenerated={true}
-                showCreativesProp={showCreatives}
-                showLineItemsProp={showLineItems}
-                onBack={() => setBulkViewMode("hub")}
-              />
-            </div>
-          ))}
+          {selectedList.map((item) => {
+            const opts = getCampaignOptions(item.name);
+            return (
+              <div key={item.name} className="border-b-4 border-zinc-800 pb-12">
+                <Report
+                  data={item.campaignData}
+                  preset={item.preset}
+                  initialGenerated={true}
+                  showCreativesProp={opts.showCreatives}
+                  showLineItemsProp={opts.showLineItems}
+                  onBack={() => setBulkViewMode("hub")}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     );
@@ -1166,10 +1331,10 @@ export default function ReportParser() {
                     <CheckCircle2 size={16} className="text-[#a3895d]" />
                   </div>
                   <div className="text-2xl font-bold text-[#a3895d]">
-                    {selectedCampaigns.size} von {configuredList.length}
+                    {selectedCampaigns.size} Kampagnen
                   </div>
                   <div className="text-[11px] text-zinc-400 mt-1">
-                    Für Bulk-Export & Druck
+                    ({currentGroup.configured.filter((c) => selectedCampaigns.has(c.name)).length} von {currentGroup.configured.length} in dieser Ansicht)
                   </div>
                 </div>
               </div>
@@ -1178,7 +1343,10 @@ export default function ReportParser() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-[#121212] border border-zinc-800 p-2 rounded-2xl shadow-xl">
                 <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl flex-grow sm:flex-grow-0">
                   <button
-                    onClick={() => setBulkReachTab("active_vorwoche")}
+                    onClick={() => {
+                      setBulkReachTab("active_vorwoche");
+                      setBulkStatusFilter("configured");
+                    }}
                     className={`flex-1 sm:flex-initial flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
                       bulkReachTab === "active_vorwoche"
                         ? "bg-[#a3895d] text-black shadow-lg"
@@ -1189,7 +1357,10 @@ export default function ReportParser() {
                     <span>Reichweite in Vorwoche ({categorizedCampaigns.totalActiveCount})</span>
                   </button>
                   <button
-                    onClick={() => setBulkReachTab("inactive_vorwoche")}
+                    onClick={() => {
+                      setBulkReachTab("inactive_vorwoche");
+                      setBulkStatusFilter("all");
+                    }}
                     className={`flex-1 sm:flex-initial flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
                       bulkReachTab === "inactive_vorwoche"
                         ? "bg-zinc-800 text-white shadow-lg border border-zinc-700"
@@ -1209,7 +1380,77 @@ export default function ReportParser() {
                 )}
               </div>
 
-              {/* SECONDARY TOOLBAR: Status Sub-Filter (Bereit / Noch nicht angelegt / Alle), Search & Export */}
+              {/* PROMINENT DEDICATED EXPORT MODUS CONTROL PANEL */}
+              <div className="bg-[#121212] border border border-zinc-800 rounded-2xl p-4 lg:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1.5">
+                    <SlidersHorizontal size={15} className="text-[#a3895d]" />
+                    Export-Umfang & Modus:
+                  </span>
+
+                  <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl">
+                    <button
+                      onClick={() => setUseIndividualExportOptions(true)}
+                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                        useIndividualExportOptions
+                          ? "bg-[#a3895d] text-black shadow-md"
+                          : "text-zinc-400 hover:text-white"
+                      }`}
+                      title="Verwendet für den Export die Checkboxen der jeweiligen Kampagnenkarte"
+                    >
+                      <Sparkles size={13} />
+                      🎯 Individuelle Karteneinstellungen verwenden
+                    </button>
+
+                    <button
+                      onClick={() => setUseIndividualExportOptions(false)}
+                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                        !useIndividualExportOptions
+                          ? "bg-zinc-800 text-white shadow-md border border-zinc-700"
+                          : "text-zinc-400 hover:text-white"
+                      }`}
+                      title="Wendet einheitliche globale Einstellungen auf alle Kampagnen im Mass-Export an"
+                    >
+                      <LayoutGrid size={13} />
+                      🌐 Globale Einstellungen auf alle anwenden
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  {!useIndividualExportOptions ? (
+                    <div className="flex items-center gap-4 bg-zinc-900/90 border border-[#a3895d]/40 px-3.5 py-1.5 rounded-xl text-xs">
+                      <span className="text-[10px] uppercase font-semibold text-[#a3895d]">
+                        Globale Schalter:
+                      </span>
+                      <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-xs">
+                        <input
+                          type="checkbox"
+                          checked={showCreatives}
+                          onChange={(e) => setShowCreatives(e.target.checked)}
+                          className="w-4 h-4 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+                        />
+                        <span>Creatives</span>
+                      </label>
+                      <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-xs">
+                        <input
+                          type="checkbox"
+                          checked={showLineItems}
+                          onChange={(e) => setShowLineItems(e.target.checked)}
+                          className="w-4 h-4 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+                        />
+                        <span>Line Items</span>
+                      </label>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-zinc-400 font-mono">
+                      💡 Checkboxen auf den einzelnen Karten bestimmen den Export-Umfang.
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* SECONDARY TOOLBAR: Status Sub-Filter (Bereit / Noch nicht angelegt / Alle), Search & Export Action Buttons */}
               <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-4 lg:p-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-xl">
                 {/* Left: Sub-Filter Tabs & Search */}
                 <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -1261,32 +1502,8 @@ export default function ReportParser() {
                   </div>
                 </div>
 
-                {/* Right: Breakdown Toggles & Bulk Action Buttons */}
-                <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto justify-end">
-                  <div className="flex items-center gap-3 bg-zinc-900/80 border border-zinc-800 px-3 py-2 rounded-xl text-xs">
-                    <span className="text-[10px] uppercase font-semibold text-zinc-500 mr-1">
-                      Export-Optionen:
-                    </span>
-                    <label className="flex items-center gap-1.5 cursor-pointer text-zinc-300 hover:text-[#a3895d]">
-                      <input
-                        type="checkbox"
-                        checked={showCreatives}
-                        onChange={(e) => setShowCreatives(e.target.checked)}
-                        className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
-                      />
-                      <span>Creatives</span>
-                    </label>
-                    <label className="flex items-center gap-1.5 cursor-pointer text-zinc-300 hover:text-[#a3895d]">
-                      <input
-                        type="checkbox"
-                        checked={showLineItems}
-                        onChange={(e) => setShowLineItems(e.target.checked)}
-                        className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
-                      />
-                      <span>Line Items</span>
-                    </label>
-                  </div>
-
+                {/* Right: Bulk Action Buttons */}
+                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleBulkExportExcel}
@@ -1371,6 +1588,7 @@ export default function ReportParser() {
                   <div className="grid grid-cols-1 gap-4">
                     {displayedList.map(({ name, campaignData, preset, vorwocheReach, isConfigured }) => {
                       const isSelected = selectedCampaigns.has(name);
+                      const opts = getCampaignOptions(name);
 
                       // IF CONFIGURED ITEM
                       if (isConfigured && preset) {
@@ -1378,13 +1596,14 @@ export default function ReportParser() {
                           { ...campaignData.campaign, targetReach: preset.targetReach },
                           preset.targetBudget,
                           preset.startDate,
-                          preset.endDate
+                          preset.endDate,
+                          vorwocheRange.end || vorwocheRange.maxDateStr
                         );
 
                         return (
                           <div
                             key={name}
-                            className={`bg-[#121212] border transition-all duration-200 rounded-2xl p-5 shadow-lg ${
+                            className={`bg-[#121212] border transition-all duration-200 rounded-2xl p-5 shadow-lg flex flex-col gap-4 ${
                               isSelected
                                 ? "border-[#a3895d]/60 bg-gradient-to-r from-[#121212] via-[#161616] to-[#121212]"
                                 : "border-zinc-800/80 hover:border-zinc-700"
@@ -1399,12 +1618,17 @@ export default function ReportParser() {
                                   className="w-5 h-5 mt-1 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d] cursor-pointer"
                                 />
                                 <div className="min-w-0 flex-1">
-                                  <div className="flex flex-wrap items-center gap-2.5 mb-1">
+                                  <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
                                     <h3 className="text-base font-bold text-white truncate" title={name}>
                                       {name}
                                     </h3>
                                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                                       <Check size={10} /> Bereit
+                                    </span>
+
+                                    {/* Lineares Pacing / On Target Badge */}
+                                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-mono ${metrics.pacingBg} ${metrics.pacingColor}`}>
+                                      {metrics.pacingLabel} ({metrics.pacingIndex}% Soll)
                                     </span>
 
                                     {/* Vorwoche Reichweite Badge */}
@@ -1418,6 +1642,7 @@ export default function ReportParser() {
                                       </span>
                                     )}
                                   </div>
+
                                   <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 font-mono">
                                     <span className="flex items-center gap-1">
                                       <Clock size={12} className="text-zinc-500" />
@@ -1431,56 +1656,32 @@ export default function ReportParser() {
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 px-4 py-2 bg-zinc-900/60 rounded-xl border border-zinc-800/50">
-                                <div>
-                                  <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5">
-                                    Impressions
-                                  </span>
-                                  <div className="text-sm font-bold text-white">
-                                    {campaignData.campaign.impressions.toLocaleString("de-DE")}
-                                  </div>
-                                  <div className="text-[10px] text-[#a3895d]">
-                                    {metrics.reachProgress.toFixed(1)}% von {(Number(preset.targetReach) || 0).toLocaleString("de-DE")}
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5">
-                                    Budget / Ist
-                                  </span>
-                                  <div className="text-sm font-bold text-white">
-                                    € {campaignData.campaign.revenue.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                                  </div>
-                                  <div className="text-[10px] text-zinc-400">
-                                    Soll: € {metrics.shouldSpend.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5">
-                                    Avg. VTR
-                                  </span>
-                                  <div className="text-sm font-bold text-white">
-                                    {campaignData.campaign.vtr.toFixed(1)}%
-                                  </div>
-                                  <div className="text-[10px] text-zinc-400">
-                                    {campaignData.campaign.completes.toLocaleString("de-DE")} Views
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5">
-                                    Clicks / CTR
-                                  </span>
-                                  <div className="text-sm font-bold text-white">
-                                    {campaignData.campaign.clicks.toLocaleString("de-DE")}
-                                  </div>
-                                  <div className="text-[10px] text-zinc-400">
-                                    CTR {campaignData.campaign.ctr.toFixed(2)}%
-                                  </div>
-                                </div>
+                              {/* Individuelle Export-Optionen pro Kampagne */}
+                              <div className="flex items-center gap-3 bg-zinc-900/90 border border-zinc-800/80 px-3 py-2 rounded-xl text-xs">
+                                <span className="text-[10px] uppercase font-semibold text-zinc-400">
+                                  Export-Umfang:
+                                </span>
+                                <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-[11px]">
+                                  <input
+                                    type="checkbox"
+                                    checked={opts.showCreatives}
+                                    onChange={() => toggleCampaignOption(name, "showCreatives")}
+                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+                                  />
+                                  <span>Creatives</span>
+                                </label>
+                                <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-[11px]">
+                                  <input
+                                    type="checkbox"
+                                    checked={opts.showLineItems}
+                                    onChange={() => toggleCampaignOption(name, "showLineItems")}
+                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+                                  />
+                                  <span>Line Items</span>
+                                </label>
                               </div>
 
+                              {/* Action Buttons */}
                               <div className="flex flex-wrap items-center gap-2 justify-end">
                                 <button
                                   onClick={() => handleOpenEditPreset(preset)}
@@ -1495,8 +1696,8 @@ export default function ReportParser() {
                                     exportCampaignToExcel({
                                       campaignData,
                                       preset,
-                                      showCreatives,
-                                      showLineItems,
+                                      showCreatives: opts.showCreatives,
+                                      showLineItems: opts.showLineItems,
                                     })
                                   }
                                   className="flex items-center gap-1 bg-emerald-800/60 hover:bg-emerald-700 text-emerald-100 border border-emerald-700/50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
@@ -1511,8 +1712,8 @@ export default function ReportParser() {
                                     exportCampaignToCSV({
                                       campaignData,
                                       preset,
-                                      showCreatives,
-                                      showLineItems,
+                                      showCreatives: opts.showCreatives,
+                                      showLineItems: opts.showLineItems,
                                     })
                                   }
                                   className="flex items-center gap-1 bg-blue-800/60 hover:bg-blue-700 text-blue-100 border border-blue-700/50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
@@ -1531,6 +1732,98 @@ export default function ReportParser() {
                                 >
                                   Report <ChevronRight size={14} />
                                 </button>
+                              </div>
+                            </div>
+
+                            {/* Detailed Pacing Grid & Delivery Status */}
+                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 px-4 py-3 bg-zinc-900/60 rounded-xl border border-zinc-800/50 font-mono">
+                              <div>
+                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                                  Ist-Auslieferung
+                                </span>
+                                <div className="text-sm font-bold text-white">
+                                  {campaignData.campaign.impressions.toLocaleString("de-DE")}
+                                </div>
+                                <div className="text-[10px] text-[#a3895d]">
+                                  {metrics.reachProgress.toFixed(1)}% von {(Number(preset.targetReach) || 0).toLocaleString("de-DE")}
+                                </div>
+                              </div>
+
+                              <div>
+                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                                  Lineares Soll (Pacing)
+                                </span>
+                                <div className="text-sm font-bold text-zinc-200">
+                                  {metrics.shouldReach.toLocaleString("de-DE")}
+                                </div>
+                                <div className="text-[10px] text-zinc-400">
+                                  {metrics.pacingIndex}% vom Soll ({metrics.timeProgress.toFixed(0)}% Zeit)
+                                </div>
+                              </div>
+
+                              <div>
+                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                                  Lineare Abweichung
+                                </span>
+                                <div className={`text-sm font-bold ${metrics.reachDelta >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                                  {metrics.reachDelta >= 0 ? "+" : ""}{metrics.reachDelta.toLocaleString("de-DE")}
+                                </div>
+                                <div className="text-[10px] text-zinc-400">
+                                  {metrics.reachDeltaPercent >= 0 ? "+" : ""}{metrics.reachDeltaPercent.toFixed(1)}% vs. Linear
+                                </div>
+                              </div>
+
+                              <div>
+                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                                  Budget / Ist
+                                </span>
+                                <div className="text-sm font-bold text-white">
+                                  € {campaignData.campaign.revenue.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                </div>
+                                <div className="text-[10px] text-zinc-400">
+                                  Soll: € {metrics.shouldSpend.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                </div>
+                              </div>
+
+                              <div>
+                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                                  Performance
+                                </span>
+                                <div className="text-sm font-bold text-white">
+                                  VTR {campaignData.campaign.vtr.toFixed(1)}%
+                                </div>
+                                <div className="text-[10px] text-zinc-400">
+                                  CTR {campaignData.campaign.ctr.toFixed(2)}% ({campaignData.campaign.clicks.toLocaleString("de-DE")} Clicks)
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Dual Pacing Bar */}
+                            <div className="pt-1">
+                              <div className="flex justify-between items-center text-[10px] text-zinc-400 font-mono mb-1">
+                                <span>Auslieferungsverlauf vs. Zeitverlauf (Lineares Soll):</span>
+                                <span className="text-zinc-300 font-semibold">
+                                  Ist: {metrics.reachProgress.toFixed(1)}% | Zeit: {metrics.timeProgress.toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className="relative w-full h-2 bg-zinc-900 border border-zinc-800 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full transition-all duration-500 ${
+                                    metrics.pacingStatus === "behind"
+                                      ? "bg-red-500"
+                                      : metrics.pacingStatus === "ahead"
+                                      ? "bg-amber-400"
+                                      : "bg-emerald-500"
+                                  }`}
+                                  style={{ width: `${Math.min(metrics.reachProgress, 100)}%` }}
+                                />
+                                {metrics.timeProgress > 0 && metrics.timeProgress < 100 && (
+                                  <div
+                                    className="absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)] z-10"
+                                    style={{ left: `${metrics.timeProgress}%` }}
+                                    title={`Lineares Soll: ${metrics.timeProgress.toFixed(1)}%`}
+                                  />
+                                )}
                               </div>
                             </div>
                           </div>
@@ -1573,6 +1866,29 @@ export default function ReportParser() {
                                 <div className="text-[11px] text-zinc-500">
                                   CSV-Zeitraum: {moment(campaignData.campaign.startDate).format("DD.MM.YY")} - {moment(campaignData.campaign.endDate).format("DD.MM.YY")}
                                 </div>
+                              </div>
+
+                              {/* Per-Campaign Checkboxes for Unconfigured Item */}
+                              <div className="flex items-center gap-3 mt-2 font-mono text-[11px] text-zinc-400">
+                                <span className="text-[9px] uppercase font-semibold text-zinc-500">Export:</span>
+                                <label className="flex items-center gap-1 cursor-pointer hover:text-white">
+                                  <input
+                                    type="checkbox"
+                                    checked={opts.showCreatives}
+                                    onChange={() => toggleCampaignOption(name, "showCreatives")}
+                                    className="w-3 h-3 rounded border-zinc-700 bg-black text-[#a3895d]"
+                                  />
+                                  <span>Creatives</span>
+                                </label>
+                                <label className="flex items-center gap-1 cursor-pointer hover:text-white">
+                                  <input
+                                    type="checkbox"
+                                    checked={opts.showLineItems}
+                                    onChange={() => toggleCampaignOption(name, "showLineItems")}
+                                    className="w-3 h-3 rounded border-zinc-700 bg-black text-[#a3895d]"
+                                  />
+                                  <span>Line Items</span>
+                                </label>
                               </div>
                             </div>
 

@@ -64,7 +64,7 @@ export async function POST(req) {
     // Run cleanup asynchronously in the background
     performCleanup().catch(err => console.error(err));
 
-    const { campaignName, targetReach, targetBudget, startDate, endDate } = await req.json();
+    const { campaignName, targetReach, targetBudget, startDate, endDate, showCreatives, showLineItems } = await req.json();
 
     if (!campaignName) {
       return NextResponse.json(
@@ -83,23 +83,31 @@ export async function POST(req) {
     const parsedReach = Math.round(cleanNumber(targetReach));
     const parsedBudget = cleanNumber(targetBudget);
 
+    const updateData = {
+      targetReach: parsedReach,
+      targetBudget: parsedBudget,
+      startDate,
+      endDate,
+      lastQueried: new Date(),
+    };
+    if (typeof showCreatives === "boolean") updateData.showCreatives = showCreatives;
+    if (typeof showLineItems === "boolean") updateData.showLineItems = showLineItems;
+
+    const createData = {
+      campaignName,
+      targetReach: parsedReach,
+      targetBudget: parsedBudget,
+      startDate,
+      endDate,
+      showCreatives: typeof showCreatives === "boolean" ? showCreatives : true,
+      showLineItems: typeof showLineItems === "boolean" ? showLineItems : true,
+      lastQueried: new Date(),
+    };
+
     const preset = await prisma.reportPreset.upsert({
       where: { campaignName },
-      update: {
-        targetReach: parsedReach,
-        targetBudget: parsedBudget,
-        startDate,
-        endDate,
-        lastQueried: new Date(),
-      },
-      create: {
-        campaignName,
-        targetReach: parsedReach,
-        targetBudget: parsedBudget,
-        startDate,
-        endDate,
-        lastQueried: new Date(),
-      },
+      update: updateData,
+      create: createData,
     });
 
     return NextResponse.json({ success: true, preset });

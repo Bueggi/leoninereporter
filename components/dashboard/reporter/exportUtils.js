@@ -43,25 +43,84 @@ const getVal = (row, keys) => {
 };
 
 /**
- * Calculates budget pacing metrics
+ * Calculates budget & reach pacing metrics (linear delivery comparison)
  */
-export const calculateBudgetMetrics = (campaign, targetBudget, startDate, endDate) => {
+export const calculateBudgetMetrics = (
+  campaign,
+  targetBudget,
+  startDate,
+  endDate,
+  refDate = null
+) => {
   const currentRevenue = Number(campaign?.revenue || 0);
   const bookedBudget = Number(targetBudget || 0);
+  const currentReach = Number(campaign?.impressions || 0);
+  const targetReach = Number(campaign?.targetReach || 0);
 
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate ? new Date(endDate) : null;
-  const today = new Date();
+  if (!startDate || !endDate) {
+    return {
+      totalDays: 0,
+      daysSinceStart: 0,
+      remainingDays: 0,
+      timeProgress: 0,
+      bookedBudget,
+      shouldSpend: 0,
+      actualSpend: currentRevenue,
+      deltaSpend: currentRevenue,
+      deltaPercent: 0,
+      currentReach,
+      targetReach,
+      shouldReach: 0,
+      reachDelta: currentReach,
+      reachDeltaPercent: 0,
+      pacingIndex: 0,
+      pacingStatus: "unknown",
+      pacingLabel: "Keine Daten",
+      pacingColor: "text-zinc-400",
+      pacingBg: "bg-zinc-800 border-zinc-700",
+      reachProgress: 0,
+      budgetProgress: 0,
+    };
+  }
 
+  const startM = moment(startDate, ["YYYY-MM-DD", "DD.MM.YYYY", moment.ISO_8601]).startOf("day");
+  const endM = moment(endDate, ["YYYY-MM-DD", "DD.MM.YYYY", moment.ISO_8601]).startOf("day");
+
+  // Inklusive Gesamtlaufzeit-Tage (z.B. 01.09 bis 14.09 inkl. = 14 Tage)
   const totalDays =
-    start && end ? Math.ceil(Math.max(0, (end - start) / (1000 * 60 * 60 * 24))) : 0;
-  const daysSinceStart = start
-    ? Math.min(
-        totalDays,
-        Math.max(0, Math.ceil((today - start) / (1000 * 60 * 60 * 24) - 1))
-      )
-    : 0;
-  const remainingDays = Math.max(0, totalDays - daysSinceStart);
+    startM.isValid() && endM.isValid() && endM.isSameOrAfter(startM)
+      ? endM.diff(startM, "days") + 1
+      : 0;
+
+  // Stichtag der Bewertung (refDate aus CSV oder heute)
+  const evalM = refDate
+    ? moment(refDate, ["YYYY-MM-DD", "DD.MM.YYYY", moment.ISO_8601]).startOf("day")
+    : moment().startOf("day");
+
+  let daysSinceStart = 0;
+  let remainingDays = totalDays;
+
+  if (totalDays > 0) {
+    if (evalM.isBefore(startM)) {
+      daysSinceStart = 0;
+      remainingDays = totalDays;
+    } else if (evalM.isAfter(endM)) {
+      daysSinceStart = totalDays;
+      remainingDays = 0;
+    } else {
+      // Stichtag liegt innerhalb der Laufzeit (inklusive Start- und Enddatum)
+      const diffDays = evalM.diff(startM, "days");
+      if (evalM.isSame(endM, "day")) {
+        // Am letzten Tag der Kampagne (z.B. 14.09 bei Enddatum 14.09):
+        // 13 vollwertige Tage sind vor heute abgeschlossen, 1 Resttag läuft heute noch.
+        daysSinceStart = Math.min(totalDays, diffDays);
+        remainingDays = Math.max(1, totalDays - daysSinceStart);
+      } else {
+        daysSinceStart = Math.min(totalDays, diffDays);
+        remainingDays = Math.max(0, totalDays - daysSinceStart);
+      }
+    }
+  }
 
   const pacingMultiplier = totalDays > 0 ? daysSinceStart / totalDays : 0;
   const shouldSpend = bookedBudget * pacingMultiplier;
@@ -69,8 +128,68 @@ export const calculateBudgetMetrics = (campaign, targetBudget, startDate, endDat
   const deltaSpend = actualSpend - shouldSpend;
   const deltaPercent = shouldSpend > 0 ? (deltaSpend / shouldSpend) * 100 : 0;
 
-  const currentReach = Number(campaign?.impressions || 0);
-  const targetReach = Number(campaign?.targetReach || 0);
+  // Lineare Auslieferungs-Metriken (Reichweite)
+  const shouldReach = Math.round(targetReach * pacingMultiplier);
+  const reachDelta = currentReach - shouldReach;
+  const reachDeltaPercent =
+    shouldReach > 0 ? ((currentReach - shouldReach) / shouldReach) * 100 : 0;
+
+  // Pacing-Index: Ist-Reichweite im Vergleich zum linearen Soll (%)
+  let pacingIndex = 0;
+  if (shouldReach > 0) {
+    pacingIndex = Math.round((currentReach / shouldReach) * 100);
+  } else if (targetReach > 0 && currentReach > 0) {
+    pacingIndex = 100;
+  }
+
+  // Pacing-Status Klassifizierung & Badges
+  let pacingStatus = "on_target";
+  let pacingLabel = "🎯 On Target";
+  let pacingColor = "text-emerald-400";
+  let pacingBg = "bg-emerald-500/10 border-emerald-500/30";
+
+  if (totalDays === 0 || !startM.isValid()) {
+    pacingStatus = "unknown";
+    pacingLabel = "Keine Daten";
+    pacingColor = "text-zinc-400";
+    pacingBg = "bg-zinc-800 border-zinc-700";
+  } else if (daysSinceStart === 0 && evalM.isBefore(startM)) {
+    pacingStatus = "not_started";
+    pacingLabel = "Noch nicht gestartet";
+    pacingColor = "text-zinc-400";
+    pacingBg = "bg-zinc-800/80 border-zinc-700";
+  } else if (evalM.isAfter(endM)) {
+    if (currentReach >= targetReach * 0.98) {
+      pacingStatus = "completed_on_target";
+      pacingLabel = "Ziel Erreicht";
+      pacingColor = "text-emerald-400";
+      pacingBg = "bg-emerald-500/10 border-emerald-500/30";
+    } else {
+      pacingStatus = "completed_under";
+      pacingLabel = "Unter Ziel beendet";
+      pacingColor = "text-amber-400";
+      pacingBg = "bg-amber-500/10 border-amber-500/30";
+    }
+  } else {
+    if (pacingIndex >= 90 && pacingIndex <= 110) {
+      pacingStatus = "on_target";
+      pacingLabel = "🎯 On Target";
+      pacingColor = "text-emerald-400";
+      pacingBg = "bg-emerald-500/10 border-emerald-500/30";
+    } else if (pacingIndex > 110) {
+      pacingStatus = "ahead";
+      pacingLabel = "🚀 Ahead (+ Linear)";
+      pacingColor = "text-amber-400";
+      pacingBg = "bg-amber-500/10 border-amber-500/30";
+    } else {
+      pacingStatus = "behind";
+      pacingLabel = "⚠️ Behind (- Linear)";
+      pacingColor = "text-red-400";
+      pacingBg = "bg-red-500/10 border-red-500/30";
+    }
+  }
+
+  const timeProgress = totalDays > 0 ? Math.min((daysSinceStart / totalDays) * 100, 100) : 0;
   const reachProgress =
     targetReach > 0 ? Math.min((currentReach / targetReach) * 100, 100) : 0;
   const budgetProgress =
@@ -80,6 +199,7 @@ export const calculateBudgetMetrics = (campaign, targetBudget, startDate, endDat
     totalDays,
     daysSinceStart,
     remainingDays,
+    timeProgress,
     bookedBudget,
     shouldSpend,
     actualSpend,
@@ -87,6 +207,14 @@ export const calculateBudgetMetrics = (campaign, targetBudget, startDate, endDat
     deltaPercent,
     currentReach,
     targetReach,
+    shouldReach,
+    reachDelta,
+    reachDeltaPercent,
+    pacingIndex,
+    pacingStatus,
+    pacingLabel,
+    pacingColor,
+    pacingBg,
     reachProgress,
     budgetProgress,
   };
@@ -380,6 +508,8 @@ export const exportBulkCampaignsToExcel = ({
   campaignsWithPresets,
   showCreatives = true,
   showLineItems = true,
+  campaignOptionsMap = {},
+  useIndividualExportOptions = true,
 }) => {
   if (!campaignsWithPresets || campaignsWithPresets.length === 0) return;
 
@@ -388,11 +518,16 @@ export const exportBulkCampaignsToExcel = ({
   // 1. Master Summary Sheet with all rows combined
   let allCombinedRows = [];
   campaignsWithPresets.forEach(({ campaignData, preset }, idx) => {
+    const cName = preset?.campaignName || campaignData?.campaign?.name || "";
+    const opts = useIndividualExportOptions
+      ? campaignOptionsMap[cName] || { showCreatives, showLineItems }
+      : { showCreatives, showLineItems };
+
     const table = buildFilteredReportTable({
       campaignData,
       preset,
-      showCreatives,
-      showLineItems,
+      showCreatives: opts.showCreatives,
+      showLineItems: opts.showLineItems,
       includeCampaignName: true,
     });
 
@@ -419,12 +554,15 @@ export const exportBulkCampaignsToExcel = ({
   campaignsWithPresets.forEach(({ campaignData, preset }, index) => {
     const campaign = campaignData.campaign || {};
     const campaignName = preset?.campaignName ?? campaign.name ?? `Kampagne ${index + 1}`;
+    const opts = useIndividualExportOptions
+      ? campaignOptionsMap[campaignName] || { showCreatives, showLineItems }
+      : { showCreatives, showLineItems };
 
     const tableData = buildFilteredReportTable({
       campaignData,
       preset,
-      showCreatives,
-      showLineItems,
+      showCreatives: opts.showCreatives,
+      showLineItems: opts.showLineItems,
       includeCampaignName: false,
     });
 
