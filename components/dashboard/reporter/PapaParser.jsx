@@ -391,6 +391,7 @@ export default function ReportParser() {
   });
 
   const bulkFileInputRef = useRef(null);
+  const isInitialSelectionDone = useRef(false);
 
   const loadPresets = async () => {
     setIsLoadingPresets(true);
@@ -427,6 +428,7 @@ export default function ReportParser() {
     if (!file) return;
     setBulkCsvFile(file);
     setBulkFileName(file.name);
+    isInitialSelectionDone.current = false;
 
     Papa.parse(file, {
       header: true,
@@ -681,12 +683,14 @@ export default function ReportParser() {
     }
 
     let startMoment, endMoment;
-    if (maxMoment.isoWeekday() === 7) {
-      endMoment = maxMoment.clone();
-      startMoment = maxMoment.clone().startOf("isoWeek");
+    // Wenn maxMoment ein Montag ist (z.B. heute oder erster Tag einer neuen Woche), betrachten wir die eben zu Ende gegangene Vorwoche
+    if (maxMoment.isoWeekday() === 1) {
+      endMoment = maxMoment.clone().subtract(1, "day").endOf("isoWeek");
+      startMoment = maxMoment.clone().subtract(1, "day").startOf("isoWeek");
     } else {
-      endMoment = maxMoment.clone().subtract(1, "week").endOf("isoWeek");
-      startMoment = maxMoment.clone().subtract(1, "week").startOf("isoWeek");
+      // Ansonsten (Dienstag bis Sonntag) ist die relevante Reporting-Woche die ISO-Woche, in der maxMoment liegt
+      startMoment = maxMoment.clone().startOf("isoWeek");
+      endMoment = maxMoment.clone().endOf("isoWeek");
     }
 
     const start = startMoment.format("YYYY-MM-DD");
@@ -793,15 +797,19 @@ export default function ReportParser() {
   useEffect(() => {
     if (!rawCampaignsData) {
       setSelectedCampaigns(new Set());
+      isInitialSelectionDone.current = false;
       return;
     }
-    const activeConfigured = categorizedCampaigns.activeVorwoche.configured;
-    if (activeConfigured.length > 0) {
-      setSelectedCampaigns(new Set(activeConfigured.map((c) => c.name)));
-    } else if (categorizedCampaigns.configuredList.length > 0) {
-      setSelectedCampaigns(new Set(categorizedCampaigns.configuredList.map((c) => c.name)));
+    if (!isInitialSelectionDone.current) {
+      const activeConfigured = categorizedCampaigns.activeVorwoche.configured;
+      if (activeConfigured.length > 0) {
+        setSelectedCampaigns(new Set(activeConfigured.map((c) => c.name)));
+      } else if (categorizedCampaigns.configuredList.length > 0) {
+        setSelectedCampaigns(new Set(categorizedCampaigns.configuredList.map((c) => c.name)));
+      }
+      isInitialSelectionDone.current = true;
     }
-  }, [categorizedCampaigns, rawCampaignsData, presets]);
+  }, [categorizedCampaigns, rawCampaignsData]);
 
   const handleSaveUnconfigured = async (campaignName) => {
     const formData = unconfiguredForms[campaignName];
@@ -828,6 +836,26 @@ export default function ReportParser() {
       if (res.ok) {
         await loadPresets();
         setSelectedCampaigns((prev) => new Set([...prev, campaignName]));
+
+        const campaignItem = rawCampaignsData?.[campaignName];
+        if (campaignItem) {
+          const vReach = (campaignItem.daily || [])
+            .filter((d) => {
+              const iso = normalizeDateStr(d.date);
+              return iso >= vorwocheRange.start && iso <= vorwocheRange.end;
+            })
+            .reduce((sum, d) => sum + (d.reach || 0), 0);
+
+          if (vReach > 0 && bulkReachTab !== "active_vorwoche") {
+            setBulkReachTab("active_vorwoche");
+          } else if (vReach === 0 && bulkReachTab !== "inactive_vorwoche") {
+            setBulkReachTab("inactive_vorwoche");
+          }
+        }
+
+        if (bulkStatusFilter === "unconfigured") {
+          setBulkStatusFilter("configured");
+        }
       } else {
         alert("Fehler beim Speichern des Presets.");
       }
@@ -1540,6 +1568,7 @@ export default function ReportParser() {
                       setRawCampaignsData(null);
                       setBulkCsvFile(null);
                       setBulkFileName("");
+                      isInitialSelectionDone.current = false;
                     }}
                     className="p-2 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl"
                     title="Neue CSV hochladen"
