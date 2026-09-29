@@ -38,6 +38,10 @@ import {
   Check,
   FilePieChart,
   LayoutGrid,
+  Trash2,
+  RotateCcw,
+  FolderCheck,
+  AlertTriangle,
 } from "lucide-react";
 
 const normalizeDateStr = (dateVal) => {
@@ -393,6 +397,25 @@ export default function ReportParser() {
   const bulkFileInputRef = useRef(null);
   const isInitialSelectionDone = useRef(false);
 
+  const handleClearSingleCsv = () => {
+    setSingleResults(null);
+    setSingleFileName("");
+    if (singleFileInputRef.current) {
+      singleFileInputRef.current.value = "";
+    }
+  };
+
+  const handleClearBulkCsv = () => {
+    setRawCampaignsData(null);
+    setBulkCsvFile(null);
+    setBulkFileName("");
+    setSelectedCampaigns(new Set());
+    isInitialSelectionDone.current = false;
+    if (bulkFileInputRef.current) {
+      bulkFileInputRef.current.value = "";
+    }
+  };
+
   const loadPresets = async () => {
     setIsLoadingPresets(true);
     try {
@@ -655,7 +678,7 @@ export default function ReportParser() {
     });
   };
 
-  // Berechne den Vorwochen-Zeitraum dynamisch anhand des neuesten Datums in den CSV-Daten (oder heute, falls keine Daten)
+  // Berechne den Vorwoche-Zeitraum dynamisch anhand des neuesten Datums in den CSV-Daten
   const vorwocheRange = useMemo(() => {
     const allDates = [];
     if (rawCampaignsData) {
@@ -683,12 +706,10 @@ export default function ReportParser() {
     }
 
     let startMoment, endMoment;
-    // Wenn maxMoment ein Montag ist (z.B. heute oder erster Tag einer neuen Woche), betrachten wir die eben zu Ende gegangene Vorwoche
     if (maxMoment.isoWeekday() === 1) {
       endMoment = maxMoment.clone().subtract(1, "day").endOf("isoWeek");
       startMoment = maxMoment.clone().subtract(1, "day").startOf("isoWeek");
     } else {
-      // Ansonsten (Dienstag bis Sonntag) ist die relevante Reporting-Woche die ISO-Woche, in der maxMoment liegt
       startMoment = maxMoment.clone().startOf("isoWeek");
       endMoment = maxMoment.clone().endOf("isoWeek");
     }
@@ -708,8 +729,12 @@ export default function ReportParser() {
         inactiveVorwoche: { configured: [], unconfigured: [], all: [] },
         configuredList: [],
         unconfiguredList: [],
+        allList: [],
         totalActiveCount: 0,
         totalInactiveCount: 0,
+        totalConfiguredCount: 0,
+        totalUnconfiguredCount: 0,
+        totalCampaignsCount: 0,
       };
     }
 
@@ -717,6 +742,7 @@ export default function ReportParser() {
     const inactiveVorwoche = { configured: [], unconfigured: [], all: [] };
     const configuredList = [];
     const unconfiguredList = [];
+    const allList = [];
 
     Object.entries(rawCampaignsData).forEach(([cName, campaignData]) => {
       const preset = (presets || []).find(
@@ -738,19 +764,12 @@ export default function ReportParser() {
         isConfigured: !!preset,
       };
 
+      allList.push(item);
+
       if (preset) {
-        configuredList.push({
-          name: cName,
-          campaignData,
-          preset,
-          vorwocheReach,
-        });
+        configuredList.push(item);
       } else {
-        unconfiguredList.push({
-          name: cName,
-          campaignData,
-          vorwocheReach,
-        });
+        unconfiguredList.push(item);
       }
 
       const hasReach = vorwocheReach > 0;
@@ -769,30 +788,44 @@ export default function ReportParser() {
       inactiveVorwoche,
       configuredList,
       unconfiguredList,
+      allList,
       totalActiveCount: activeVorwoche.all.length,
       totalInactiveCount: inactiveVorwoche.all.length,
+      totalConfiguredCount: configuredList.length,
+      totalUnconfiguredCount: unconfiguredList.length,
+      totalCampaignsCount: allList.length,
     };
   }, [rawCampaignsData, presets, vorwocheRange]);
 
   const configuredList = categorizedCampaigns.configuredList;
   const unconfiguredList = categorizedCampaigns.unconfiguredList;
 
-  const currentGroup = useMemo(() => {
-    return bulkReachTab === "active_vorwoche"
-      ? categorizedCampaigns.activeVorwoche
-      : categorizedCampaigns.inactiveVorwoche;
-  }, [bulkReachTab, categorizedCampaigns]);
-
+  // Primary filtering logic combining Kampagnenmanagement status & Vorwoche reach
   const displayedList = useMemo(() => {
-    let list = currentGroup.all;
-    if (bulkStatusFilter === "configured") list = currentGroup.configured;
-    if (bulkStatusFilter === "unconfigured") list = currentGroup.unconfigured;
+    if (!rawCampaignsData) return [];
 
-    if (!bulkSearchQuery.trim()) return list;
-    return list.filter((item) =>
-      item.name.toLowerCase().includes(bulkSearchQuery.toLowerCase())
-    );
-  }, [currentGroup, bulkStatusFilter, bulkSearchQuery]);
+    let list = [];
+    if (bulkStatusFilter === "configured") {
+      list = categorizedCampaigns.configuredList;
+    } else if (bulkStatusFilter === "unconfigured") {
+      list = categorizedCampaigns.unconfiguredList;
+    } else {
+      list = categorizedCampaigns.allList;
+    }
+
+    if (bulkReachTab === "active_vorwoche") {
+      list = list.filter((item) => item.vorwocheReach > 0);
+    } else if (bulkReachTab === "inactive_vorwoche") {
+      list = list.filter((item) => item.vorwocheReach === 0);
+    }
+
+    if (bulkSearchQuery.trim()) {
+      const q = bulkSearchQuery.toLowerCase();
+      list = list.filter((item) => item.name.toLowerCase().includes(q));
+    }
+
+    return list;
+  }, [rawCampaignsData, categorizedCampaigns, bulkStatusFilter, bulkReachTab, bulkSearchQuery]);
 
   useEffect(() => {
     if (!rawCampaignsData) {
@@ -924,17 +957,18 @@ export default function ReportParser() {
   };
 
   const toggleSelectAll = () => {
-    const currentConfiguredNames = currentGroup.configured.map((c) => c.name);
-    const allSelected = currentConfiguredNames.every((name) =>
-      selectedCampaigns.has(name)
-    );
+    const displayedConfigured = displayedList.filter((c) => c.isConfigured || c.preset);
+    const displayedConfiguredNames = displayedConfigured.map((c) => c.name);
+    const allSelected =
+      displayedConfiguredNames.length > 0 &&
+      displayedConfiguredNames.every((name) => selectedCampaigns.has(name));
 
     setSelectedCampaigns((prev) => {
       const next = new Set(prev);
       if (allSelected) {
-        currentConfiguredNames.forEach((name) => next.delete(name));
+        displayedConfiguredNames.forEach((name) => next.delete(name));
       } else {
-        currentConfiguredNames.forEach((name) => next.add(name));
+        displayedConfiguredNames.forEach((name) => next.add(name));
       }
       return next;
     });
@@ -1063,41 +1097,59 @@ export default function ReportParser() {
     <div className="min-h-screen bg-[#050505] text-[#d4d4d8] p-6 lg:p-10 font-sans">
       {/* Top Main Navigation: Einzel-Report vs Massen-Report */}
       <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-zinc-800 pb-6">
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-white mb-1">
-              Kampagnen Performance Reports
-            </h1>
-            <p className="text-xs lg:text-sm text-zinc-400">
-              Erstelle einzelne Ad-Reports für Kampagnen oder führe einen wöchentlichen Massenabgleich durch.
-            </p>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
+          <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">
+            Kampagnen Performance Reports
+          </h1>
 
-          {/* Mode Tabs */}
-          <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-inner">
-            <button
-              onClick={() => setReportingMode("single")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
-                reportingMode === "single"
-                  ? "bg-[#a3895d] text-black shadow-lg"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              <FilePieChart size={16} />
-              Einzel-Reporting
-            </button>
+          {/* Mode Tabs & Reset Button */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-inner">
+              <button
+                onClick={() => setReportingMode("single")}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                  reportingMode === "single"
+                    ? "bg-[#a3895d] text-black shadow-lg"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <FilePieChart size={16} />
+                Einzel-Reporting
+              </button>
 
-            <button
-              onClick={() => setReportingMode("bulk")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
-                reportingMode === "bulk"
-                  ? "bg-[#a3895d] text-black shadow-lg"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              <LayoutGrid size={16} />
-              Wöchentliches Massenreporting
-            </button>
+              <button
+                onClick={() => setReportingMode("bulk")}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                  reportingMode === "bulk"
+                    ? "bg-[#a3895d] text-black shadow-lg"
+                    : "text-zinc-400 hover:text-[#a3895d]"
+                }`}
+              >
+                <LayoutGrid size={16} />
+                Wöchentliches Massenreporting
+              </button>
+            </div>
+
+            {/* Daten zurücksetzen Button */}
+            {reportingMode === "bulk" && rawCampaignsData && (
+              <button
+                onClick={handleClearBulkCsv}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition-all shadow"
+                title="CSV-Daten zurücksetzen und neu starten"
+              >
+                <RotateCcw size={15} /> Daten zurücksetzen
+              </button>
+            )}
+
+            {reportingMode === "single" && singleResults && (
+              <button
+                onClick={handleClearSingleCsv}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition-all shadow"
+                title="CSV-Daten zurücksetzen und neu starten"
+              >
+                <RotateCcw size={15} /> Daten zurücksetzen
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1148,33 +1200,6 @@ export default function ReportParser() {
             </div>
           ) : (
             <div className="space-y-8">
-              {/* Header with Reset Button */}
-              <div className="flex justify-between items-center bg-[#121212] border border-zinc-800 p-4 rounded-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#a3895d]/10 border border-[#a3895d]/30 rounded-xl text-[#a3895d]">
-                    <FileText size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white truncate">
-                      {singleFileName || "Hochgeladene Kampagnendaten"}
-                    </h3>
-                    <p className="text-xs text-zinc-400">
-                      Daten bis gestern erfolgreich verarbeitet
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => {
-                    setSingleResults(null);
-                    setSingleFileName("");
-                  }}
-                  className="flex items-center gap-1.5 text-xs text-zinc-300 hover:text-white bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-4 py-2 rounded-xl transition-colors"
-                >
-                  <RefreshCw size={14} /> Andere Datei hochladen
-                </button>
-              </div>
-
               {/* Quick Summary Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-5 bg-[#121212] border border-zinc-800 rounded-2xl shadow">
@@ -1297,48 +1322,48 @@ export default function ReportParser() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-5 shadow">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
-                      Gefundene Kampagnen
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">
+                      Erkannte Kampagnen
                     </span>
-                    <Layers size={16} className="text-[#a3895d]" />
+                    <Layers size={18} className="text-[#a3895d]" />
                   </div>
                   <div className="text-2xl font-bold text-white">
-                    {Object.keys(rawCampaignsData).length}
+                    {categorizedCampaigns.totalCampaignsCount}
                   </div>
-                  <div className="text-[11px] text-zinc-400 mt-1 flex flex-wrap gap-2">
-                    <span className="text-emerald-400 font-medium">
-                      {categorizedCampaigns.totalActiveCount} Vorwoche-Aktiv
+                  <div className="text-xs text-zinc-400 mt-1 flex flex-wrap gap-2">
+                    <span className="text-emerald-400 font-semibold">
+                      {categorizedCampaigns.totalConfiguredCount} in DB
                     </span>
                     •
-                    <span className="text-zinc-500 font-medium">
-                      {categorizedCampaigns.totalInactiveCount} Inaktiv
+                    <span className="text-amber-400 font-semibold">
+                      {categorizedCampaigns.totalUnconfiguredCount} fehlen
                     </span>
                   </div>
                 </div>
 
                 <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-5 shadow">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
-                      Gesamte Impressions (CSV)
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">
+                      Gesamte Impressions
                     </span>
-                    <Eye size={16} className="text-[#a3895d]" />
+                    <Eye size={18} className="text-[#a3895d]" />
                   </div>
                   <div className="text-2xl font-bold text-white">
                     {Object.values(rawCampaignsData)
                       .reduce((sum, c) => sum + c.campaign.impressions, 0)
                       .toLocaleString("de-DE")}
                   </div>
-                  <div className="text-[11px] text-zinc-400 mt-1">
-                    Geliefert über alle Kampagnen
+                  <div className="text-xs text-zinc-400 mt-1">
+                    Geliefert laut CSV-Import
                   </div>
                 </div>
 
                 <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-5 shadow">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
-                      Gesamter Umsatz (CSV)
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">
+                      Gesamter Umsatz
                     </span>
-                    <Euro size={16} className="text-[#a3895d]" />
+                    <Euro size={18} className="text-[#a3895d]" />
                   </div>
                   <div className="text-2xl font-bold text-white">
                     €{" "}
@@ -1346,179 +1371,121 @@ export default function ReportParser() {
                       .reduce((sum, c) => sum + c.campaign.revenue, 0)
                       .toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </div>
-                  <div className="text-[11px] text-zinc-400 mt-1">
-                    Total CPM / CPC Revenue
+                  <div className="text-xs text-zinc-400 mt-1">
+                    Total CPM / CPC Umsatz
                   </div>
                 </div>
 
                 <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-5 shadow">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
-                      Ausgewählte Kampagnen
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">
+                      Für Export Ausgewählt
                     </span>
-                    <CheckCircle2 size={16} className="text-[#a3895d]" />
+                    <CheckCircle2 size={18} className="text-[#a3895d]" />
                   </div>
                   <div className="text-2xl font-bold text-[#a3895d]">
                     {selectedCampaigns.size} Kampagnen
                   </div>
-                  <div className="text-[11px] text-zinc-400 mt-1">
-                    ({currentGroup.configured.filter((c) => selectedCampaigns.has(c.name)).length} von {currentGroup.configured.length} in dieser Ansicht)
+                  <div className="text-xs text-zinc-400 mt-1">
+                    Bereit für Batch-Export
                   </div>
                 </div>
               </div>
 
-              {/* PRIMARY TAB NAVIGATION: Vorwoche-Reichweite vs. Keine Vorwoche-Reichweite */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-[#121212] border border-zinc-800 p-2 rounded-2xl shadow-xl">
-                <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl flex-grow sm:flex-grow-0">
-                  <button
-                    onClick={() => {
-                      setBulkReachTab("active_vorwoche");
-                      setBulkStatusFilter("configured");
-                    }}
-                    className={`flex-1 sm:flex-initial flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
-                      bulkReachTab === "active_vorwoche"
-                        ? "bg-[#a3895d] text-black shadow-lg"
-                        : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                    }`}
-                  >
-                    <Sparkles size={16} className={bulkReachTab === "active_vorwoche" ? "text-black" : "text-[#a3895d]"} />
-                    <span>Reichweite in Vorwoche ({categorizedCampaigns.totalActiveCount})</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setBulkReachTab("inactive_vorwoche");
-                      setBulkStatusFilter("all");
-                    }}
-                    className={`flex-1 sm:flex-initial flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
-                      bulkReachTab === "inactive_vorwoche"
-                        ? "bg-zinc-800 text-white shadow-lg border border-zinc-700"
-                        : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                    }`}
-                  >
-                    <Clock size={16} className="text-zinc-500" />
-                    <span>Keine Reichweite in Vorwoche ({categorizedCampaigns.totalInactiveCount})</span>
-                  </button>
-                </div>
-
-                {vorwocheRange.label && (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/90 border border-zinc-800 rounded-xl text-xs text-zinc-300 self-center sm:self-auto font-mono">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Vorwoche:</span>
-                    <strong className="text-[#a3895d]">{vorwocheRange.label}</strong>
+              {/* MAIN KAMPAGNENMANAGEMENT CONTROL CARD */}
+              <div className="bg-[#121212] border border-zinc-800 p-5 rounded-2xl shadow-xl space-y-4">
+                {/* Status Tabs Header */}
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
+                  <div className="space-y-1">
+                    <h2 className="text-base font-bold text-white flex items-center gap-2">
+                      <Target size={18} className="text-[#a3895d]" /> Kampagnenmanagement Status
+                    </h2>
+                    <p className="text-xs text-zinc-400">
+                      Wähle aus, welche Kampagnen du verwalten oder reporten möchtest:
+                    </p>
                   </div>
-                )}
-              </div>
 
-              {/* PROMINENT DEDICATED EXPORT MODUS CONTROL PANEL */}
-              <div className="bg-[#121212] border border border-zinc-800 rounded-2xl p-4 lg:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-xs uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1.5">
-                    <SlidersHorizontal size={15} className="text-[#a3895d]" />
-                    Export-Umfang & Modus:
-                  </span>
-
-                  <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl">
-                    <button
-                      onClick={() => setUseIndividualExportOptions(true)}
-                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                        useIndividualExportOptions
-                          ? "bg-[#a3895d] text-black shadow-md"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                      title="Verwendet für den Export die Checkboxen der jeweiligen Kampagnenkarte"
-                    >
-                      <Sparkles size={13} />
-                      🎯 Individuelle Karteneinstellungen verwenden
-                    </button>
-
-                    <button
-                      onClick={() => setUseIndividualExportOptions(false)}
-                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                        !useIndividualExportOptions
-                          ? "bg-zinc-800 text-white shadow-md border border-zinc-700"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                      title="Wendet einheitliche globale Einstellungen auf alle Kampagnen im Mass-Export an"
-                    >
-                      <LayoutGrid size={13} />
-                      🌐 Globale Einstellungen auf alle anwenden
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  {!useIndividualExportOptions ? (
-                    <div className="flex items-center gap-4 bg-zinc-900/90 border border-[#a3895d]/40 px-3.5 py-1.5 rounded-xl text-xs">
-                      <span className="text-[10px] uppercase font-semibold text-[#a3895d]">
-                        Globale Schalter:
-                      </span>
-                      <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-xs">
-                        <input
-                          type="checkbox"
-                          checked={showCreatives}
-                          onChange={(e) => setShowCreatives(e.target.checked)}
-                          className="w-4 h-4 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
-                        />
-                        <span>Creatives</span>
-                      </label>
-                      <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-xs">
-                        <input
-                          type="checkbox"
-                          checked={showLineItems}
-                          onChange={(e) => setShowLineItems(e.target.checked)}
-                          className="w-4 h-4 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
-                        />
-                        <span>Line Items</span>
-                      </label>
-                    </div>
-                  ) : (
-                    <span className="text-xs text-zinc-400 font-mono">
-                      💡 Checkboxen auf den einzelnen Karten bestimmen den Export-Umfang.
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* SECONDARY TOOLBAR: Status Sub-Filter (Bereit / Noch nicht angelegt / Alle), Search & Export Action Buttons */}
-              <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-4 lg:p-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-xl">
-                {/* Left: Sub-Filter Tabs & Search */}
-                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                  <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl">
+                  {/* Primary Status Tabs */}
+                  <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl overflow-x-auto">
                     <button
                       onClick={() => setBulkStatusFilter("configured")}
-                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                         bulkStatusFilter === "configured"
-                          ? "bg-emerald-600 text-white shadow"
+                          ? "bg-emerald-600 text-white shadow-lg"
                           : "text-zinc-400 hover:text-white"
                       }`}
                     >
-                      <CheckCircle2 size={13} />
-                      Bereit ({currentGroup.configured.length})
+                      <FolderCheck size={16} />
+                      <span>Zum Reporten bereit ({categorizedCampaigns.totalConfiguredCount})</span>
                     </button>
+
                     <button
                       onClick={() => setBulkStatusFilter("unconfigured")}
-                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                         bulkStatusFilter === "unconfigured"
-                          ? "bg-amber-500 text-black shadow"
+                          ? "bg-amber-500 text-black shadow-lg"
                           : "text-zinc-400 hover:text-white"
                       }`}
                     >
-                      <AlertCircle size={13} />
-                      Noch nicht angelegt ({currentGroup.unconfigured.length})
+                      <AlertTriangle size={16} />
+                      <span>Fehlende DB-Infos ({categorizedCampaigns.totalUnconfiguredCount})</span>
                     </button>
+
                     <button
                       onClick={() => setBulkStatusFilter("all")}
-                      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                         bulkStatusFilter === "all"
-                          ? "bg-zinc-700 text-white shadow"
+                          ? "bg-zinc-700 text-white shadow-lg"
                           : "text-zinc-400 hover:text-white"
                       }`}
                     >
-                      <Layers size={13} />
-                      Alle ({currentGroup.all.length})
+                      <Layers size={16} />
+                      <span>Alle Kampagnen ({categorizedCampaigns.totalCampaignsCount})</span>
                     </button>
                   </div>
+                </div>
 
-                  <div className="relative flex-grow lg:w-64">
+                {/* Vorwoche Activity & Search Toolbar */}
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 pb-4 border-b border-zinc-800/80">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                      Vorwoche:
+                    </span>
+                    <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl text-xs">
+                      <button
+                        onClick={() => setBulkReachTab("active_vorwoche")}
+                        className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                          bulkReachTab === "active_vorwoche"
+                            ? "bg-[#a3895d] text-black shadow"
+                            : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        Reichweite in Vorwoche ({categorizedCampaigns.totalActiveCount})
+                      </button>
+                      <button
+                        onClick={() => setBulkReachTab("inactive_vorwoche")}
+                        className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                          bulkReachTab === "inactive_vorwoche"
+                            ? "bg-zinc-800 text-white shadow"
+                            : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        Keine Reichweite ({categorizedCampaigns.totalInactiveCount})
+                      </button>
+                      <button
+                        onClick={() => setBulkReachTab("all")}
+                        className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                          bulkReachTab === "all"
+                            ? "bg-zinc-800 text-white shadow"
+                            : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        Alle Vorwoche-Filter
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="relative w-full lg:w-72">
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                     <input
                       type="text"
@@ -1530,14 +1497,67 @@ export default function ReportParser() {
                   </div>
                 </div>
 
-                {/* Right: Bulk Action Buttons */}
-                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
-                  <div className="flex items-center gap-2">
+                {/* Export Options & Actions */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-xs uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1.5">
+                      <SlidersHorizontal size={15} className="text-[#a3895d]" />
+                      Export-Optionen:
+                    </span>
+
+                    <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl">
+                      <button
+                        onClick={() => setUseIndividualExportOptions(true)}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          useIndividualExportOptions
+                            ? "bg-[#a3895d] text-black shadow-md"
+                            : "text-[#d4d4d8] hover:text-white"
+                        }`}
+                      >
+                        🎯 Individuelle Karteneinstellungen
+                      </button>
+
+                      <button
+                        onClick={() => setUseIndividualExportOptions(false)}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          !useIndividualExportOptions
+                            ? "bg-zinc-800 text-white shadow-md border border-zinc-700"
+                            : "text-[#d4d4d8] hover:text-white"
+                        }`}
+                      >
+                        🌐 Globale Schalter
+                      </button>
+                    </div>
+
+                    {!useIndividualExportOptions && (
+                      <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-xl text-xs">
+                        <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d]">
+                          <input
+                            type="checkbox"
+                            checked={showCreatives}
+                            onChange={(e) => setShowCreatives(e.target.checked)}
+                            className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d]"
+                          />
+                          <span>Creatives</span>
+                        </label>
+                        <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d]">
+                          <input
+                            type="checkbox"
+                            checked={showLineItems}
+                            onChange={(e) => setShowLineItems(e.target.checked)}
+                            className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d]"
+                          />
+                          <span>Line Items</span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 justify-end w-full md:w-auto">
                     <button
                       onClick={handleBulkExportExcel}
                       disabled={selectedCampaigns.size === 0}
-                      className="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold uppercase tracking-wider px-3.5 py-2.5 rounded-xl transition-colors shadow"
-                      title="Ausgewählte Kampagnen in einer Excel-Datei mit Einzelreitern exportieren"
+                      className="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 disabled:opacity-40 text-white text-xs font-bold uppercase tracking-wider px-3.5 py-2.5 rounded-xl transition-colors shadow"
                     >
                       <FileSpreadsheet size={15} />
                       Excel ({selectedCampaigns.size})
@@ -1546,8 +1566,7 @@ export default function ReportParser() {
                     <button
                       onClick={handleBulkExportCSV}
                       disabled={selectedCampaigns.size === 0}
-                      className="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold uppercase tracking-wider px-3.5 py-2.5 rounded-xl transition-colors shadow"
-                      title="Ausgewählte Kampagnen als einzelne CSV-Dateien exportieren"
+                      className="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-600 disabled:opacity-40 text-white text-xs font-bold uppercase tracking-wider px-3.5 py-2.5 rounded-xl transition-colors shadow"
                     >
                       <FileText size={15} />
                       CSV ({selectedCampaigns.size})
@@ -1556,51 +1575,42 @@ export default function ReportParser() {
                     <button
                       onClick={() => setBulkViewMode("bulk_report")}
                       disabled={selectedCampaigns.size === 0}
-                      className="flex items-center gap-1.5 bg-[#a3895d] hover:bg-[#8e764d] disabled:opacity-40 disabled:cursor-not-allowed text-black text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors shadow-lg"
+                      className="flex items-center gap-1.5 bg-[#a3895d] hover:bg-[#8e764d] disabled:opacity-40 text-black text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors shadow-lg"
                     >
                       <Printer size={15} />
-                      Bulk Report ({selectedCampaigns.size})
+                      Bulk PDF ({selectedCampaigns.size})
                     </button>
                   </div>
-
-                  <button
-                    onClick={() => {
-                      setRawCampaignsData(null);
-                      setBulkCsvFile(null);
-                      setBulkFileName("");
-                      isInitialSelectionDone.current = false;
-                    }}
-                    className="p-2 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl"
-                    title="Neue CSV hochladen"
-                  >
-                    <RefreshCw size={15} />
-                  </button>
                 </div>
-              </div>
 
-              {/* MAIN CAMPAIGN CARDS LISTING */}
-              <div className="space-y-4">
-                {currentGroup.configured.length > 0 && (
-                  <div className="flex justify-between items-center px-2">
+                {/* Card Footer: Select All Checkbox */}
+                {displayedList.some((c) => c.isConfigured || c.preset) && (
+                  <div className="flex justify-between items-center pt-3 border-t border-zinc-800/80 px-1">
                     <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-400 hover:text-white">
                       <input
                         type="checkbox"
                         checked={
-                          currentGroup.configured.length > 0 &&
-                          currentGroup.configured.every((c) =>
-                            selectedCampaigns.has(c.name)
-                          )
+                          displayedList.filter((c) => c.isConfigured || c.preset).length > 0 &&
+                          displayedList
+                            .filter((c) => c.isConfigured || c.preset)
+                            .every((c) => selectedCampaigns.has(c.name))
                         }
                         onChange={toggleSelectAll}
                         className="w-4 h-4 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
                       />
-                      <span>Alle {currentGroup.configured.length} bereiten Kampagnen auswählen</span>
+                      <span>
+                        Alle {displayedList.filter((c) => c.isConfigured || c.preset).length} bereiten Kampagnen in dieser Ansicht auswählen
+                      </span>
                     </label>
                     <span className="text-xs text-zinc-500 font-mono">
                       {displayedList.length} Kampagnen angezeigt
                     </span>
                   </div>
                 )}
+              </div>
+
+              {/* MAIN CAMPAIGN CARDS LISTING */}
+              <div className="space-y-4">
 
                 {displayedList.length === 0 ? (
                   <div className="bg-[#121212] border border-zinc-800 rounded-2xl p-12 text-center text-zinc-500">
@@ -1632,89 +1642,49 @@ export default function ReportParser() {
                         return (
                           <div
                             key={name}
-                            className={`bg-[#121212] border transition-all duration-200 rounded-2xl p-5 shadow-lg flex flex-col gap-4 ${
+                            className={`bg-[#111113] border transition-all duration-200 rounded-2xl p-5 shadow-xl flex flex-col gap-4 ${
                               isSelected
-                                ? "border-[#a3895d]/60 bg-gradient-to-r from-[#121212] via-[#161616] to-[#121212]"
-                                : "border-zinc-800/80 hover:border-zinc-700"
+                                ? "border-[#a3895d]/60 bg-gradient-to-r from-[#141416] via-[#17171a] to-[#141416] ring-1 ring-[#a3895d]/30"
+                                : "border-zinc-800/80 hover:border-zinc-700/80"
                             }`}
                           >
-                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                              <div className="flex items-start gap-4 flex-1 min-w-0">
+                            {/* LAYER 1: Header Zone (Title, Dates, Primary Actions) */}
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-zinc-800/60">
+                              <div className="flex items-start gap-3.5 flex-1 min-w-0">
                                 <input
                                   type="checkbox"
                                   checked={isSelected}
                                   onChange={() => toggleSelectCampaign(name)}
-                                  className="w-5 h-5 mt-1 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d] cursor-pointer"
+                                  className="w-5 h-5 mt-0.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d] cursor-pointer"
                                 />
                                 <div className="min-w-0 flex-1">
-                                  <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                                    <h3 className="text-base font-bold text-white truncate" title={name}>
+                                  <div className="flex flex-wrap items-center gap-2.5">
+                                    <h3 className="text-base font-bold text-white tracking-tight truncate" title={name}>
                                       {name}
                                     </h3>
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                                       <Check size={10} /> Bereit
                                     </span>
-
-                                    {/* Lineares Pacing / On Target Badge */}
-                                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-mono ${metrics.pacingBg} ${metrics.pacingColor}`}>
-                                      {metrics.pacingLabel} ({metrics.pacingIndex}% Soll)
-                                    </span>
-
-                                    {/* Vorwoche Reichweite Badge */}
-                                    {vorwocheReach > 0 ? (
-                                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#a3895d]/10 text-[#a3895d] border border-[#a3895d]/30 font-mono">
-                                        <Sparkles size={10} /> Vorwoche: {vorwocheReach.toLocaleString("de-DE")} Impr.
-                                      </span>
-                                    ) : (
-                                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800/80 text-zinc-400 border border-zinc-700/50 font-mono">
-                                        Inaktiv in Vorwoche
-                                      </span>
-                                    )}
                                   </div>
 
-                                  <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 font-mono">
-                                    <span className="flex items-center gap-1">
-                                      <Clock size={12} className="text-zinc-500" />
-                                      {moment(preset.startDate).format("DD.MM.YY")} -{" "}
-                                      {moment(preset.endDate).format("DD.MM.YY")}
+                                  <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 font-mono mt-1">
+                                    <span className="flex items-center gap-1.5 text-zinc-400">
+                                      <Clock size={13} className="text-[#a3895d]" />
+                                      {moment(preset.startDate).format("DD.MM.YY")} – {moment(preset.endDate).format("DD.MM.YY")}
                                     </span>
+                                    <span className="text-zinc-600">•</span>
                                     <span>
-                                      Laufzeit: <strong className="text-zinc-200">{metrics.totalDays} Tage</strong> (Tag {metrics.daysSinceStart})
+                                      Laufzeit: <strong className="text-zinc-200">{metrics.totalDays} Tage</strong> <span className="text-zinc-500">(Tag {metrics.daysSinceStart})</span>
                                     </span>
                                   </div>
                                 </div>
                               </div>
 
-                              {/* Individuelle Export-Optionen pro Kampagne */}
-                              <div className="flex items-center gap-3 bg-zinc-900/90 border border-zinc-800/80 px-3 py-2 rounded-xl text-xs">
-                                <span className="text-[10px] uppercase font-semibold text-zinc-400">
-                                  Export-Umfang:
-                                </span>
-                                <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-[11px]">
-                                  <input
-                                    type="checkbox"
-                                    checked={opts.showCreatives}
-                                    onChange={() => toggleCampaignOption(name, "showCreatives")}
-                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
-                                  />
-                                  <span>Creatives</span>
-                                </label>
-                                <label className="flex items-center gap-1.5 cursor-pointer text-zinc-200 hover:text-[#a3895d] font-mono text-[11px]">
-                                  <input
-                                    type="checkbox"
-                                    checked={opts.showLineItems}
-                                    onChange={() => toggleCampaignOption(name, "showLineItems")}
-                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
-                                  />
-                                  <span>Line Items</span>
-                                </label>
-                              </div>
-
-                              {/* Action Buttons */}
+                              {/* Primary Action Buttons */}
                               <div className="flex flex-wrap items-center gap-2 justify-end">
                                 <button
                                   onClick={() => handleOpenEditPreset(preset)}
-                                  className="p-2 text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg transition-colors"
+                                  className="p-2 text-zinc-400 hover:text-white bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors shadow-sm"
                                   title="Preset-Werte (Start, Ende, Target Reach, Budget) bearbeiten"
                                 >
                                   <Edit3 size={15} />
@@ -1729,7 +1699,7 @@ export default function ReportParser() {
                                       showLineItems: opts.showLineItems,
                                     })
                                   }
-                                  className="flex items-center gap-1 bg-emerald-800/60 hover:bg-emerald-700 text-emerald-100 border border-emerald-700/50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                                  className="flex items-center gap-1.5 bg-emerald-900/40 hover:bg-emerald-800/80 text-emerald-300 border border-emerald-700/50 text-xs font-bold px-3 py-2 rounded-xl transition-colors shadow-sm"
                                   title="Excel-Datei herunterladen (.xlsx)"
                                 >
                                   <FileSpreadsheet size={14} />
@@ -1745,7 +1715,7 @@ export default function ReportParser() {
                                       showLineItems: opts.showLineItems,
                                     })
                                   }
-                                  className="flex items-center gap-1 bg-blue-800/60 hover:bg-blue-700 text-blue-100 border border-blue-700/50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                                  className="flex items-center gap-1.5 bg-blue-900/40 hover:bg-blue-800/80 text-blue-300 border border-blue-700/50 text-xs font-bold px-3 py-2 rounded-xl transition-colors shadow-sm"
                                   title="Einzelne CSV exportieren"
                                 >
                                   <FileText size={14} />
@@ -1757,80 +1727,92 @@ export default function ReportParser() {
                                     setCurrentSingleCampaign({ campaignData, preset });
                                     setBulkViewMode("single_report");
                                   }}
-                                  className="flex items-center gap-1.5 bg-[#a3895d] hover:bg-[#8e764d] text-black text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-colors shadow"
+                                  className="flex items-center gap-1.5 bg-[#a3895d] hover:bg-[#8e764d] text-black text-xs font-extrabold uppercase tracking-wider px-4 py-2 rounded-xl transition-colors shadow-md"
                                 >
                                   Report <ChevronRight size={14} />
                                 </button>
                               </div>
                             </div>
 
-                            {/* Detailed Pacing Grid & Delivery Status */}
-                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 px-4 py-3 bg-zinc-900/60 rounded-xl border border-zinc-800/50 font-mono">
-                              <div>
-                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                            {/* LAYER 2: Core Metrics Stat Pillars & Export Scope */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-stretch">
+                              {/* Stat 1: Ist-Auslieferung */}
+                              <div className="bg-zinc-900/80 border border-zinc-800/70 rounded-xl p-3 flex flex-col justify-between">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 font-sans">
                                   Ist-Auslieferung
                                 </span>
-                                <div className="text-sm font-bold text-white">
+                                <div className="text-base font-extrabold text-white font-mono mt-1">
                                   {campaignData.campaign.impressions.toLocaleString("de-DE")}
                                 </div>
-                                <div className="text-[10px] text-[#a3895d]">
-                                  {metrics.reachProgress.toFixed(1)}% von {(Number(preset.targetReach) || 0).toLocaleString("de-DE")}
-                                </div>
                               </div>
 
-                              <div>
-                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                              {/* Stat 2: Lineares Soll */}
+                              <div className="bg-zinc-900/80 border border-zinc-800/70 rounded-xl p-3 flex flex-col justify-between">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 font-sans">
                                   Lineares Soll (Pacing)
                                 </span>
-                                <div className="text-sm font-bold text-zinc-200">
+                                <div className="text-base font-extrabold text-zinc-200 font-mono mt-1">
                                   {metrics.shouldReach.toLocaleString("de-DE")}
                                 </div>
-                                <div className="text-[10px] text-zinc-400">
-                                  {metrics.pacingIndex}% vom Soll ({metrics.timeProgress.toFixed(0)}% Zeit)
-                                </div>
                               </div>
 
-                              <div>
-                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
-                                  Lineare Abweichung
-                                </span>
-                                <div className={`text-sm font-bold ${metrics.reachDelta >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-                                  {metrics.reachDelta >= 0 ? "+" : ""}{metrics.reachDelta.toLocaleString("de-DE")}
-                                </div>
-                                <div className="text-[10px] text-zinc-400">
-                                  {metrics.reachDeltaPercent >= 0 ? "+" : ""}{metrics.reachDeltaPercent.toFixed(1)}% vs. Linear
-                                </div>
-                              </div>
-
-                              <div>
-                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                              {/* Stat 3: Budget / Ist */}
+                              <div className="bg-zinc-900/80 border border-zinc-800/70 rounded-xl p-3 flex flex-col justify-between">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 font-sans">
                                   Budget / Ist
                                 </span>
-                                <div className="text-sm font-bold text-white">
-                                  € {campaignData.campaign.revenue.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                                </div>
-                                <div className="text-[10px] text-zinc-400">
-                                  Soll: € {metrics.shouldSpend.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                <div>
+                                  <div className="text-base font-extrabold text-white font-mono mt-1">
+                                    € {campaignData.campaign.revenue.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                  </div>
+                                  <div className="text-[10px] text-zinc-400 font-mono">
+                                    Soll: € {metrics.shouldSpend.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                  </div>
                                 </div>
                               </div>
 
-                              <div>
-                                <span className="text-[9px] uppercase tracking-wider text-zinc-400 block mb-0.5 font-sans font-semibold">
+                              {/* Stat 4: Performance */}
+                              <div className="bg-zinc-900/80 border border-zinc-800/70 rounded-xl p-3 flex flex-col justify-between">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 font-sans">
                                   Performance
                                 </span>
-                                <div className="text-sm font-bold text-white">
+                                <div className="text-base font-extrabold text-[#a3895d] font-mono mt-1">
                                   VTR {campaignData.campaign.vtr.toFixed(1)}%
                                 </div>
-                                <div className="text-[10px] text-zinc-400">
-                                  CTR {campaignData.campaign.ctr.toFixed(2)}% ({campaignData.campaign.clicks.toLocaleString("de-DE")} Clicks)
+                              </div>
+
+                              {/* Stat 5: Export-Umfang */}
+                              <div className="bg-zinc-900/80 border border-zinc-800/70 rounded-xl p-3 flex flex-col justify-between">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 font-sans">
+                                  Export-Umfang
+                                </span>
+                                <div className="flex items-center gap-3 mt-1.5 font-mono text-[11px]">
+                                  <label className="flex items-center gap-1.5 cursor-pointer text-zinc-300 hover:text-white">
+                                    <input
+                                      type="checkbox"
+                                      checked={opts.showCreatives}
+                                      onChange={() => toggleCampaignOption(name, "showCreatives")}
+                                      className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+                                    />
+                                    <span>Creatives</span>
+                                  </label>
+                                  <label className="flex items-center gap-1.5 cursor-pointer text-zinc-300 hover:text-white">
+                                    <input
+                                      type="checkbox"
+                                      checked={opts.showLineItems}
+                                      onChange={() => toggleCampaignOption(name, "showLineItems")}
+                                      className="w-3.5 h-3.5 rounded border-zinc-700 bg-black text-[#a3895d] focus:ring-[#a3895d]"
+                                    />
+                                    <span>Line Items</span>
+                                  </label>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Dual Pacing Bar */}
+                            {/* LAYER 3: Pacing Progress Bar */}
                             <div className="pt-1">
                               <div className="flex justify-between items-center text-[10px] text-zinc-400 font-mono mb-1">
-                                <span>Auslieferungsverlauf vs. Zeitverlauf (Lineares Soll):</span>
+                                <span className="text-zinc-500 font-sans font-medium">Auslieferungsverlauf vs. Zeitverlauf (Lineares Soll):</span>
                                 <span className="text-zinc-300 font-semibold">
                                   Ist: {metrics.reachProgress.toFixed(1)}% | Zeit: {metrics.timeProgress.toFixed(1)}%
                                 </span>
@@ -1877,15 +1859,7 @@ export default function ReportParser() {
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
                                   Unkonfiguriert
                                 </span>
-                                {vorwocheReach > 0 ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#a3895d]/10 text-[#a3895d] border border-[#a3895d]/30 font-mono">
-                                    <Sparkles size={9} /> Vorwoche: {vorwocheReach.toLocaleString("de-DE")} Impr.
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium bg-zinc-800 text-zinc-400 border border-zinc-700/50 font-mono">
-                                    Inaktiv in Vorwoche
-                                  </span>
-                                )}
+
                               </div>
                               <div className="text-xs text-zinc-400 font-mono space-y-0.5">
                                 <div>
