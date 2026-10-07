@@ -149,17 +149,10 @@ export default function ReportParser() {
       dynamicTyping: true,
       skipEmptyLines: true,
       complete: (output) => {
-        const todayStr = new Date().toISOString().split("T")[0];
-
-        // Behalte nur Daten, die VOR oder BIS heute liegen
-        const data = output.data.filter((row) => {
-          const rDate = getRowDate(row);
-          if (!rDate) return false;
-          return rDate <= todayStr;
-        });
+        const data = output.data.filter((row) => Boolean(getRowDate(row)));
 
         if (data.length === 0) {
-          alert("Keine Daten bis gestern in der CSV-Datei gefunden.");
+          alert("Keine gültigen Daten in der CSV-Datei gefunden.");
           return;
         }
 
@@ -220,12 +213,13 @@ export default function ReportParser() {
             acc[key].totalClicks += clicks;
             acc[key].completes += completes;
 
-            const existingDate = acc[key].reachByDate.find((d) => d.date === row["Date"]);
+            const rDate = getRowDate(row);
+            const existingDate = acc[key].reachByDate.find((d) => d.date === rDate);
             if (existingDate) {
               existingDate.reach += impressions;
             } else {
               acc[key].reachByDate.push({
-                date: row["Date"],
+                date: rDate,
                 reach: impressions,
               });
             }
@@ -237,43 +231,37 @@ export default function ReportParser() {
         const lineItems = groupBy("Line Item");
         const creatives = groupBy("Creative");
 
-        Object.values(lineItems).forEach(
-          (item) => (item.avgVTR = item.totalReach > 0 ? (item.completes / item.totalReach) * 100 : 0)
-        );
-        Object.values(creatives).forEach(
-          (item) => (item.avgVTR = item.totalReach > 0 ? (item.completes / item.totalReach) * 100 : 0)
-        );
+        Object.values(lineItems).forEach((item) => {
+          item.avgVTR = item.totalReach > 0 ? (item.completes / item.totalReach) * 100 : 0;
+          item.reachByDate.sort((a, b) => (a.date > b.date ? 1 : -1));
+        });
+        Object.values(creatives).forEach((item) => {
+          item.avgVTR = item.totalReach > 0 ? (item.completes / item.totalReach) * 100 : 0;
+          item.reachByDate.sort((a, b) => (a.date > b.date ? 1 : -1));
+        });
 
-        const campaignDaily = data.reduce((acc, row) => {
-          const date = row["Date"];
-          if (!date) return acc;
-          const existing = acc.find((d) => d.date === date);
-          const reach = Number(row["Total impressions"] || row["Impressions"] || 0);
-          const revenue = Number(
+        const campaignDailyMap = {};
+        data.forEach((row) => {
+          const date = getRowDate(row);
+          if (!date) return;
+          if (!campaignDailyMap[date]) {
+            campaignDailyMap[date] = { date, reach: 0, revenue: 0 };
+          }
+          campaignDailyMap[date].reach += Number(row["Total impressions"] || row["Impressions"] || 0);
+          campaignDailyMap[date].revenue += Number(
             row["Total revenue"] ??
               row["Total CPM and CPC revenue"] ??
               row["Total CPM and CPC revenue (€)"] ??
               row["Revenue"] ??
               0
           );
-          if (existing) {
-            existing.reach += reach;
-            existing.revenue += revenue;
-          } else {
-            acc.push({
-              date,
-              reach,
-              revenue,
-            });
-          }
-          return acc;
-        }, []);
+        });
+        const campaignDaily = Object.values(campaignDailyMap).sort((a, b) => (a.date > b.date ? 1 : -1));
 
-        const dates = data.map((row) => row["Date"]).filter(Boolean);
+        const dates = data.map((row) => getRowDate(row)).filter(Boolean).sort();
         let csvMinDate = "";
         let csvMaxDate = "";
         if (dates.length > 0) {
-          dates.sort();
           csvMinDate = dates[0];
           csvMaxDate = dates[dates.length - 1];
         }

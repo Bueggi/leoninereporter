@@ -217,16 +217,12 @@ const Report = ({
     return <div className="p-8 text-[#a3895d]">Lade Kampagnendaten...</div>;
   }
 
-    const formatDate = (dateStr) => {
-
-    return new Date(dateStr).toLocaleDateString("de-DE", {
-
-      day: "2-digit",
-
-      month: "2-digit",
-
-    });
-
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const str = String(dateStr).trim();
+    const m = moment(str, ["YYYY-MM-DD", "DD.MM.YYYY", moment.ISO_8601]);
+    if (m.isValid()) return m.format("DD.MM.");
+    return str;
   };
 
   // --- 3. BERECHNUNGEN (Basierend auf Inputs) ---
@@ -253,14 +249,17 @@ const Report = ({
   const daysSinceStart = budgetMetrics.daysSinceStart;
   const remainingDays = budgetMetrics.remainingDays;
 
-  const lineItemKey = data.lineItems && Object.keys(data.lineItems).length > 0 ? Object.keys(data.lineItems)[0] : null;
-  const chartData = lineItemKey ? data.lineItems[lineItemKey].reachByDate.map((item) => ({
-    date: new Date(item.date).toLocaleDateString("de-DE", {
-      day: "2-digit",
-      month: "2-digit",
-    }),
-    impressions: item.reach,
-  })) : [];
+  const chartData = (data?.daily && data.daily.length > 0)
+    ? data.daily.map((item) => ({
+        date: formatDate(item.date),
+        impressions: item.reach,
+      }))
+    : (data?.lineItems && Object.keys(data.lineItems).length > 0)
+    ? data.lineItems[Object.keys(data.lineItems)[0]].reachByDate.map((item) => ({
+        date: formatDate(item.date),
+        impressions: item.reach,
+      }))
+    : [];
 
   const totalClicks = data.creatives ? Object.values(data.creatives).reduce((acc, c) => acc + c.totalClicks, 0) : 0;
 
