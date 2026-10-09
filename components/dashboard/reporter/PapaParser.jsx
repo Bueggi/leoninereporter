@@ -307,7 +307,6 @@ export default function ReportParser() {
 
   const [selectedCampaigns, setSelectedCampaigns] = useState(new Set());
   const [bulkReachTab, setBulkReachTab] = useState("active_vorwoche"); // "active_vorwoche" | "inactive_vorwoche"
-  const [bulkStatusFilter, setBulkStatusFilter] = useState("configured"); // "configured" | "unconfigured" | "all"
   const [bulkSearchQuery, setBulkSearchQuery] = useState("");
 
   const [showCreatives, setShowCreatives] = useState(true);
@@ -792,14 +791,7 @@ export default function ReportParser() {
   const displayedList = useMemo(() => {
     if (!rawCampaignsData) return [];
 
-    let list = [];
-    if (bulkStatusFilter === "configured") {
-      list = categorizedCampaigns.configuredList;
-    } else if (bulkStatusFilter === "unconfigured") {
-      list = categorizedCampaigns.unconfiguredList;
-    } else {
-      list = categorizedCampaigns.allList;
-    }
+    let list = categorizedCampaigns.allList;
 
     if (bulkReachTab === "active_vorwoche") {
       list = list.filter((item) => item.vorwocheReach > 0);
@@ -813,7 +805,7 @@ export default function ReportParser() {
     }
 
     return list;
-  }, [rawCampaignsData, categorizedCampaigns, bulkStatusFilter, bulkReachTab, bulkSearchQuery]);
+  }, [rawCampaignsData, categorizedCampaigns, bulkReachTab, bulkSearchQuery]);
 
   useEffect(() => {
     if (!rawCampaignsData) {
@@ -872,10 +864,6 @@ export default function ReportParser() {
           } else if (vReach === 0 && bulkReachTab !== "inactive_vorwoche") {
             setBulkReachTab("inactive_vorwoche");
           }
-        }
-
-        if (bulkStatusFilter === "unconfigured") {
-          setBulkStatusFilter("configured");
         }
       } else {
         alert("Fehler beim Speichern des Presets.");
@@ -1382,54 +1370,35 @@ export default function ReportParser() {
 
               {/* MAIN KAMPAGNENMANAGEMENT CONTROL CARD */}
               <div className="bg-[#121212] border border-zinc-800 p-5 rounded-2xl shadow-xl space-y-4">
-                {/* Status Tabs Header */}
+                {/* Kampagnenmanagement Summary Header */}
                 <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
                   <div className="space-y-1">
                     <h2 className="text-base font-bold text-white flex items-center gap-2">
-                      <Target size={18} className="text-[#a3895d]" /> Kampagnenmanagement Status
+                      <Target size={18} className="text-[#a3895d]" /> Kampagnenübersicht & Status
                     </h2>
                     <p className="text-xs text-zinc-400">
-                      Wähle aus, welche Kampagnen du verwalten oder reporten möchtest:
+                      Alle Kampagnen befinden sich in einer Liste. Kampagnen mit fehlenden DB-Infos sind farblich hervorgehoben:
                     </p>
                   </div>
 
-                  {/* Primary Status Tabs */}
-                  <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-xl overflow-x-auto">
-                    <button
-                      onClick={() => setBulkStatusFilter("configured")}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
-                        bulkStatusFilter === "configured"
-                          ? "bg-emerald-600 text-white shadow-lg"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                    >
-                      <FolderCheck size={16} />
-                      <span>Zum Reporten bereit ({categorizedCampaigns.totalConfiguredCount})</span>
-                    </button>
+                  {/* Summary Counters */}
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="flex items-center gap-2 px-3.5 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-bold text-zinc-300">
+                      <Layers size={15} className="text-[#a3895d]" />
+                      <span>Gesamt: <strong className="text-white">{categorizedCampaigns.totalCampaignsCount}</strong></span>
+                    </div>
 
-                    <button
-                      onClick={() => setBulkStatusFilter("unconfigured")}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
-                        bulkStatusFilter === "unconfigured"
-                          ? "bg-amber-500 text-black shadow-lg"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                    >
-                      <AlertTriangle size={16} />
-                      <span>Fehlende DB-Infos ({categorizedCampaigns.totalUnconfiguredCount})</span>
-                    </button>
+                    <div className="flex items-center gap-2 px-3.5 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs font-bold text-emerald-400">
+                      <FolderCheck size={15} />
+                      <span>Bereit: <strong className="text-white">{categorizedCampaigns.totalConfiguredCount}</strong></span>
+                    </div>
 
-                    <button
-                      onClick={() => setBulkStatusFilter("all")}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
-                        bulkStatusFilter === "all"
-                          ? "bg-zinc-700 text-white shadow-lg"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                    >
-                      <Layers size={16} />
-                      <span>Alle Kampagnen ({categorizedCampaigns.totalCampaignsCount})</span>
-                    </button>
+                    {categorizedCampaigns.totalUnconfiguredCount > 0 && (
+                      <div className="flex items-center gap-2 px-3.5 py-2 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs font-bold text-amber-400">
+                        <AlertTriangle size={15} className="animate-pulse" />
+                        <span>Infos fehlen: <strong className="text-white">{categorizedCampaigns.totalUnconfiguredCount}</strong></span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -1836,18 +1805,17 @@ export default function ReportParser() {
                       return (
                         <div
                           key={name}
-                          className="bg-[#121212] border border-amber-500/30 hover:border-amber-500/60 rounded-2xl p-5 shadow-lg"
+                          className="bg-[#18140e] border-2 border-amber-500/50 hover:border-amber-500/80 rounded-2xl p-5 shadow-xl transition-all duration-200"
                         >
                           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                             <div className="min-w-0 lg:w-1/3">
-                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <div className="flex flex-wrap items-center gap-2 mb-1.5">
                                 <h3 className="text-base font-bold text-white truncate" title={name}>
                                   {name}
                                 </h3>
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                                  Unkonfiguriert
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                  <AlertTriangle size={11} className="text-amber-400 animate-pulse" /> DB-Infos fehlen
                                 </span>
-
                               </div>
                               <div className="text-xs text-zinc-400 font-mono space-y-0.5">
                                 <div>
